@@ -34,6 +34,8 @@ post:
   recommend: Related Articles
   edit: Edited on
 
+menu:
+  Home: Home
 search: Search
 algolia_search:
   input_placeholder: Search for Posts

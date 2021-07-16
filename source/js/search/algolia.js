@@ -99,7 +99,7 @@ window.addEventListener('load', () => {
             .replace(/\$\{hits}/, data.nbHits)
             .replace(/\$\{time}/, data.processingTimeMS)
           return (
-            '<hr>' +
+            // '<hr>' +
             stats +
             '<span class="algolia-logo pull-right">' +
             '  <img src="' + GLOBAL_CONFIG.root + 'img/algolia.svg" alt="Algolia" />' +

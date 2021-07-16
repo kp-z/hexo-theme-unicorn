@@ -1,0 +1,88 @@
+.dashboard-weight
+  position: relative
+  float: left
+  margin: 1rem 0.6rem
+  width: calc(33% - 1.2rem)
+  height: 16rem
+  // overflow: hidden
+  -webkit-transform: translate3d(0, 0, 0)
+  +minWidth2000()
+    height: 18rem
+  +maxWidth600()
+    width: calc(100% - 0.4rem)
+    margin: 1rem 0.2rem
+    height: 16rem
+    &:last-child
+      height: auto
+//   &:hover
+//     box-shadow: var(--card-hover-box-shadow)
+//     img
+//       opacity: .4
+//       filter: blur(10px)
+//       transform: translate3d(0, 0, 0)
+
+//     // .gallery-group-name::after
+//     //   transform: translate3d(0, 0, 0)
+
+  .card-style
+    padding: 0 1rem 
+    box-shadow: var(--card-box-shadow)
+    border-radius: 6px
+    background-color: var(--card-bg)
+    overflow: visible
+    +maxWidth600()
+        padding: 0
+    &:hover
+      box-shadow: var(--card-hover-box-shadow)
+      
+
+  .video
+      padding: 0 0
+      overflow: hidden
+
+  .weight-half
+      float:left
+      width: 100%
+      position: relative
+      height: 7.5rem
+      // top: -3px
+
+      +minWidth2000()
+        height: 8.5rem
+
+      +maxWidth600()
+        width: 100%
+      .top
+        margin-bottom: 1rem
+
+  .weight-quarter
+      float:left
+      position: relative
+      height: 7.5rem
+      width: 48%
+
+      +minWidth2000()
+        height: 8.5rem
+
+      +maxWidth600()
+        width: 100%
+        margin: 1rem .2rem 1rem 0.2rem
+        height: auto
+        &:first-child
+          height: 16rem
+      // +maxWidth2000()
+      //   height: 14.5rem
+    .top
+      margin-bottom: 1rem
+      
+    .left
+      margin-right: 4%
+.icon 
+       width: 2rem; height: 2rem;
+       vertical-align: -0.15em;
+       fill: currentColor;
+       overflow: hidden;     
+
+.frosted-gross
+    -webkit-backdrop-filter: blur(5px);    
+    backdrop-filter: blur(5px); 

@@ -1,0 +1,36 @@
+.layout {
+  display: flex;
+  margin: 0 auto;
+  padding: 2rem 15px;
+  max-width: 1200px;
+  min-height: calc(100vh);
+maxWidth900()
+maxWidth768()
+minWidth2000()
+}
+.layout > div:first-child:not(.recent-posts,
+.layout .gallery-page) {
+  align-self: flex-start;
+  padding: 50px 40px;
+  border-radius: 8px;
+  background: var(--card-bg);
+  box-shadow: var(--card-box-shadow);
+maxWidth768()
+}
+.layout > div:first-child:not(.recent-posts:hover,
+.layout .gallery-page):hover {
+  box-shadow: var(--card-hover-box-shadow);
+}
+.layout > div:first-child {
+  width: 75%;
+  transition: all 0.3s;
+maxWidth900()
+}
+.layout.hide-aside {
+  max-width: 1500px;
+  padding: 3rem 30px;
+minWidth2000()
+}
+.layout.hide-aside > div {
+  width: 100% !important;
+}

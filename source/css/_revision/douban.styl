@@ -1,0 +1,28 @@
+#douban
+    .douban,
+    .recent-douban-posts
+        overflow:hidden;
+        display: block;
+        float: left;
+    .douban
+        border-radius: 10px;
+        box-shadow: var(--card-box-shadow)
+        margin: 0 3rem 0 3rem
+        width: 50%;
+        +maxWidth600()
+            width: 100%;
+            height: auto
+            margin: 0 0 2rem 0
+        &:hover
+            box-shadow: var(--card-hover-box-shadow)
+
+        iframe
+            border: 0
+            width:100%; 
+            height: calc(80vh)
+    .recent-douban-posts
+        width: 40%;
+        height: calc(80vh)
+        +maxWidth600()
+            width: 100%;
+            height: auto

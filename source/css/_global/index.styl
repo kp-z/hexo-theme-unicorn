@@ -27,8 +27,8 @@
   --blockquote-bg: $blockquote-background-color
   --reward-pop: $reward-pop-up-bg
   --toc-link-color: $toc-link-color
-  --card-box-shadow: 0 3px 8px 6px rgba(7, 17, 27, .06)
-  --card-hover-box-shadow: 0 3px 8px 6px rgba(7, 17, 27, .15)
+  --card-box-shadow: 0 3px 8px 6px rgba(150, 150, 150, .1)
+  --card-hover-box-shadow: 0 3px 8px 6px rgba(150, 150, 150, .3)
 
 html
   height: 100%
@@ -205,6 +205,14 @@ img
   &[src=''],
   &:not([src])
     opacity: 0
+// lazyload blur
+if hexo-config('lazyload.enable') && hexo-config('lazyload.blur') && !hexo-config('lazyload.placeholder')
+  img
+    &[data-lazy-src]:not(.loaded)
+      filter: blur(10px) brightness(1)
+
+    &[data-lazy-src].error
+      filter: none
 
 .img-alt
   margin: -.5rem 0 .5rem

@@ -1,0 +1,56 @@
+#article-container .btn-center {
+  margin: 0 0 1rem;
+  text-align: center;
+}
+#article-container .btn-beautify {
+  display: inline-block;
+  margin: 0 0.2rem 0.3rem;
+  padding: 0 1rem;
+  background-color: $btn-default-color;
+  color: $btn-color;
+  line-height: 2;
+}
+#article-container .btn-beautify:not(.block) + .btn-beautify:not(.block) {
+  margin: 0 0.2rem 1rem;
+}
+#article-container .btn-beautify.block {
+  display: block;
+  margin: 0 0 1rem;
+  width: fit-content;
+  width: -moz-fit-content;
+}
+#article-container .btn-beautify.block.center {
+  margin: 0 auto 1rem;
+}
+#article-container .btn-beautify.block.right {
+  margin: 0 0 1rem auto;
+}
+#article-container .btn-beautify.larger {
+  padding: 0.3rem 1.3rem;
+}
+#article-container .btn-beautify:hover {
+  text-decoration: none;
+}
+#article-container .btn-beautify.$tagsP-types {
+  background-color: ;
+}
+#article-container .btn-beautify.outline {
+  border: 1px solid transparent;
+  border-color: $btn-default-color;
+  background-color: transparent;
+  color: $btn-default-color;
+  transition: all 0.3s;
+}
+#article-container .btn-beautify.outline.button--animated:before {
+  background: $btn-default-color;
+}
+#article-container .btn-beautify.outline:hover {
+  color: #fff !important;
+}
+#article-container .btn-beautify.outline.$tagsP-types {
+  border-color: ;
+  color: ;
+}
+#article-container .btn-beautify.outline.$tagsP-types.button--animated:before {
+  background: ;
+}

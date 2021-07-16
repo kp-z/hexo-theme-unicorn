@@ -388,11 +388,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const $article = document.getElementById('article-container')
 
     // main of scroll
-    window.addEventListener('scroll', btf.throttle(function (e) {
-      const currentTop = window.scrollY || document.documentElement.scrollTop
-      scrollPercent(currentTop)
-      findHeadPosition(currentTop)
-    }, 100))
+    window.tocScrollFn = function () {
+      return btf.throttle(function () {
+        const currentTop = window.scrollY || document.documentElement.scrollTop
+        scrollPercent(currentTop)
+        findHeadPosition(currentTop)
+      }, 100)()
+    }
+    window.addEventListener('scroll', tocScrollFn)
 
     const scrollPercent = function (currentTop) {
       const docHeight = $article.clientHeight
@@ -410,7 +413,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const updateAnchor = function (anchor) {
       if (window.history.replaceState && anchor !== window.location.hash) {
         if (!anchor) anchor = location.pathname
-        window.history.replaceState({}, '', anchor)
+        const title = GLOBAL_CONFIG_SITE.title
+        window.history.replaceState({
+          url: location.href,
+          title: title
+        }, title, anchor)
       }
     }
 
@@ -525,10 +532,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const nowMode = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
       if (nowMode === 'light') {
         activateDarkMode()
+        $("#darkmode").html("<i class='fas fa-sun'></i>")
         saveToLocal.set('theme', 'dark', 2)
         GLOBAL_CONFIG.Snackbar !== undefined && btf.snackbarShow(GLOBAL_CONFIG.Snackbar.day_to_night)
       } else {
         activateLightMode()
+        $("#darkmode").html("<i class='fas fa-moon'></i>")
         saveToLocal.set('theme', 'light', 2)
         GLOBAL_CONFIG.Snackbar !== undefined && btf.snackbarShow(GLOBAL_CONFIG.Snackbar.night_to_day)
       }
@@ -853,3 +862,15 @@ document.addEventListener('DOMContentLoaded', function () {
   refreshFn()
   unRefreshFn()
 })
+
+
+var bgaudiocount = 0;
+function bgaudio(){       
+    ++bgaudiocount;
+    if(bgaudiocount % 2 == 1){   
+        document.getElementById("bgaudio").volume=0.2;
+        document.getElementById("bgaudio").play();      
+    }else{
+        document.getElementById("bgaudio").pause();
+    }
+}

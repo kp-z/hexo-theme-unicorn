@@ -1,0 +1,14 @@
+.tag-cloud-list a {
+  display: inline-block;
+  padding: 0 0.4rem;
+  transition: all 0.3s;
+maxWidth768()
+}
+.tag-cloud-list a:hover {
+  color: $text-hover !important;
+  transform: scale(1.1);
+}
+.tag-cloud-title {
+  font-size: 2.57em;
+maxWidth768()
+}

@@ -1,0 +1,54 @@
+#page .category-lists {
+  padding: 1rem 0 1.5rem;
+maxWidth768()
+}
+#page .category-lists .category-title {
+  font-size: 2.57em;
+maxWidth768()
+}
+#page .category-lists .category-list a {
+  color: var(--font-color);
+}
+#page .category-lists .category-list a:hover {
+  color: $text-hover;
+}
+#page .category-lists .category-list .category-list-count {
+  margin-left: 0.4rem;
+  color: $theme-meta-color;
+}
+#page .category-lists .category-list .category-list-count:before {
+  content: '(';
+}
+#page .category-lists .category-list .category-list-count:after {
+  content: ')';
+}
+#page .category-lists ul {
+  margin-top: 0.4rem;
+  padding: 0 0 0 1rem;
+  list-style: none;
+  counter-reset: li;
+}
+#page .category-lists ul ul {
+  padding-left: 0.2rem;
+}
+#page .category-lists ul li {
+  position: relative;
+  margin: 0.3rem 0;
+  padding: 0.12em 0.4em 0.12em 1.4em;
+}
+#page .category-lists ul li:before {
+  position: absolute;
+  left: 0;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+  top: 0.7em;
+  width: 0.43em;
+  height: 0.43em;
+  border: 0.215em solid $light-blue;
+  border-radius: 0.43em;
+  background: transparent;
+  content: '';
+}
+#page .category-lists ul li:hover:before {
+  border-color: $pseudo-hover;
+}

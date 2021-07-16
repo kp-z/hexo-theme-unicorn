@@ -2,15 +2,16 @@ figure.gallery-group
   position: relative
   float: left
   overflow: hidden
-  margin: .3rem .2rem
-  width: calc(50% - .4rem)
+  margin: 1.2rem 1rem
+  width: calc(33% - 2rem)
   height: 250px
-  border-radius: 8px
+  border-radius: 4px
   background: $dark-black
   -webkit-transform: translate3d(0, 0, 0)
 
   +maxWidth600()
-    width: calc(100% - .4rem)
+    width: calc(100% - .8rem)
+    margin: 1rem 0.4rem
 
   &:hover
     img
@@ -29,7 +30,7 @@ figure.gallery-group
     margin: 0 !important
     max-width: none
     width: calc(100% + 20px)
-    height: 250px
+    height: 280px
     backface-visibility: hidden
     opacity: .8
     transition: opacity .35s, transform .35s
@@ -89,7 +90,7 @@ figure.gallery-group
       transition: transform .35s
       transform: translate3d(-100%, 0, 0)
 
-.gallery-group-main
+.dashboard-group-main
   overflow: auto
   padding: 0 0 .8rem
 
@@ -98,6 +99,7 @@ figure.gallery-group
 
   img
     opacity: 0
+    border-radius: 2px
 
   .img-alt
     display: none

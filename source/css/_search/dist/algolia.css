@@ -1,0 +1,74 @@
+#algolia-search .search-dialog {
+  animation: titlescale 0.5s;
+}
+#algolia-search .search-dialog .ais-search-box {
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+}
+#algolia-search .search-dialog .ais-search-box input {
+  padding: 0.25rem 0.7rem;
+  outline: none;
+  border: 2px solid $search-color;
+  border-radius: 2rem;
+  background: var(--search-bg);
+  color: var(--search-input-color);
+}
+#algolia-search .search-dialog .ais-hits--item.algolia-hit-item {
+  position: relative;
+  padding-left: 1.2rem;
+}
+#algolia-search .search-dialog .ais-hits--item.algolia-hit-item:hover:before {
+  border-color: $pseudo-hover;
+}
+#algolia-search .search-dialog .ais-hits--item.algolia-hit-item:before {
+  position: absolute;
+  top: 0.53em;
+  left: 0;
+  width: 0.5em;
+  height: 0.5em;
+  border: 0.15rem solid $search-color;
+  border-radius: 0.5em;
+  background: transparent;
+  content: '';
+  line-height: 0.5em;
+  transition: all 0.2s ease-in-out;
+}
+#algolia-search .search-dialog .ais-hits--item.algolia-hit-item a {
+  display: block;
+  color: var(--search-result-title);
+  cursor: pointer;
+}
+#algolia-search .search-dialog .ais-hits--item.algolia-hit-item a:hover {
+  color: $search-color;
+}
+#algolia-search .search-dialog .ais-hits--item.algolia-hit-item em {
+  color: $search-keyword-highlight;
+  font-weight: bold;
+}
+#algolia-search .search-dialog .ais-pagination.pagination {
+  margin: 0.8rem 0 0;
+  padding: 0;
+  text-align: center;
+}
+#algolia-search .search-dialog .ais-pagination.pagination .ais-pagination--item {
+  margin: 0 0.2rem;
+  padding: 0;
+}
+#algolia-search .search-dialog .ais-pagination.pagination .ais-pagination--item a {
+  display: inline-block;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  text-align: center;
+  line-height: 1.2rem;
+}
+#algolia-search .search-dialog .ais-pagination.pagination .ais-pagination--item.current a {
+  background: $theme-paginator-color;
+  color: #eee;
+  cursor: default;
+}
+#algolia-search .search-dialog .algolia-logo {
+  padding-top: 2px;
+  width: 4rem;
+  height: 1.5rem;
+}

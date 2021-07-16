@@ -14,19 +14,19 @@
 
     #site-info
       position: absolute
-      top: $index_site_info_top
-      padding: 0 .5rem
+      bottom: 1rem
+      padding: 0
       width: 100%
 
   #site-title,
   #site-subtitle,
   #scroll-down .scroll-down-effects
-    text-align: center
+    // text-align: center
     text-shadow: .1rem .1rem .2rem rgba(0, 0, 0, .15)
-    line-height: 1.5
+    line-height: .8
 
   #site-title
-    margin: 0
+    margin: 3rem
     color: var(--white)
     font-size: 1.85em
 
@@ -122,21 +122,31 @@
     background: 0
 
     #nav
-      background: rgba(255, 255, 255, .8)
-      box-shadow: 0 5px 6px -5px rgba(133, 133, 133, .6)
+      // background: rgba(255, 255, 255, .1)
+      // box-shadow: 0 5px 6px -5px rgba(150, 150, 150, .1)
 
       a
         color: var(--font-color)
         text-shadow: none
+
+      #site-logo
+        -webkit-filter: brightness(100)
+        filter: brightness(100)
 
   &.nav-fixed
     #nav
       position: fixed
       top: -60px
       z-index: 91
+      -webkit-backdrop-filter: blur(3px);    
+      backdrop-filter: blur(3px); 
       background: rgba(255, 255, 255, .8)
       box-shadow: 0 5px 6px -5px alpha($grey, .6)
       transition: transform .2s ease-in-out, opacity .2s ease-in-out
+
+      #site-logo
+        -webkit-filter: brightness(100)
+        filter: brightness(100)
 
       a,
       #site-name,
@@ -290,7 +300,10 @@ _:future,
     .menus_item
       position: relative
       display: inline-block
-      padding: 0 0 0 .7rem
+      font-weight: bold
+      text-shadow: 0 5px 20px -4px rgba($dark-black, 1)
+      padding: 0 1rem
+      letter-spacing: 4px
 
       &:hover
         .menus_item_child
@@ -305,13 +318,10 @@ _:future,
 
       .menus_item_child
         position: absolute
-        right: 0
+        right: -2px
         display: none
-        margin-top: 8px
         padding: 0
         width: max-content
-        background-color: var(--sidebar-bg)
-        box-shadow: 0 5px 20px -4px rgba($dark-black, .5)
         animation: sub_menus .3s .1s ease both
 
         &:before
@@ -326,11 +336,17 @@ _:future,
           list-style: none
 
           &:hover
+            border-radius: 6px
             background: var(--text-bg-hover)
 
           a
             display: inline-block
+            opacity: 1
             padding: .3rem .7rem
+            border-radius: 6px
+            background-color: var(--sidebar-bg)
+            margin: 3px 0
+            box-shadow: 0 5px 30px -4px rgba($dark-black, .5)
             width: 100%
             color: var(--font-color) !important
             text-shadow: none !important
@@ -373,7 +389,6 @@ _:future,
         background-color: lighten($theme-color, 30%)
         content: ''
         transition: all .3s ease-in-out
-
       &:hover
         &:after
           width: 100%

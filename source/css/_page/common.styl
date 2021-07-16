@@ -3,6 +3,7 @@
   margin: 0 auto
   padding: 2rem 15px
   max-width: 1200px
+  min-height: calc(100vh)
 
   +maxWidth900()
     flex-direction: column
@@ -39,10 +40,15 @@
 
   // 隱藏aside
   &.hide-aside
-    max-width: 1000px
+    max-width: 1500px
+    padding: 3rem 30px
 
     +minWidth2000()
-      max-width: 1300px
+      max-width: 2200px
+      padding: 5rem 30px
+
+    +maxWidth600()
+      padding: 1rem 10px
 
     & > div
       width: 100% !important

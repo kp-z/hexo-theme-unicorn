@@ -1,0 +1,158 @@
+
+
+.projects-dashbord
+    width: 100%
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+.project-card
+    width: 42%
+    height: 28rem
+    margin: 1rem 1.5%
+    padding: 0
+    +maxWidth600()
+        width: 100%
+        height: auto
+    .project-cover
+        width: 100%
+        height: 100%
+        border-radius: 6px
+        overflow: hidden
+        img
+            object-fit: cover
+            transition: transform 1s;
+            border-radius: 6px
+            &:hover
+                transform: scale(1.5)
+    .project-info
+        position: absolute
+        width: 100%
+        padding: 2rem 2rem 1.5rem 1.3rem
+        bottom: 0
+        
+        .tag,
+        .description,
+        .more
+            margin-top: 2%
+            letter-spacing: 1px
+            cursor:pointer
+            color: white
+        .title
+            font-size: 1.2em
+            font-weight: bold
+            text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .3)
+            cursor:pointer
+            color: white
+            &:hover
+                text-decoration: underline
+
+        .title-first
+            font-size: 2em
+        .description,
+        .more
+            font-size: .9em
+            opacity : 1
+
+        .tag
+            font-size: .7em
+            padding: 2px 5px
+            border-radius: 6px
+            color: white
+
+    .project-card-half
+        float:left
+        width: 100%
+        position: relative
+        height: 13.25rem
+        padding: 0
+        .project-weight-quarter
+            padding: 0
+            width: 47%
+            height: 13.25rem
+    .mobile-hidden
+        +maxWidth600()
+            display: none
+    .project-top
+            margin-bottom: 1.5rem
+
+    .project-left
+        margin-right: 6%
+.more-project-title-con
+    height: 5rem
+    +maxWidth600()
+        height: auto
+    .more-projects-title
+        color: var(--font-color)
+        font-size: 1.8em
+        font-weight: bolder
+    .more-projects-info
+        font-size: 1em
+        color: var(--font-color)
+        opacity : .5
+        margin-top: -35px
+    .project-tag
+        width: 20%
+        display: inline-block
+        float: right
+        padding: .5rem
+        margin: 1.5rem 0 0 1rem
+        text-align: center
+        border-radius: 6px
+        +maxWidth600()
+            float: left
+            width: 30%
+            margin: 0 .5rem 0 0
+        a
+             color: white
+.more-project
+    width: 87%
+    height: auto
+    display: flex
+    justify-content: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    +maxWidth600()
+        width: 100%
+    .more-project-weight
+        float:left
+        width: 22%
+        position: relative
+        height: 16rem
+        padding: 0
+        +maxWidth600()
+            width: 100%
+        .more-project-cover
+            padding: 0
+            width : 100%
+            height: 10rem
+            border-radius: 6px
+            overflow: hidden
+            position:relative
+            img
+                object-fit: cover
+                transition: transform 1s;
+                &:hover
+                    transform: scale(1.5)
+            .tags
+                position: absolute
+                bottom: 1rem
+                left: 1rem
+                font-size: .7em
+                .tag
+                    padding: 1px 5px
+                    margin-right: 2px
+                    color: white
+                    border-radius: 6px
+        .project-info
+            padding: 0
+            position: relative
+            width: 100%
+            margin-top: .5rem 
+            .title,
+            .more
+                color: var(--font-color)
+                opacity : .8
+            .title
+                text-shadow: none
+    
+        

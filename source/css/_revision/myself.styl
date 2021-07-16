@@ -1,0 +1,249 @@
+img
+    width: 100%
+    height: 100%
+#gallery-group-main
+    img
+        position: relative
+        margin: 0 !important
+        max-width: none
+        width: calc(100% + 20px)
+        height: 100%
+        transition: opacity .35s, transform .35s
+        transform: translate3d(-10px, 0, 0)
+        object-fit: cover
+    .video
+        .card-video-white
+            display: block
+            height: 101%
+            width: 101%
+            object-fit: fill
+        .card-video-black
+            display: none
+            height: 101%
+            width: 101%
+            object-fit: fill
+    .info-top
+        float: left
+        width : 100%
+        margin: 2rem 1.5rem 1rem 1.5rem
+        height: auto
+        +maxWidth600()
+            height: auto
+        .avatar
+            float: left
+            margin-right: 5%
+            height: 100px
+            width: 100px
+            border: solid 8px rgba(189,195,199, .1)
+            border-radius: 70px
+            overflow: hidden
+            box-shadow:  0 3px 8px 6px rgba(189,195,199, .3)
+            img
+                height: 100px
+                border-radius: 70px
+
+                // transition: all .5s
+
+        .author-info
+            border-left: solid .5px rgba(200,200,200,  0.7)
+            height: 100px
+            padding:0 0 0 5%
+            // width: 30%
+            float: left
+            color: var(--font-color)
+            // font-family: 'Audiowide'
+            opacity : .6
+            &-en
+                font-weight: 500
+                font-size: 1.8em
+                text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .3)
+                +maxWidth600()
+                    font-size: 1.4em
+                +minWidth2000()
+                    font-size: 2rem  
+            &-cn
+                margin: -0.5rem  0 0 0
+                font-size: 1.4em
+                text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .3)
+                color: var(--font-color)
+                opacity: .6
+                // text-shadow: .2rem .2rem .2rem #ededef
+                +maxWidth600()
+                    font-size: 1em
+                +minWidth2000()
+                    font-size: .8rem  
+            &-status
+                color: var(--font-color)
+                opacity: .6
+                font-size: .8em
+                width: 100%
+                +maxWidth600()
+                    font-size: .4em
+                i   
+                    // font-size: .6em
+                    margin-right: 1em
+                    padding-bottom: .4em
+                    color: rgba(255,127,80, .6)
+
+    .info-bot
+        float: left
+        width: 100%
+        margin: 1rem .4rem 0 .4rem
+        height: 100px
+        +maxWidth600()
+            margin: 0 .8rem 0 .8rem
+
+        .author-btn
+            float:left
+            border-radius: 5px
+            width: 25%
+            position: relative
+            // background-color: #9ec8da
+            color: var(--btn-color)
+            text-align: center
+            // line-height: 2.4
+            &:hover
+                transform: translate(0, -20px);
+                .hidden-info
+                    display: block
+            &:fistchild
+                background: #000
+            span
+                padding-left: .5rem
+
+            img
+                position: relative;
+                width: 80%;
+
+            .hidden-info
+                display: none
+                top: -1.5rem
+                font-family: 'Audiowide', cursive
+                left: -0.5rem
+                font-size: .7rem
+                position:relative
+            
+            .info-box
+                display: none
+                overflow: hidden
+            /* icon_basket */
+
+    .info-social
+        // float: left
+        position: absolute
+        bottom: 0
+        border-radius: 8px
+        margin: 3% 1.5rem 1.5rem 1.3rem
+        width: 100%
+        align-content: center
+        // background: rgba(200,200,200,.8)
+        // box-shadow:  0 3px 8px 6px rgba(7, 17, 27, .3)
+
+        &-i
+            width: 20%
+            margin: 0 .3rem 1rem .3rem
+            color:var(--font-color)
+            opacity : .2
+    .skills-title
+        position: absolute
+        bottom: 1rem
+        right: 20%
+        font-family: 'Audiowide', cursive
+        font-size: 1rem
+        font-weight: bold
+        color:var(--font-color)
+        opacity : .15
+    .personility-title
+        position: absolute
+        bottom: 10px
+        right: 5%
+        border-radius: 8px
+        font-size: .6rem
+        font-family: 'Audiowide', cursive
+        font-weight: bold
+        color:var(--font-color)
+        opacity : .15
+    .plant-3d
+        width: 25%
+        // height: 200px
+        position: absolute
+        bottom: -3rem
+        right: 2.5rem
+        -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+        filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+    .plant2
+        width :  30%
+        position :  absolute
+        bottom: -1.5rem
+        z-index :9999
+        right : -2rem
+        -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+        filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+    .pattern-3d
+        float : left
+        position : relative
+        height : 100%
+        width : 40%
+        .rocket
+            position : absolute
+            width : 100%
+            top : 0
+            left: 2rem
+            -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+            filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+        .cloud
+            position :relative
+            top: 4rem
+            left: 1.8rem
+            -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+            filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+    .desktop
+        width : 100%
+        // margin-left: 1rem
+        -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+        filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+    .vistor-map
+        width: 7.5rem
+        position: relative
+        margin: auto
+
+        +minWidth2000()
+            width: 8.5rem
+
+        +maxWidth600()
+            width: auto
+    .interests-line
+        width: 100%
+        position : relative
+        display: flex
+        align-items: flex-start
+        margin: 1rem 0
+        .interest
+            flex: auto
+            margin: 0 1rem
+            -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+            filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+            +minWidth2000()
+                padding: 0 0.5rem
+    .declaration
+        margin: 3rem 1.5rem 0 0
+        font-family: 'Audiowide', cursive
+        text-align: right
+        line-height: 12px
+        +minWidth2000()
+            line-height: 17px
+        a.main-content
+            font-size: .7rem 
+            text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .1)
+            color: #bdc3c7
+            +minWidth2000()
+                font-size: .8rem  
+        a.description
+            font-size: .7rem 
+            color:#d2d6d9
+        a.main-title
+            font-size: 1rem 
+            text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .1)
+            color: #7f8c8d
+            +minWidth2000()
+                font-size: 1.5rem  

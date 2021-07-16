@@ -9,14 +9,14 @@ if theme.menu
           a.site-page(href=url_for(trim(value.split('||')[0])))
             if value.split('||')[1]
               i.fa-fw(class=trim(value.split('||')[1]))
-            span=' '+label
+            span=' '
       else
         .menus_item
           a.site-page(href='javascript:void(0);')
             if label.split('||')[1]
               i.fa-fw(class=trim(label.split('||')[1]))
             span=' '+ trim(label.split('||')[0])
-            i.fas.fa-chevron-down.expand(class=sidebarChildHide)
+            //- i.fas.fa-chevron-down.expand(class=sidebarChildHide) 
           ul.menus_item_child
             each val,lab in value 
               li

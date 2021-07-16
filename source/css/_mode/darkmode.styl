@@ -37,12 +37,12 @@ if hexo-config('darkmode.enable') || hexo-config('display_mode') == 'dark'
     --hlexpand-bg: linear-gradient(180deg, rgba(lighten(#121212, 2), .6), rgba(lighten(#121212, 2), .9))
 
     #web_bg:before,
-    #footer:before,
-    #page-header:before
+    #footer:before
       position: absolute
       width: 100%
       height: 100%
-      background-color: alpha($dark-black, .7)
+      background-color: alpha($dark-black, 1)
+      // background: url(/blog-en/img/bg/bg-5.jpg)
       content: ''
 
     #article-container
@@ -71,8 +71,12 @@ if hexo-config('darkmode.enable') || hexo-config('display_mode') == 'dark'
     #page-header
       &.nav-fixed > #nav,
       &.not-top-img > #nav
-        background: alpha(#121212, .8)
+        background: alpha(#121212, 0)
         box-shadow: 0 5px 6px -5px rgba(133, 133, 133, 0)
+      #nav
+        #site-logo
+            -webkit-filter: brightness(100) invert(1)
+            filter: brightness(100) invert(1)
 
     #post-comment
       #comment-switch
@@ -91,14 +95,18 @@ if hexo-config('darkmode.enable') || hexo-config('display_mode') == 'dark'
     .hide-button,
     .btn-beautify,
     .mermaid,
+    .hl-label,
     .post-outdate-notice,
     .error-img,
     #article-container iframe,
-    img,
     .gist,
     .ads-wrap
       filter: brightness(.8)
-
+    img
+      if hexo-config('lazyload.enable') && hexo-config('lazyload.blur') && !hexo-config('lazyload.placeholder')
+        filter: blur(0) brightness(.8)
+      else
+        filter: brightness(.8)
     #aside-content .aside-list > .aside-list-item:not(:last-child)
       border-bottom: 1px dashed alpha(#FFFFFF, .1)
 
@@ -134,3 +142,10 @@ if hexo-config('darkmode.enable') || hexo-config('display_mode') == 'dark'
 
     #operare_artitalk .c2
       background: #121212
+
+    #gallery-group-main
+        .video
+          .card-video-black
+              display: block
+          .card-video-white
+              display: none

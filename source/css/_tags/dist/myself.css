@@ -1,0 +1,128 @@
+img {
+  opacity: 1;
+}
+.card-video-white {
+  height: 100%;
+  width: 101%;
+  object-fit: fill;
+}
+.card-video-black {
+  display: none;
+  height: 100%;
+  width: 101%;
+  object-fit: fill;
+}
+.info-top {
+  float: left;
+  width: 100%;
+  margin: 2rem 1.5rem 1rem 1.5rem;
+  height: auto;
+maxWidth600()
+}
+.info-top .avatar {
+  float: left;
+  margin-right: 5%;
+  height: 100px;
+}
+.info-top .avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 70px;
+  border: solid 8px rgba(0,0,0,0);
+  box-shadow: 0 3px 8px 6px rgba(7,17,27,0.3);
+}
+.info-top .author-info {
+  border-left: solid 0.5px rgba(200,200,200,0.2);
+  height: 100px;
+  padding: 0 0 0 5%;
+  float: left;
+  color: #000;
+}
+.info-top .author-info .author-info,
+.info-top .author-info-en {
+  font-weight: 500;
+  font-size: 1.8em;
+  text-shadow: 0.2rem 0.2rem 0.2rem rgba(7,17,27,0.3);
+maxWidth600()
+}
+.info-top .author-info-cn {
+  margin-top: -0.5rem;
+  font-size: 1.4em;
+  color: rgba(200,200,200,0.8);
+  text-shadow: 0.2rem 0.2rem 0.2rem #ededef;
+maxWidth600()
+}
+.info-top .author-info-status {
+  color: rgba(200,200,200,0.8);
+  font-size: 0.8em;
+  width: 100%;
+maxWidth600()
+}
+.info-top .author-info-status i {
+  margin-right: 1em;
+  padding-bottom: 0.4em;
+  color: rgba(255,127,80,0.3);
+}
+.info-bot {
+  float: left;
+  width: 100%;
+  margin: 0 0.4rem 0 0.4rem;
+  height: 100px;
+maxWidth600()
+}
+.info-bot .author-btn {
+  float: left;
+  border-radius: 5px;
+  width: 25%;
+  color: var(--btn-color);
+  text-align: center;
+  line-height: 2.4;
+}
+.info-bot .author-btn:fistchild {
+  background: #000;
+}
+.info-bot .author-btn span {
+  padding-left: 0.5rem;
+}
+.info-bot .author-btn img {
+  position: relative;
+  width: 80%;
+}
+.info-bot .author-btn .info-box {
+  display: none;
+  overflow: hidden;
+}
+.info-social {
+  position: absolute;
+  bottom: 0;
+  border-radius: 8px;
+  margin: 3% 1.5rem 1.5rem 1.5rem;
+  width: 100%;
+  align-content: center;
+}
+.info-social-i {
+  width: 20%;
+  margin: 0 0.3rem 1rem 0.3rem;
+  color: rgba(0,0,0,0.1);
+}
+.plant-3d {
+  width: 25%;
+  position: absolute;
+  bottom: -3rem;
+  right: 2.5rem;
+  -webkit-filter: drop-shadow(12px 12px 25px rgba(0,0,0,0.6));
+}
+.rocket-3d {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  width: 40%;
+  -webkit-filter: drop-shadow(12px 12px 25px rgba(0,0,0,0.6));
+}
+.vistor-map {
+  width: 7.5rem;
+  position: relative;
+  margin: auto;
+minWidth2000()
+maxWidth600()
+}
