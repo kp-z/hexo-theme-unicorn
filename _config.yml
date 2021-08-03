@@ -1,6 +1,11 @@
 # Main menu navigation (導航目錄) 中文
 # --------------------------------------
 
+# 导航栏logo设置
+logo: 
+  img: https://zkpeace.com/blog-cn/img/kp-logo.png
+  title: ZKPEACE
+
 # format: name: link || icon
 # sub-menu
 # name || icon:
@@ -31,8 +36,10 @@ menu:
 
 # Hide the child menu items in mobile sidebar
 hide_sidebar_menu_child: false
+
+
+# Footer文本设置
 # --------------------------------------
-# 文本设置
 # footer text setting
 footer_text:
   footer_text_1:
@@ -40,25 +47,25 @@ footer_text:
         博客: /blog-cn/
         相册: /blog-cn/gallery/
         项目: /blog-cn/Projects/
-        微博:  /blog-cn/Message/
-        作者: /blog-cn/profile/
+        归档:  /blog-cn/archives/
+        标签: /blog-cn/tags/
       笔记:
         维基: https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401
         速查: /wiki/
   footer_text_2:
-    服务:
-      开发: /blog-cn/home/
-      摄影: /blog-cn/gallery/
-      贩售: /blog-cn/store/
-      设计: /blog-cn/project/
+    标签:
+      技术杂谈: /blog-cn/tags/技术/
+      HEXO相关: /blog-cn/tags/Hexo/
+      生活随想: /blog-cn/tags/生活/
+      旅行记录: /blog-cn/tags/旅行/
     社区:
       SLAM: /blog-cn/home/
       Blender: /blog-cn/gallery/
-      健身: /blog-cn/profile/  
+      Github: https://github.com/Uzizkp 
   footer_text_3:
     友链: 
       FKUN: https://blog.fkun.tech/
-      恶魔菌の记事簿: https://zkpeace.com/links/cn/index.html#
+      风陵渡: https://xajh.org/
       狡猫三窝: https://slykiten.com/
       TanJia: https://www.tanj.com.cn/
       MYW: https://immyw.com/
@@ -68,8 +75,8 @@ footer_text:
       更多友链...: /links/
   footer_text_4:
     关于本站:
-      框架 HEXO: https://hexo.io
-      主题 Butterfly: https://github.com/jerryc127/hexo-theme-butterfly
+      RSS订阅: https://zkpeace.com/blog-cn/rss2.xml
+      本站主题: https://github.com/jerryc127/hexo-theme-butterfly
       版权声明: /blog-cn/copyright/
       支持赞助: /blog-cn/Sponsorship/
     收录:
@@ -81,6 +88,27 @@ footer_copyright: Copyright © 2021 Kuangpu Zhang.
 footer_copyright_address: /blog-cn/copyright/
 footer_icp: 鲁ICP备20008114号-1
 footer_icp_address: http://www.beian.miit.gov.cn/state/outPortal/loginPortal.action
+
+
+# 首页Carousel内容
+# --------------------------------------
+carousel_contents:
+  page_1:
+    bg_img: <div class="anim-model" ><img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718002545.webp"/></div>
+    title: 01 - Info &nbsp&nbsp&nbsp 
+    subtitle: 你好啊！我是<a class="info-link" href="/blog-cn/profile">Kp</a>一只小小的计算机攻城狮，喜欢<a class="info-link" href="/blog-cn/gallery">摄影</a> <a class="info-link" href="/blog-cn/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
+  page_2:
+    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718003538.webp"/>
+    title: 02 - Job &nbsp&nbsp&nbsp 
+    subtitle: 正在寻觅人工智能工程师相关岗位, 欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/Projects/">项目</a>.
+  page_3:
+    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718003414.webp"/>
+    title: 03 - SNS &nbsp&nbsp&nbsp 
+    subtitle: 欢迎加入我的 <a href="https://img-1253324855.cos.ap-chengdu.myqcloud.com/Myweb_COS_2.0/img/wechatcode.jpg"><i class="fab fa-weixin"></i></a> <a  href="https://t.me/kpzhang"><i class="fab fa-telegram-plane"></i></a> 交流群, 关注我的<a class="info-link" href="/blog-cn/profile/">社交账号</a>, 查阅我的<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术笔记</a>
+  page_4:
+    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210725104927.png"/>
+    title: 04 - More &nbsp&nbsp 
+    subtitle: 本网站正在建设中, 欢迎 <a class="info-link" href="/blog-cn/Message/">反馈</a> 错误. 如果本站内容帮助到了你，求 <a class="info-link" href="/blog-cn/Sponsorship/">赞赏</a>.
 
       # Code Blocks (代碼相關)
 # --------------------------------------
@@ -802,7 +830,7 @@ darkmode:
   # autoChangeMode: 1  Following System Settings, if the system doesn't support dark mode, it will switch dark mode between 6 pm to 6 am
   # autoChangeMode: 2  Switch dark mode between 6 pm to 6 am
   # autoChangeMode: false
-  autoChangeMode: 2
+  autoChangeMode: false
 
 # Lightbox (圖片大圖查看模式)
 # --------------------------------------
@@ -851,7 +879,7 @@ pjax:
   enable: true
   exclude:
     - /blog-cn/things/
-    - /blog-cn/travel/
+    # - /blog-cn/travel/
     # - /blog-cn/gallery/photos/
     # - /blog-cn/gallery/transcribe/
     # - /blog-cn/channel/
@@ -916,24 +944,17 @@ css_prefix: true
 inject:
   head:
     - <script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script>
-    - <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-    - <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+    # - <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     - <script src="https://at.alicdn.com/t/font_1789453_ouhjvm9rdyn.js"></script>
-    - <link rel="stylesheet" href="/blog-cn/css/things/things.css">
-    - <link rel="stylesheet" href="/blog-cn/css/things/sortable.min.css">
     - <link rel="preconnect" href="https://fonts.gstatic.com">
     - <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Major+Mono+Display&family=Train+One&family=Vast+Shadow&family=Wallpoet&family=Zen+Dots&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Noto+Sans+SC&family=Poiret+One&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&display=swap" rel="stylesheet">
-    - '<style type="text/css">.app-refresh{position:fixed;top:-2.2rem;left:0;right:0;z-index:99999;padding:0 1rem;font-size:15px;height:2.2rem;transition:all .3s ease}.app-refresh-wrap{display:flex;color:#fff;height:100%;align-items:center;justify-content:center}.app-refresh-wrap a{color:#fff;text-decoration:underline;cursor:pointer}</style>'
-    - <link rel="stylesheet" href="/blog-cn/css/fm/fm-style.css">
+    # - '<style type="text/css">.app-refresh{position:fixed;top:-2.2rem;left:0;right:0;z-index:99999;padding:0 1rem;font-size:15px;height:2.2rem;transition:all .3s ease}.app-refresh-wrap{display:flex;color:#fff;height:100%;align-items:center;justify-content:center}.app-refresh-wrap a{color:#fff;text-decoration:underline;cursor:pointer}</style>'
     - <audio id="bg-music" class="no-destroy" src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/music/CharlesTheFirst%20-%20Crunksauce%20Vol%20IV%20-%2001%20All%20Ways.mp3"></audio>
   bottom:
     - <script data-pjax src="/blog-cn/js/bg-music.js"></script>
-    - <script data-pjax  src="/blog-cn/js/carousel.js"></script>
-    - '<div class="app-refresh" id="app-refresh"> <div class="app-refresh-wrap"> <label>✨ 網站已更新最新版本 👉</label> <a href="javascript:void(0)" onclick="location.reload()">點擊刷新</a> </div></div><script>function showNotification(){if(GLOBAL_CONFIG.Snackbar){var t="light"===document.documentElement.getAttribute("data-theme")?GLOBAL_CONFIG.Snackbar.bgLight:GLOBAL_CONFIG.Snackbar.bgDark,e=GLOBAL_CONFIG.Snackbar.position;Snackbar.show({text:"有新版本",backgroundColor:t,duration:5e5,pos:e,actionText:"点击刷新",actionTextColor:"#fff",onActionClick:function(t){location.reload()}})}else{var o=`top: 0; background: ${"light"===document.documentElement.getAttribute("data-theme")?"#49b1f5":"#1f1f1f"};`;document.getElementById("app-refresh").style.cssText=o}}"serviceWorker"in navigator&&(navigator.serviceWorker.controller&&navigator.serviceWorker.addEventListener("controllerchange",function(){showNotification()}),window.addEventListener("load",function(){navigator.serviceWorker.register("/blog-cn/sw.js")}));</script>'
-
 # CDN
 # Don't modify the following settings unless you know how they work
 # 非必要請不要修改

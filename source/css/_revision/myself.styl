@@ -9,7 +9,6 @@ img
         width: calc(100% + 20px)
         height: 100%
         transition: opacity .35s, transform .35s
-        transform: translate3d(-10px, 0, 0)
         object-fit: cover
     .video
         .card-video-white
@@ -35,18 +34,22 @@ img
             height: 100px
             width: 100px
             border: solid 8px rgba(189,195,199, .1)
-            border-radius: 70px
+            border-radius: 100px 
             overflow: hidden
             box-shadow:  0 3px 8px 6px rgba(189,195,199, .3)
+            +minWidth2000()
+                height: 120px
+                width: 120px 
             img
                 height: 100px
-                border-radius: 70px
-
-                // transition: all .5s
-
+                border-radius: 200px 
+                transform: translate3d(-10px, 0px, 0)
+                +minWidth2000()
+                    height: 120px
+                    opacity 
         .author-info
-            border-left: solid .5px rgba(200,200,200,  0.7)
-            height: 100px
+            border-left: solid 3px rgba(200,200,200,  0.3)
+            height: auto
             padding:0 0 0 5%
             // width: 30%
             float: left
@@ -88,14 +91,15 @@ img
     .info-bot
         float: left
         width: 100%
-        margin: 1rem .4rem 0 .4rem
+        margin: .9rem .4rem 0 0
         height: 100px
         +maxWidth600()
             margin: 0 .8rem 0 .8rem
+        +minWidth2000()
+            margin: 1.2rem .4rem 0 0 
 
         .author-btn
             float:left
-            border-radius: 5px
             width: 25%
             position: relative
             // background-color: #9ec8da
@@ -106,10 +110,6 @@ img
                 transform: translate(0, -20px);
                 .hidden-info
                     display: block
-            &:fistchild
-                background: #000
-            span
-                padding-left: .5rem
 
             img
                 position: relative;
@@ -119,8 +119,7 @@ img
                 display: none
                 top: -1.5rem
                 font-family: 'Audiowide', cursive
-                left: -0.5rem
-                font-size: .7rem
+                font-size: .5rem
                 position:relative
             
             .info-box
@@ -144,6 +143,11 @@ img
             margin: 0 .3rem 1rem .3rem
             color:var(--font-color)
             opacity : .2
+            svg
+                width : 15px
+                transform: translateY(12px)
+            &:hover
+                opacity : 1
     .skills-title
         position: absolute
         bottom: 1rem
@@ -188,13 +192,13 @@ img
             position : absolute
             width : 100%
             top : 0
-            left: 2rem
+            left: 1rem
             -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
             filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
         .cloud
             position :relative
             top: 4rem
-            left: 1.8rem
+            left: 1.4rem
             -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
             filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
     .desktop
@@ -208,7 +212,7 @@ img
         margin: auto
 
         +minWidth2000()
-            width: 8.5rem
+            width: 9rem
 
         +maxWidth600()
             width: auto
@@ -221,6 +225,7 @@ img
         .interest
             flex: auto
             margin: 0 1rem
+            transform: translate(-10px,0)
             -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
             filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
             +minWidth2000()
@@ -237,13 +242,15 @@ img
             text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .1)
             color: #bdc3c7
             +minWidth2000()
-                font-size: .8rem  
+                font-size: 1rem  
         a.description
             font-size: .7rem 
             color:#d2d6d9
+            +minWidth2000()
+                font-size: 1rem 
         a.main-title
             font-size: 1rem 
             text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .1)
             color: #7f8c8d
             +minWidth2000()
-                font-size: 1.5rem  
+                font-size: 1.6rem  

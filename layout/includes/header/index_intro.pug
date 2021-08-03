@@ -1,42 +1,18 @@
 #carousel
-    //- each page, content in theme.carousel_contents
-    //-       .carousel-box.fade
-    //-         img(src=content.bg_img)
-    //-         .site-info 
-    //-              h1.site-title(onclick="plusSlides(1)")= content.title
-    //-              .site-subtitle=content.subtitle
-    .carousel-box.fade
-        .anim-model 
-            img(src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210708005948.png")
-        
-        //- img(src="https://raw.githubusercontent.com/Uzizkp/image-host/master/img/picgo/20210706171909.png")
-        .site-info
-            h1.site-title  01 - Info &nbsp&nbsp&nbsp 
-                a(onclick="plusSlides(1)") Next
-            .site-subtitle 计算机硕士, 喜欢摄影,旅行 & 动物, 你可以在这找到我的 <a href="/blog-cn/">博客</a> 和 <a href="/blog-cn/gallery">相册</a>.     
-    .carousel-box.fade
-
-        //- img(style="position: absolute; bottom:0; left: 40%; width: 20%; min-width:300px; height: 70%" src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210707143351.png")
-        img(src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/substance_d.gif") 
-        .site-info
-            h1.site-title 02 - Job &nbsp&nbsp&nbsp 
-                a(onclick="plusSlides(1)") Next
-            .site-subtitle 正在寻觅人工智能工程师相关岗位, 欢迎大佬们查看我的 <a href="/blog-cn/profile/">简历</a> 和 <a href="/blog-cn/Projects/">项目</a>     
-    .carousel-box.fade
-        img(src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/flow.gif") 
-        .site-info
-            h1.site-title 03 - SNS &nbsp&nbsp&nbsp 
-                a(onclick="plusSlides(1)") Next
-            .site-subtitle <a href="https://img-1253324855.cos.ap-chengdu.myqcloud.com/Myweb_COS_2.0/img/wechatcode.jpg">微信</a>  <a href="/blog-cn/Message/">微博</a> <a href="https://space.bilibili.com/109909977">哔站</a> <a href="https://www.zhihu.com/club/1365658701693595648">SLAM论坛</a> <a href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">维基</a> <a href="https://zkpeace.com/wiki/">速查表</a> <a href="https://www.instagram.com/zkpjy/">Instagram</a> <a href="mailto:z.kp@outlook.com"> Email</a> <a href="https://t.me/kpzhang">Telegram</a>.
-    .carousel-box.fade
-        img(src="https://raw.githubusercontent.com/Uzizkp/image-host/master/img/picgo/20210706155409.png")
-        .site-info
-            h1.site-title 04 - More &nbsp&nbsp&nbsp
-                a(onclick="plusSlides(1)") Next
-            .site-subtitle 本网站正在建设中,更多内容尽情期待, 能力有限难免出错，欢迎<a href="/blog-cn/Message/">指正、讨论</a>.
+    each content,page in theme.carousel_contents
+          .carousel-box.fade
+            | !{content.bg_img}
+            .site-info 
+                 h1.site-title 
+                    | !{content.title}
+                    a(onclick="plusSlides(1)") Next
+                 .site-subtitle
+                    | !{content.subtitle}
     #carousel-indictors
         span.carousel-dot(onclick="currentSlide(1)")
         span.carousel-dot(onclick="currentSlide(2)")
         span.carousel-dot(onclick="currentSlide(3)")
         span.carousel-dot(onclick="currentSlide(4)")
-            
+  
+
+script(src="/blog-cn/js/carousel.js") 

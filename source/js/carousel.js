@@ -1,8 +1,9 @@
 var slideIndex = 1;
-if(document.URL ==  'https://zkpeace.com/blog-cn/home/'){
-  console.log('Test Successful')
-  showSlides(slideIndex = 1)
-}
+showSlides(slideIndex)
+// if(document.URL ==  'http://localhost:4000/blog-cn/home/'){
+//   console.log('Test Successful')
+//   showSlides(slideIndex = 1)
+// }
 // Next/previous controls
 function plusSlides(n) {
     showSlides(slideIndex += n);

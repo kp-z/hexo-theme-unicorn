@@ -1,5 +1,4 @@
-
- function bgMusic() {
+function bgMusic() {
     var player = $("#bg-music")[0];
     // if(player.paused)
     if (player.paused) {
@@ -12,6 +11,12 @@
     }
 
 }
+// var bgMusic = document.createElement("audio");
+// document.body.appendChild(bgMusic);
+// bgMusic.setAttribute("id","bg-music");
+// bgMusic.setAttribute("class","no-destroy");
+// bgMusic.setAttribute("src","https://img-1253324855.cos.ap-chengdu.myqcloud.com/music/CharlesTheFirst%20-%20Crunksauce%20Vol%20IV%20-%2001%20All%20Ways.mp3")
+
 var player = $("#bg-music")[0];
     // if(player.paused)
     if (player.paused) {
@@ -20,3 +25,4 @@ var player = $("#bg-music")[0];
     } else {
         $("#background-music").html("<i class='fas fa-volume-mute'></i>")
     }
+

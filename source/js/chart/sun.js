@@ -6,29 +6,41 @@ var data = [{
         name: '智能系统',
         value: 8,
         children: [{
-            name: 'Robotic',
-            value: 3,
+            name: '控制理论',
+            link: 'https://www.notion.so/wikiwhale/5e88a922627a47fc81e3ccbd86b6938c',
+            value: 1,
+            visualMap: false,
+            itemStyle:{
+                color: '#b5ea7b'
+            },
+        }
+            ,{
+            name: '认知机器人',
+            link: 'https://www.notion.so/wikiwhale/0f6916c4ee024d9abac1c7b70fdb46f8',
+            value: 2,
             visualMap: false,
             itemStyle:{
                 color: '#b5ea7b'
             },
             children: [{
                 name: 'SLAM',
-                value: 2,
+                value: 1,
                 visualMap: false,
                 itemStyle:{
                     color: '#c6ef9a'
                 },
             }]
         }, {
-            name: ' Mechine learning',
+            name: '机器学习',
+            link: 'https://www.notion.so/wikiwhale/0f7791b2c3344be6b4532a22e1b9358b',
             value: 3,
             visualMap: false,
             itemStyle:{
                 color: '#b5ea7b'
             },
             children: [{
-                name: 'Reinforcement learning',
+                name: '强化学习',
+                link: 'https://www.notion.so/wikiwhale/0f7791b2c3344be6b4532a22e1b9358b',
                 value: 1,
                 visualMap: false,
                 itemStyle:{
@@ -44,7 +56,7 @@ var data = [{
             },
         }]
     }, {
-        name: 'Engineering Capabilities',
+        name: '工程能力',
         value: 9,
         children: [{
             name: 'Python',
@@ -55,31 +67,59 @@ var data = [{
             },
             children:[
                 {
-                    name: 'numpy | scipy | matploit',
-                    value: 1.5,
+                    name: 'Seaborn',
+                    value: 0.5,
                     visualMap: false,
                     itemStyle:{
                         color: '#f4e1a7'
                     },
+                    
                 },
                 {
-                    name: 'pytorch',
-                    value: 1.5,
+                    name: 'Numpy',
+                    value: 0.8,
+                    visualMap: false,
+                    itemStyle:{
+                        color: '#f4e1a7'
+                    },
+                    
+                },
+                {
+                    name: 'Pytorch',
+                    value: 0.8,
                     visualMap: false,
                     itemStyle:{
                         color: '#f4e1a7'
                     },
                 },
             ]
-        }, {
+        },  {
+            name: 'ROS',
+            value: 1,
+            visualMap: false,
+            itemStyle:{
+                color: '#f8e07f'
+            },
+        },{
             name: 'C++',
             value: 2,
             visualMap: false,
             itemStyle:{
                 color: '#f8e07f'
             },
+            
+            children:[
+                {
+                name: 'Qt',
+                value: 1,
+                visualMap: false,
+                itemStyle:{
+                color: '#f8e07f'}
+                
+                },
+            ]
         },{
-            name: 'Javascript | CSS | H5',
+            name: 'Web',
             value: 3,
             visualMap: false,
             itemStyle:{
@@ -87,15 +127,23 @@ var data = [{
             },
             children:[
                 {
-                    name: 'vue | Mini-APP | stylus | pug',
-                    value: 2,
+                    name: 'Vue',
+                    value: 1,
                     visualMap: false,
                     itemStyle:{
                         color: '#f4e1a7'
                     },
                 },
                 {
-                    name: 'echarts|three.js',
+                    name: 'Echart',
+                    value: .5,
+                    visualMap: false,
+                    itemStyle:{
+                        color: '#f4e1a7'
+                    },
+                },
+                {
+                    name: 'Mapbox',
                     value: .5,
                     visualMap: false,
                     itemStyle:{
@@ -105,7 +153,7 @@ var data = [{
             ]
         }]
 }, {
-    name: 'Digital Media',
+    name: '其他能力',
     children: [{
         name: 'Graphic Design',
         visualMap: false,
@@ -121,7 +169,7 @@ var data = [{
                 color: '#ffb7c2'
             },
             children: [{
-                name: 'Figma | PS ',
+                name: 'Figma',
                 value: 0.5,
                 visualMap: false,
                 itemStyle:{
@@ -152,7 +200,7 @@ var data = [{
 
 option = {
     legend: {
-        show: true
+        show: false
     },
     visualMap: {
         type: 'piecewise',
@@ -160,7 +208,8 @@ option = {
         max: 25,
         left: 'right',
         top: 20,
-        textGap: -70,
+        hoverLink: true,
+        textGap: -65,
         itemWidth: 80,
         itemHeight: 20,
         itemGap: 8,
@@ -186,8 +235,9 @@ option = {
 
         type: 'sunburst',
         data: data,
-        radius: [40, '90%'],
+        radius: ['20%', '90%'],
         center: ['35%', '50%'],
+        nodeClick: 'link',
         itemStyle: {
             borderRadius: 4,
             borderWidth: 0,
