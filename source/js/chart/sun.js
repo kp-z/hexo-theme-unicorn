@@ -194,10 +194,6 @@ var data = [{
     },]
     
 }];
-
-
-
-
 option = {
     legend: {
         show: false

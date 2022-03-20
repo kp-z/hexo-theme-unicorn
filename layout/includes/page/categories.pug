@@ -1,5 +1,15 @@
+!= page.content
 .category-lists
   .category-title.is-center= _p('page.category')
     |  - 
     span.category-amount= site.categories.length
   div!= list_categories()
+
+.tag-cloud-list.is-center
+  .tag-cloud-title.is-center= _p('page.tag')
+    |  - 
+    span.tag-cloud-amount= site.tags.length
+  !=cloudTags({source: site.tags, minfontsize: 1, maxfontsize: 2, limit: 0,  unit: 'em'})
+
+
+  

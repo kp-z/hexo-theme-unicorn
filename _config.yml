@@ -47,8 +47,8 @@ footer_text:
         博客: /blog-cn/
         相册: /blog-cn/gallery/
         项目: /blog-cn/Projects/
-        归档:  /blog-cn/archives/
-        标签: /blog-cn/tags/
+        时间轴:  /blog-cn/archives/
+        统计: /blog-cn/categories/
       笔记:
         维基: https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401
         速查: /wiki/
@@ -76,7 +76,7 @@ footer_text:
   footer_text_4:
     关于本站:
       RSS订阅: https://zkpeace.com/blog-cn/rss2.xml
-      本站主题: https://github.com/jerryc127/hexo-theme-butterfly
+      本站主题: https://github.com/Uzizkp/hexo-theme-unicorn
       版权声明: /blog-cn/copyright/
       支持赞助: /blog-cn/Sponsorship/
     收录:
@@ -95,20 +95,20 @@ footer_icp_address: http://www.beian.miit.gov.cn/state/outPortal/loginPortal.act
 carousel_contents:
   page_1:
     bg_img: <div class="anim-model" ><img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718002545.webp"/></div>
-    title: 01 - Info &nbsp&nbsp&nbsp 
+    title: 01 - Info
     subtitle: 你好啊！我是<a class="info-link" href="/blog-cn/profile">Kp</a>一只小小的计算机攻城狮，喜欢<a class="info-link" href="/blog-cn/gallery">摄影</a> <a class="info-link" href="/blog-cn/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
   page_2:
-    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718003538.webp"/>
-    title: 02 - Job &nbsp&nbsp&nbsp 
-    subtitle: 正在寻觅人工智能工程师相关岗位, 欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/Projects/">项目</a>.
+    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210810180258.webp"/>
+    title: 02 - Job
+    subtitle: 正在寻觅人工智能工程师相关岗位，欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/Projects/">项目</a>.
   page_3:
-    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718003414.webp"/>
-    title: 03 - SNS &nbsp&nbsp&nbsp 
-    subtitle: 欢迎加入我的 <a href="https://img-1253324855.cos.ap-chengdu.myqcloud.com/Myweb_COS_2.0/img/wechatcode.jpg"><i class="fab fa-weixin"></i></a> <a  href="https://t.me/kpzhang"><i class="fab fa-telegram-plane"></i></a> 交流群, 关注我的<a class="info-link" href="/blog-cn/profile/">社交账号</a>, 查阅我的<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术笔记</a>
+    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210810180323.webp"/>
+    title: 03 - SNS
+    subtitle: 欢迎加入我的 <a href="https://img-1253324855.cos.ap-chengdu.myqcloud.com/Myweb_COS_2.0/img/wechatcode.jpg"><i class="fab fa-weixin"></i></a> <a  href="https://t.me/kpzhang"><i class="fab fa-telegram-plane"></i></a> 交流群，关注我的<a class="info-link" href="/blog-cn/profile/">社交账号</a>，查阅我的<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术笔记</a>.
   page_4:
-    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210725104927.png"/>
-    title: 04 - More &nbsp&nbsp 
-    subtitle: 本网站正在建设中, 欢迎 <a class="info-link" href="/blog-cn/Message/">反馈</a> 错误. 如果本站内容帮助到了你，求 <a class="info-link" href="/blog-cn/Sponsorship/">赞赏</a>.
+    bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210810180344.webp"/>
+    title: 04 - More
+    subtitle: 本网站正在建设中，欢迎<a class="info-link" href="/blog-cn/Message/">反馈</a>错误. 如果本站内容帮助到了你，求<a class="info-link" href="/blog-cn/Sponsorship/">赞赏</a>.
 
       # Code Blocks (代碼相關)
 # --------------------------------------
@@ -728,7 +728,7 @@ aside:
     content: 双目失明的汉弥尔顿为什么还坐在黑灯瞎火里头写十四行诗那就叫“自我”--王小波<br></br>走出自己的傲慢，承认自己的局限。--罗翔
   card_recent_post:
     enable: true
-    limit: 6 # if set 0 will show all
+    limit: 20 # if set 0 will show all
     sort: date # date or updated
     sort_order: # Don't modify the setting unless you know how it works
   card_author:
@@ -745,7 +745,7 @@ aside:
     expand: false # none/true/false
     sort_order: # Don't modify the setting unless you know how it works
   card_tags:
-    enable: false
+    enable: true
     limit: 10 # if set 0 will show all
     color: false
     sort_order: # Don't modify the setting unless you know how it works
@@ -879,6 +879,7 @@ pjax:
   enable: true
   exclude:
     - /blog-cn/things/
+    # - /blog-cn/home/
     # - /blog-cn/travel/
     # - /blog-cn/gallery/photos/
     # - /blog-cn/gallery/transcribe/
@@ -951,10 +952,15 @@ inject:
     - <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Noto+Sans+SC&family=Poiret+One&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&display=swap" rel="stylesheet">
-    # - '<style type="text/css">.app-refresh{position:fixed;top:-2.2rem;left:0;right:0;z-index:99999;padding:0 1rem;font-size:15px;height:2.2rem;transition:all .3s ease}.app-refresh-wrap{display:flex;color:#fff;height:100%;align-items:center;justify-content:center}.app-refresh-wrap a{color:#fff;text-decoration:underline;cursor:pointer}</style>'
+    - '<style type="text/css">.app-refresh{position:fixed;top:-2.2rem;left:0;right:0;z-index:99999;padding:0 1rem;font-size:15px;height:2.2rem;transition:all .3s ease}.app-refresh-wrap{display:flex;color:#fff;height:100%;align-items:center;justify-content:center}.app-refresh-wrap a{color:#fff;text-decoration:underline;cursor:pointer}</style>'
     - <audio id="bg-music" class="no-destroy" src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/music/CharlesTheFirst%20-%20Crunksauce%20Vol%20IV%20-%2001%20All%20Ways.mp3"></audio>
+    - <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+    # - <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
   bottom:
+    - '<div class="app-refresh" id="app-refresh"> <div class="app-refresh-wrap"> <label>✨ 网站已是最新版本 👉</label> <a href="javascript:void(0)" onclick="location.reload()">点击刷新</a> </div></div><script>function showNotification(){if(GLOBAL_CONFIG.Snackbar){var t="light"===document.documentElement.getAttribute("data-theme")?GLOBAL_CONFIG.Snackbar.bgLight:GLOBAL_CONFIG.Snackbar.bgDark,e=GLOBAL_CONFIG.Snackbar.position;Snackbar.show({text:"已更新最新版本",backgroundColor:t,duration:5e5,pos:e,actionText:"点击刷新",actionTextColor:"#fff",onActionClick:function(t){location.reload()}})}else{var o=`top: 0; background: ${"light"===document.documentElement.getAttribute("data-theme")?"#49b1f5":"#1f1f1f"};`;document.getElementById("app-refresh").style.cssText=o}}"serviceWorker"in navigator&&(navigator.serviceWorker.controller&&navigator.serviceWorker.addEventListener("controllerchange",function(){showNotification()}),window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js")}));</script>'
     - <script data-pjax src="/blog-cn/js/bg-music.js"></script>
+
+    # - <script data-pjax type="module" src="/blog-cn/js/threejs/unreal_bloom.js"></script>
 # CDN
 # Don't modify the following settings unless you know how they work
 # 非必要請不要修改
@@ -976,6 +982,7 @@ CDN:
   disqusjs_css: https://cdn.jsdelivr.net/npm/disqusjs@1/dist/disqusjs.css
   utterances: https://utteranc.es/client.js
   twikoo: https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js
+  # twikoo: https://cdn.jsdelivr.net/gh/zhheo/twikoo@dev/dist/twikoo.all.min.js
   waline: https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js
 
   # share
@@ -986,8 +993,8 @@ CDN:
   # search
   local_search: /js/search/local-search.js
   algolia_js: /js/search/algolia.js
-  algolia_search: https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.js
-  algolia_search_css: https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.css
+  algolia_search: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.js
+  algolia_search_css: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.css
 
   # math
   mathjax: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

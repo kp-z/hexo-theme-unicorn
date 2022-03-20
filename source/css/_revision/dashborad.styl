@@ -8,10 +8,10 @@
   -webkit-transform: translate3d(0, 0, 0)
   +minWidth2000()
     height: 20rem
-  +maxWidth600()
+  +maxWidth768()
     width: calc(100% - 0.4rem)
     margin: 1rem 0.2rem
-    height: 16rem
+    height: 17rem
     &:last-child
       height: auto
 //   &:hover
@@ -30,7 +30,10 @@
     border-radius: 6px
     background-color: var(--card-bg)
     overflow: visible
-    +maxWidth600()
+    border-style: solid;
+    border-width: 0.0001px;
+    border-color: rgba(255, 227, 230, 0.06);
+    +maxWidth768()
         padding: 0
     &:hover
       box-shadow: var(--card-hover-box-shadow)
@@ -50,7 +53,7 @@
       +minWidth2000()
         height: 9.5rem
 
-      +maxWidth600()
+      +maxWidth768()
         width: 100%
       .top
         margin-bottom: 1rem
@@ -64,7 +67,7 @@
       +minWidth2000()
         height: 9.5rem
 
-      +maxWidth600()
+      +maxWidth768()
         width: 100%
         margin: 1rem .2rem 1rem 0.2rem
         height: auto

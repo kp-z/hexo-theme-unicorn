@@ -47,7 +47,7 @@ hexo.extend.helper.register('cloudTags', function (options = {}) {
     const ratio = length ? sizes.indexOf(tag.length) / length : 0
     const size = minfontsize + ((maxfontsize - minfontsize) * ratio)
     let style = `font-size: ${parseFloat(size.toFixed(2))}${unit};`
-    const color = 'rgb(' + Math.floor(Math.random() * 201) + ', ' + Math.floor(Math.random() * 201) + ', ' + Math.floor(Math.random() * 201) + ')' // 0,0,0 -> 200,200,200
+    const color = 'rgb(' + Math.floor(Math.random() * 221) + ', ' + Math.floor(Math.random() * 221) + ', ' + Math.floor(Math.random() * 221) + ')' // 0,0,0 -> 200,200,200
     style += ` color: ${color}`
     result += `<a href="${env.url_for(tag.path)}" style="${style}">${tag.name}</a>`
   })

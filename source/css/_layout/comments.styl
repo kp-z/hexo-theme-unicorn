@@ -62,3 +62,38 @@
   .comment-wrap
     > div:nth-child(2)
       display: none
+
+.tk-comments-container
+    .tk-comments-count
+        font-size: .7rem
+        font-weight: lighter
+        opacity : 0.6
+    .tk-comment
+        padding-left: .5rem
+        display: list-item
+        border-left: solid 2px rgba(rgb(189,195,199), .2)
+        .tk-main
+            .tk-row
+              opacity : 0.5
+            .tk-content
+                background: rgba(rgb(212,212,212), .1)
+                padding: 10px 20px 20px
+                border-radius: 10px
+                border: solid 2px rgba(rgb(212,212,212), .3)
+
+                &:hover
+                    border: solid 2px var(--font-color)
+            .tk-replies
+                .tk-comment
+                    .tk-avatar
+                        display: inline-block
+                    .tk-main
+                        &:before
+                            display: none
+                        .tk-row
+                            .tk-action,
+                            .tk-meta
+                                bottom: 0
+                                position: static
+                                .tk-nick
+                                    display: inline
