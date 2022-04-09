@@ -51,7 +51,7 @@ img
         .author-info
             border-left: solid 3px rgba(200,200,200,  0.3)
             height: auto
-            padding:0 0 0 5%
+            padding:0 0 0 0.7rem
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -222,20 +222,27 @@ img
 
         +maxWidth768()
             width: auto
-    .interests-line
-        width: 100%
-        position : relative
-        display: flex
-        align-items: flex-start
-        margin: 13% 0
-        .interest
-            flex: auto
-            margin: 0 1rem
-            transform: translate(-10px,0)
-            -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
-            filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
-            +minWidth2000()
-                padding: 0 0.5rem
+    .interests-box
+        align-content: center;
+        width: 100%;
+        height: 100%;
+
+        .interests-line
+            width: 100%
+            position : relative
+            display: flex
+            align-items: flex-start
+            -webkit-box-align: start;
+            margin: 10% 0
+            .interest
+                -webkit-box-flex: 1;
+                flex: auto
+                margin: 0 1rem
+                transform: translate(-10px,0)
+                -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+                filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
+                // +minWidth2000()
+                //     padding: 0 0.5rem
     .declaration
         margin: 8% 1.2rem 0 0
         font-family: 'Audiowide', cursive

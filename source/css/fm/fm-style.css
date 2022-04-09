@@ -30,6 +30,9 @@
     min-height: 400px;
     box-shadow: var(--card-box-shadow);
     border-radius: 8px;
+    border-style: solid;
+    border-width: 0.0001px;
+    border-color: rgba(255, 227, 230, 0.06);
     padding: 30px;
   }
   @media screen and (max-width: 576px), (max-height: 500px) {

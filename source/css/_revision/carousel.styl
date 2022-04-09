@@ -24,7 +24,7 @@
         opacity : .6
     .page
         width : 80%
-        height: 20%
+        height: 6rem
         position: absolute
         border-radius: 10px
         background: rgba(255,255,255,0.15)
@@ -41,15 +41,17 @@
         .description
             display: inline-block
             width: 50%
-            line-height: 1.2
             height: 100%
             overflow: hidden;
-            text-overflow: ellipsis;
-            -webkit-line-clamp:4; //显示的行
-            font-weight: 1
             a
-                font-size: 0.4vw
-                color: var(--white)
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 5;
+                overflow: hidden;
+                -webkit-box-orient: vertical;
+                font-weight: 1;
+                font-size: 0.4vw;
+                color: var(--white);
     .top
         top: 20%
     .mid

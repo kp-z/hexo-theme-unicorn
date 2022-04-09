@@ -1,7 +1,6 @@
 
 #things.container
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
   ol,
   ul
@@ -12,7 +11,7 @@
     padding: 0;
     .card
       overflow: hidden;
-      border-radius: 6px;
+      border-radius: 8px;
       width: 100%;
       background-color: var(--card-bg);
       -webkit-backdrop-filter: blur(5px);    
@@ -20,6 +19,9 @@
       height: 14rem;
       padding: 1rem
       box-shadow: var(--card-box-shadow)
+      border-style: solid;
+      border-width: 0.0001px;
+      border-color: rgba(255, 227, 230, 0.06);
       &:hover
         box-shadow: var(--card-hover-box-shadow)
       .card__picture

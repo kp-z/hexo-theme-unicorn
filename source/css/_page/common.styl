@@ -2,8 +2,8 @@
 .layout
   display: flex
   margin: 0 auto
-  padding: 2rem 15px
-  max-width: 1200px
+  padding: 2rem 1.6rem
+  max-width: 1500px
   min-height: calc(100vh)
 
   +maxWidth900()
@@ -13,7 +13,7 @@
     padding: 1rem 5px
 
   +minWidth2000()
-    max-width: 1500px
+    max-width: 1700px
 
   & > div:first-child:not(.recent-posts)
     align-self: flex-start
@@ -42,11 +42,10 @@
   // 隱藏aside
   &.hide-aside
     max-width: 1500px
-    padding: 3rem 30px
+    padding: 5rem 1rem
 
     +minWidth2000()
-      max-width: 2000px
-      padding: 5rem 30px
+      max-width: 1700px
 
     +maxWidth600()
       padding: 1rem 10px

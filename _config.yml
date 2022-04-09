@@ -25,7 +25,7 @@ menu:
     频道: /channel/ || fas fa-seedling
   作者:
     简介: /profile/ || fas fa-user
-    项目: /Projects/ || fas fa-project-diagram
+    项目: /projects/ || fas fa-project-diagram
     服务: /services/ || fas fa-layer-group
     商店: /store/ || fas fa-store
   空间:
@@ -96,11 +96,11 @@ carousel_contents:
   page_1:
     bg_img: <div class="anim-model" ><img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718002545.webp"/></div>
     title: 01 - Info
-    subtitle: 你好啊！我是<a class="info-link" href="/blog-cn/profile">Kp</a>一只小小的计算机攻城狮，喜欢<a class="info-link" href="/blog-cn/gallery">摄影</a> <a class="info-link" href="/blog-cn/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
+    subtitle: 你好啊！我是<a class="info-link" href="/blog-cn/profile">Kp</a>，无人驾驶算法攻城狮，喜欢<a class="info-link" href="/blog-cn/gallery">摄影</a> <a class="info-link" href="/blog-cn/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
   page_2:
     bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210810180258.webp"/>
     title: 02 - Job
-    subtitle: 正在寻觅人工智能工程师相关岗位，欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/Projects/">项目</a>.
+    subtitle: 欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/Projects/">项目</a>，有机会一起合作。
   page_3:
     bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210810180323.webp"/>
     title: 03 - SNS
@@ -953,7 +953,7 @@ inject:
     - <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&display=swap" rel="stylesheet">
     - '<style type="text/css">.app-refresh{position:fixed;top:-2.2rem;left:0;right:0;z-index:99999;padding:0 1rem;font-size:15px;height:2.2rem;transition:all .3s ease}.app-refresh-wrap{display:flex;color:#fff;height:100%;align-items:center;justify-content:center}.app-refresh-wrap a{color:#fff;text-decoration:underline;cursor:pointer}</style>'
-    - <audio id="bg-music" class="no-destroy" src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/music/CharlesTheFirst%20-%20Crunksauce%20Vol%20IV%20-%2001%20All%20Ways.mp3"></audio>
+    - <audio id="bg-music" class="no-destroy" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/music/%E5%94%AF%E4%B8%80.mp3"></audio>
     - <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
     # - <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
   bottom:
