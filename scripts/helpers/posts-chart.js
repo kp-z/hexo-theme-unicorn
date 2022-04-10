@@ -265,7 +265,7 @@ function categoriesChart () {
       series: [{
         name: '文章篇数',
         type: 'pie',
-        radius: [20, 200],
+        radius: [20, 150],
         center: ['50%', '50%'],
         roseType: 'area',
         label: {color: '#a4b0be',formatter: "{b} : {c} ({d}%)"},

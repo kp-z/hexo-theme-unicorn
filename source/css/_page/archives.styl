@@ -1,76 +1,65 @@
 .article-sort
-  // margin-left: .5rem
-  // padding-left: 1rem
-  // border-left: 2px solid lighten($light-blue, 20)
-  
+  margin-left: .5rem
+  padding-left: 1rem
+  border-left: 2px solid lighten($light-blue, 20)
 
   &-title
     position: relative
-    // margin-left: .5rem
+    margin-left: .5rem
     padding-bottom: 1rem
-    opacity : .5
-    
-    // padding-left: 1rem
-    font-size: 1.2em
+    padding-left: 1rem
+    font-size: 1.72em
 
-    // &:hover
-    //   &:before
-    //     border-color: $pseudo-hover
+    &:hover
+      &:before
+        border-color: $pseudo-hover
 
-    // &:before
-    //   position: absolute
-    //   top: calc(((100% - 1.8rem) / 2))
-    //   left: -.45rem
-    //   z-index: 1
-    //   width: w = .5rem
-    //   height: h = w
-    //   border: .5 * w solid $light-blue
-    //   border-radius: w
-    //   background: var(--card-bg)
-    //   content: ''
-    //   line-height: h
-    //   transition: all .2s ease-in-out
+    &:before
+      position: absolute
+      top: calc(((100% - 1.8rem) / 2))
+      left: -.45rem
+      z-index: 1
+      width: w = .5rem
+      height: h = w
+      border: .5 * w solid $light-blue
+      border-radius: w
+      background: var(--card-bg)
+      content: ''
+      line-height: h
+      transition: all .2s ease-in-out
 
-    // &:after
-    //   position: absolute
-    //   bottom: 0
-    //   left: 0
-    //   z-index: 0
-    //   width: .1rem
-    //   height: 1.5em
-    //   background: lighten($light-blue, 20)
-    //   content: ''
+    &:after
+      position: absolute
+      bottom: 0
+      left: 0
+      z-index: 0
+      width: .1rem
+      height: 1.5em
+      background: lighten($light-blue, 20)
+      content: ''
 
   &-item
     position: relative
     display: flex
     align-items: center
-    margin: 0 0 1rem 0
+    margin: 0 0 1rem .5rem
     transition: all .2s ease-in-out
-    padding: 1rem 
-    box-shadow: var(--card-box-shadow)
-    border-radius: 6px
-    background-color: var(--white)
-    overflow: visible
-    border-style: solid;
-    border-width: 0.0001px;
-    border-color: rgba(255, 227, 230, 0.06);
 
-    // &:hover
-    //   &:before
-    //     border-color: $pseudo-hover
+    &:hover
+      &:before
+        border-color: $pseudo-hover
 
-    // &:before
-    //   $w = .3rem
-    //   position: absolute
-    //   left: calc(-1rem - 17px)
-    //   width: w = $w
-    //   height: h = w
-    //   border: .5 * w solid $light-blue
-    //   border-radius: w
-    //   background: var(--card-bg)
-    //   content: ''
-    //   transition: all .2s ease-in-out
+    &:before
+      $w = .3rem
+      position: absolute
+      left: calc(-1rem - 17px)
+      width: w = $w
+      height: h = w
+      border: .5 * w solid $light-blue
+      border-radius: w
+      background: var(--card-bg)
+      content: ''
+      transition: all .2s ease-in-out
 
     &.no-article-cover
       height: 80px
@@ -99,7 +88,7 @@
     &-title
       @extend .limit-more-line
       color: var(--font-color)
-      font-size: 1.8em
+      font-size: 1.1em
       transition: all .3s
       -webkit-line-clamp: 2
 

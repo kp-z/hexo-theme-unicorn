@@ -18,8 +18,8 @@ var data1 = [{
             name: '青岛大学,学士学位',
             value: [
                 1,
-                Time2013+oneMonth*9,
-                Time2017+oneMonth*9,
+                Date.parse('2013-09-01'),
+                Date.parse('2017-09-01'),
                 oneYear
             ],
             itemStyle: {
@@ -34,7 +34,8 @@ var data1 = [{
                 1,
                 Time2018+oneMonth*4,
                 Time2018+oneYear*3,
-                oneYear*3
+                Date.parse('2018-04-15'),
+                Date.parse('2021-10-01'),
             ],
             itemStyle: {
                 normal: {
@@ -46,9 +47,8 @@ var data1 = [{
             name: '青大创新实验室,Group leader',
             value: [
                 0,
-                Time2013+oneYear+oneMonth*9,
-                Time2013+oneYear*2+oneMonth*9,
-                oneYear*2
+                Date.parse('2014-09-01'),
+                Date.parse('2016-09-01'),
             ],
             itemStyle: {
                 normal: {
@@ -60,9 +60,8 @@ var data1 = [{
             name: '丸坐奶茶店,煮茶师',
             value: [
                 0,
-                Time2013+oneYear*7-oneMonth*2,
-                Time2013+oneYear*7+oneMonth*4,
-                oneYear*3
+                Date.parse('2020-02-01'),
+                Date.parse('2020-06-01'),
             ],
             itemStyle: {
                 normal: {
@@ -74,9 +73,8 @@ var data1 = [{
             name: '华为科技,测试工程师(实习)',
             value: [
                 0,
-                Time2013+oneYear*7+oneMonth*6,
-                Time2018+oneYear*3+oneMonth*5,
-                oneYear*3
+                Date.parse('2020-06-15'),
+                Date.parse('2021-05-31'),
             ],
             itemStyle: {
                 normal: {
@@ -88,8 +86,8 @@ var data1 = [{
             name: '青岛,中国',
             value: [
                 2,
-                Time2013+oneMonth*9,
-                Time2013+oneYear*4,
+                Date.parse('2013-09-01'),
+                Date.parse('2017-01-01'),
                 oneYear*3
             ],
             itemStyle: {
@@ -102,8 +100,8 @@ var data1 = [{
             name: '波恩,德国',
             value: [
                 2,
-                Time2018+oneMonth*4,
-                nowTime,
+                Date.parse('2018-04-15'),
+                Date.parse('2021-10-01'),
                 oneYear*3
             ],
             itemStyle: {
@@ -116,14 +114,54 @@ var data1 = [{
             name: '惠与科技,培训生',
             value: [
                 0,
-                Time2017+8*oneMonth,
-                Time2018+4*oneMonth,
-                oneYear
+                Date.parse('2017-08-01'),
+                Date.parse('2018-04-01'),
             ],
             itemStyle: {
                 normal: {
                     color: '#1e90ff',
 
+                }
+            }
+        },
+        {
+            name: '西井科技,无人驾驶算法工程师',
+            value: [
+                0,
+                Date.parse('2022-01-04'),
+                new Date(),
+            ],
+            itemStyle: {
+                normal: {
+                    color: '#1e90ff',
+
+                }
+            }
+        },
+        {
+            name: '上海,中国',
+            value: [
+                2,
+                Date.parse('2021-11-10'),
+                new Date(),
+            ],
+            itemStyle: {
+                normal: {
+                    color: '#f1c40f',
+
+                }
+            }
+        },
+        {
+            name: '自动驾驶汽车 专项课程,多伦多大学（coursera）',
+            value: [
+                1,
+                Date.parse('2021-10-10'),
+                new Date(),
+            ],
+            itemStyle: {
+                normal: {
+                    color: '#ff6b81',
                 }
             }
         },];

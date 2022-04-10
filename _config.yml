@@ -15,7 +15,7 @@ menu:
   # 主页 : /blog/ || fas fa-home
   博客: 
     主页: / || fas fa-home 
-    微博: /Message/ || fas fa-blog 
+    微博: /message/ || fas fa-blog 
     归档: /categories/ || fas fa-archive
     豆瓣: /douban/ || fas fa-bookmark
   影音:
@@ -78,7 +78,7 @@ footer_text:
       RSS订阅: https://zkpeace.com/blog-cn/rss2.xml
       本站主题: https://github.com/Uzizkp/hexo-theme-unicorn
       版权声明: /blog-cn/copyright/
-      支持赞助: /blog-cn/Sponsorship/
+      支持赞助: /blog-cn/sponsorship/
     收录:
       十年之约: https://www.foreverblog.cn/
       开往: https://travellings.link
@@ -583,7 +583,7 @@ index_top_img_height:
 # The user interface setting of category and tag page (category和tag頁的UI設置)
 # index - same as Homepage UI (index 值代表 UI將與首頁的UI一樣)
 # default - same as archives UI 默認跟archives頁面UI一樣
-category_ui: # 留空或 index
+category_ui:  # 留空或 index
 tag_ui: # 留空或 index
 
 # Website Background (設置網站背景)
