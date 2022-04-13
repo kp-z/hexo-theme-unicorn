@@ -170,7 +170,7 @@ katex:
 # --------------------------------------
 
 # Favicon（網站圖標）
-favicon: /img/cube-logo.png
+favicon: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/icon/40x40.png
 
 # Avatar (頭像)
 avatar:
@@ -216,7 +216,7 @@ cover:
   position: left
   # When cover is not set, the default cover is displayed (當沒有設置cover時，默認的封面顯示)
   default_cover:
-    - https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg
+    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/cover/3.png
 
 # Replace Broken Images (替換無法顯示的圖片)
 error_img:
@@ -235,7 +235,7 @@ post_meta:
     date_format: relative # date/relative 顯示日期還是相對日期
     categories: true # true or false 主頁是否顯示分類
     tags: false # true or false 主頁是否顯示標籤
-    label: false # true or false 顯示描述性文字
+    label: true # true or false 顯示描述性文字
   post:
     date_type: updated # created or updated or both 文章頁日期是創建日或者更新日或都顯示
     date_format: relative # date/relative 顯示日期還是相對日期
@@ -600,7 +600,7 @@ footer_bg:
 rightside-bottom:
 
 # Enter transitions (開啓網頁進入效果)
-enter_transitions: true
+enter_transitions: false
 
 # Background effects (背景特效)
 # --------------------------------------
