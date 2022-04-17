@@ -14,13 +14,15 @@
       margin: 3px
       width: calc(33.333% - 6px)
       height: 200px
-      background: $dark-black
+      // background: $dark-black
       vertical-align: bottom
       border-radius: 8px
+      opacity : .4
+      transition: all .6s
 
       &:hover
+        opacity: 1
         .cover
-          opacity: .8
           transform: scale(1.1)
 
       +maxWidth768()
@@ -34,8 +36,6 @@
     .cover
       width: 100%
       height: 100%
-      opacity: .4
-      transition: all .6s
       object-fit: cover
 
     .content
@@ -46,10 +46,10 @@
       transform: translate(0, -50%)
 
       .date
-        color: var(--light-grey)
+        color: var(--font-color)
         font-size: 90%
 
       .title
         @extend .limit-more-line
-        color: var(--white)
+        color: var(--font-color)
         -webkit-line-clamp: 2

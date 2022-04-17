@@ -3,7 +3,7 @@
   display: flex
   margin: 0 auto
   padding: 4rem 1rem
-  max-width: 1500px
+  max-width: 1700px
   min-height: calc(100vh)
 
   +maxWidth900()
@@ -12,8 +12,8 @@
   +maxWidth768()
     padding: 1rem 5px
 
-  +minWidth2000()
-    max-width: 1700px
+  // +minWidth2000()
+  //   max-width: 2000px
 
   & > div:first-child:not(.recent-posts)
     align-self: flex-start
@@ -44,11 +44,11 @@
 
   // 隱藏aside
   &.hide-aside
-    max-width: 1500px
+    // max-width: 1800px
     // padding: 5rem 1rem
 
     +minWidth2000()
-      max-width: 1700px
+      max-width: 2000px
 
     +maxWidth600()
       padding: 1rem 10px
