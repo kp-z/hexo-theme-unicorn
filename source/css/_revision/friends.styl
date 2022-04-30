@@ -14,15 +14,19 @@
         overflow: hidden
         white-space: nowrap
         text-overflow: ellipsis;
+        a
+            color: var(--font-color)
+            &:hover
+                text-shadow: 1px 1px white, -1px -1px #444
         .tag
-            float: right 
+            float: right
             margin: 0 20px
-            cursor:pointer
+            cursor:pointer        
         .line
-            width: 50%
-            height: 1px
-            background-color: var(--font-color)
-            opacity : .5
+                width: 50%
+                height: 1px
+                background-color: var(--font-color)
+                opacity : .5
     .fcircle,
     .links
         display: block;
@@ -54,9 +58,7 @@
             flex-wrap:wrap;
             justify-content: space-between;
             align-items: center;
-            
-
-
+            height: auto
             
             .more-link
             .random-link

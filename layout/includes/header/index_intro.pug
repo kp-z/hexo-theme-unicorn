@@ -1,28 +1,61 @@
 
 script(type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.10.1.js")
 #carousel
-    .sketchfab-embed-wrapper(style="width: 100%;height: 100%")
-      //- iframe(id="sketchfab-model" title="Gaming Guy Room" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="xr-spatial-tracking" execution-while-out-of-viewport="execution-while-out-of-viewport" execution-while-not-rendered="execution-while-not-rendered" web-share="web-share" src="https://sketchfab.com/models/25e0e77ab56140be9fa6cb65cb4de96f/embed?autospin=0&autostart=1&preload=1" style="height: 1603.2px;")
-      iframe(id="sketchfab-model" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" title="Gaming Guy Room" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="xr-spatial-tracking" execution-while-out-of-viewport="execution-while-out-of-viewport" execution-while-not-rendered="execution-while-not-rendered" web-share="web-share" src="" style="height: 1603.2px;")
+  .sketchfab-embed-wrapper(style="width: 100%;height: 100%;")
+    iframe(id="sketchfab-model" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" title="Gaming Guy Room" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="xr-spatial-tracking" execution-while-out-of-viewport="execution-while-out-of-viewport" execution-while-not-rendered="execution-while-not-rendered" web-share="web-share" src="" style="height: 1603.2px;")
 
-    each content,page in theme.carousel_contents
-          .carousel-box
-            //- | !{content.bg_img}
-            .site-hi Hi, I'm KP.
-            .site-info 
-               .site-subtitle
-                     | !{content.subtitle}
-               h1.site-title 
-                    | !{content.title}
-                    a(onclick="plusSlides(1)") Next
-                 
-    #carousel-indictors
-      span.carousel-dot(onclick="currentSlide(1)")
-      span.carousel-dot(onclick="currentSlide(2)")
-      span.carousel-dot(onclick="currentSlide(3)")
-      span.carousel-dot(onclick="currentSlide(4)")
-script(src="/blog-cn/js/carousel.js")
+  each content,page in theme.carousel_contents
+    .carousel-box
+      //- | !{content.bg_img}
+      .site-hi Hi, I'm KP.
+      .site-info 
+        .site-subtitle
+          | !{content.subtitle}
+        h1.site-title 
+          | !{content.title}
+          a(onclick="plusSlides(1)") Next
+
+  #carousel-indictors
+    span.carousel-dot(onclick="currentSlide(1)")
+    span.carousel-dot(onclick="currentSlide(2)")
+    span.carousel-dot(onclick="currentSlide(3)")
+    span.carousel-dot(onclick="currentSlide(4)")
+script(src="https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/carousel.js")
+.site-name
+  a KUANGPU
+  br
+  a ZHANG
+.pined-pages
+  p LATEST NEWS
+  - let i = 0;
+  - let postLimit = 3
+  - site.posts.sort('data', -1).limit(postLimit).each(function (article){
+    - let link = article.link || article.path
+    - let title = article.title || _p('no_title')
+    - let no_cover = article.cover === false || !theme.cover.aside_enable ? 'no-cover' : ''
+    - let post_cover = article.cover
+    - let description = article.description
+    if i == 0
+      .page.top
+        .description
+          a(href=url_for(link) title=title)
+            | !{title} - !{description}
+          br
+        img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
+    else if i == 1
+      .page.mid
+        .description
+          a(href=url_for(link) title=title)
+            | !{title} - !{description}
+          br
+        img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
+    else
+      .page.bot
+        .description
+          a(href=url_for(link) title=title)
+            | !{title} - !{description}
+          br
+        img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
+    - i++
+  - })
 != page.content
-
-//- script(data-pjax type='module' src="/blog-cn/js/threejs/unreal_bloom.js")
-

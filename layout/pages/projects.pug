@@ -1,0 +1,39 @@
+#projects-dashbord
+  // fetch articles
+  .head
+      - site.posts.sort(sort, -1).limit(site.posts.length).each(function (article) {
+        
+        if article.projectSticky == 1
+          .div1.project-card
+            include project-item.pug
+        if article.projectSticky == 2
+          .div2.project-card
+            include project-item.pug
+        if article.projectSticky == 3
+          .div3.project-card
+            include project-item.pug
+        if article.projectSticky == 4
+          .div4.project-card
+            include project-item.pug
+      - })
+
+  .more-project-head
+    .more-projects-head-title
+      p.title   
+        i.fas.fa-code-branch
+          | &nbsp; More Projects
+      p.info 
+          | reserch index ....
+    .more-project-head-list
+      .project-tag(style='background:#f39c12')
+        a(href='/blog-cn/categories/项目/其他项目/') &#x25C9; &#x5176;&#x4ED6;&#x9879;&#x76EE;
+      .project-tag(style='background:#2ed573')
+        a(href='/blog-cn/categories/项目/应用开发/') &#x25C9; &#x5E94;&#x7528;&#x5F00;&#x53D1;
+      .project-tag(style='background:#1e90ff')
+        a(href='/blog-cn/categories/项目/认知机器/') &#x25C9; &#x8BA4;&#x77E5;&#x673A;&#x5668;
+  .more-project
+    - site.posts.sort(sort, -1).limit(site.posts.length).each(function (article) {
+      if article.project
+        .more-project-weight.project-card
+          include project-item.pug
+    - })

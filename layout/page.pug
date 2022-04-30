@@ -3,7 +3,19 @@ extends includes/layout.pug
 block content
   if page.type ==='flat'
     #page.recent-posts
-      include includes/page/flat.pug
+      case page.title 
+        when 'FRIENDS'
+          include pages/friends.pug
+        when 'THINGS'
+          include pages/things.pug
+        when 'DOUBAN'
+          include pages/douban.pug
+        when 'PROJECTS'
+          include pages/projects.pug
+        when 'SPONSOR'
+          include pages/sponsor.pug
+        default  
+          != page.content
   else 
     #page
       case page.type
@@ -13,6 +25,8 @@ block content
           include includes/page/flink.pug
         when 'categories'
           include includes/page/categories.pug
+        when 'weibo'
+          include pages/weibo.pug
         default
           include includes/page/default-page.pug
 

@@ -10,7 +10,11 @@ nav#nav
         a#page-name(href=url_for('/home/')) #[=theme.logo.title ]<br/>
       else
         a#page-name(href=url_for('/home/')) #[=config.title]<br/>
-      a#site-slogan(href=url_for('/home/')) #[="HOME"]
+      - var pageTitle
+      - if (is_home()) pageTitle = 'BLOG'
+      - else if(!is_post()) pageTitle = page.title || config.title || ''
+      - else pageTitle = 'HOME'
+      a#site-slogan(href=url_for('/home/')) #[=pageTitle]
     
   #menus
     if (theme.algolia_search.enable || theme.local_search.enable)

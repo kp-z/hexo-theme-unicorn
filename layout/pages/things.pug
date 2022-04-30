@@ -1,0 +1,49 @@
+#things.container
+    .wrapper
+        ul.sortable__nav.nav
+            li
+                a.nav__link(data-sjslink='all') &#x1F33F; 
+            li
+                a.nav__link(data-sjslink='数码') &#x1F5A5; 
+            li
+                a.nav__link(data-sjslink='生活') &#x1F6CD; 
+            li
+                a.nav__link(data-sjslink='游戏') &#x1F579; 
+        #sortable.sjs-default
+            if site.data.things 
+                each i in site.data.things
+                    .card
+                        img.card__picture(src=i.image alt=i.title)
+                        .card-infos
+                            case i.status
+                                when "放弃"
+                                    p.card__title.dropped
+                                        | !{i.title}
+                                default 
+                                    p.card__title
+                                        | !{i.title}
+                            p.card__text
+                                | !{i.price}
+                            case i.status
+                                when "放弃"
+                                    p.state
+                                        i.fas.fa-star
+                                            |  !{i.status}
+                                        a.test-post
+                                            i.fas.fa-external-link-alt
+                                                |  &#x6D4B;&#x8BC4;
+                                when "种草"
+                                    p.state
+                                        i.fas.fa-star
+                                            |  !{i.status}
+                                        a.test-post
+                                            i.fas.fa-external-link-alt
+                                                |  &#x6D4B;&#x8BC4;
+                                when "购入"
+                                    p.state.got
+                                        i.fas.fa-star
+                                            |  !{i.status}
+                                        a.test-post
+                                            i.fas.fa-external-link-alt
+                                                |  &#x6D4B;&#x8BC4;
+

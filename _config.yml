@@ -1,18 +1,11 @@
 # Main menu navigation (導航目錄) 中文
 # --------------------------------------
-
 # 导航栏logo设置
 logo: 
   img: https://zkpeace.com/blog-cn/img/kp-logo.png
   title: ZKPEACE
 
-# format: name: link || icon
-# sub-menu
-# name || icon:
-#   name: link || icon
-
 menu:
-  # 主页 : /blog/ || fas fa-home
   博客: 
     主页: / || fas fa-home 
     微博: /message/ || fas fa-blog 
@@ -36,7 +29,6 @@ menu:
 
 # Hide the child menu items in mobile sidebar
 hide_sidebar_menu_child: false
-
 
 # Footer文本设置
 # --------------------------------------
@@ -71,8 +63,8 @@ footer_text:
       MYW: https://immyw.com/
       Liam: https://www.ccyh.xyz/
       唐曲: https://qutang.dev/
-      友链申请...: /blog-cn/posts/59487/
-      更多友链...: /links/
+      友链申请: /blog-cn/posts/59487/
+      更多友链: /blog-cn/friends/
   footer_text_4:
     关于本站:
       RSS订阅: https://zkpeace.com/blog-cn/rss2.xml
@@ -82,7 +74,7 @@ footer_text:
     收录:
       十年之约: https://www.foreverblog.cn/
       开往: https://travellings.link
-      岛屿: /links/
+      虫洞: https://www.foreverblog.cn/go.html
 
 footer_copyright: Copyright © 2021 Kuangpu Zhang.
 footer_copyright_address: /blog-cn/copyright/
@@ -110,7 +102,7 @@ carousel_contents:
     title: 04 - More
     subtitle: 本网站正在建设中，欢迎<a class="info-link" href="/blog-cn/Message/">反馈</a>错误. 如果本站内容帮助到了你，求<a class="info-link" href="/blog-cn/Sponsorship/">赞赏</a>.
 
-      # Code Blocks (代碼相關)
+# Code Blocks (代碼相關)
 # --------------------------------------
 
 highlight_theme: mac #  darker / pale night / light / ocean / mac / mac light / false
@@ -220,8 +212,8 @@ cover:
 
 # Replace Broken Images (替換無法顯示的圖片)
 error_img:
-  flink: /img/friend_404.gif
-  post_page: /img/404.jpg
+  flink: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/404.png
+  post_page: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/404.png
 
 # A simple 404 page
 error_404:
@@ -277,12 +269,15 @@ post_copyright:
 reward:
   enable: true
   QR_code:
-    - img: /img/wechat.jpg
+    - img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/wechat.jpg
       link:
       text: Wechat
-    - img: /img/paypal.jpg
+    - img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/paypal.jpg
       link:
       text: Paypal
+    - img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/alipay.jpg
+      link:
+      text: Alipay
 
 # Post edit
 # Easily browse and edit blog source code online.
@@ -505,11 +500,11 @@ footer:
 
 # Baidu Analytics
 # https://tongji.baidu.com/web/welcome/login
-baidu_analytics: 83b34ab8e042a9f0e242eb93eb16086f
+baidu_analytics: 
 
 # Google Analytics
 # https://analytics.google.com/analytics/web/
-google_analytics: G-M5NV4KL31V
+google_analytics: 
 
 # Tencent Analytics ID
 # https://mta.qq.com
@@ -532,7 +527,7 @@ microsoft_clarity:
 
 # Google Adsense (谷歌廣告)
 google_adsense:
-  enable: true
+  enable: false
   auto_ads: true
   js: https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js
   client: pub-8135851536673895
@@ -712,7 +707,7 @@ subtitle:
   sub: 
 
 # Loading Animation (加載動畫)
-preloader: false
+preloader: true
 
 # aside (側邊欄)
 # --------------------------------------
@@ -728,7 +723,7 @@ aside:
     content: 双目失明的汉弥尔顿为什么还坐在黑灯瞎火里头写十四行诗那就叫“自我”--王小波<br></br>走出自己的傲慢，承认自己的局限。--罗翔
   card_recent_post:
     enable: true
-    limit: 20 # if set 0 will show all
+    limit: 14 # if set 0 will show all
     sort: date # date or updated
     sort_order: # Don't modify the setting unless you know how it works
   card_author:
@@ -830,7 +825,7 @@ darkmode:
   # autoChangeMode: 1  Following System Settings, if the system doesn't support dark mode, it will switch dark mode between 6 pm to 6 am
   # autoChangeMode: 2  Switch dark mode between 6 pm to 6 am
   # autoChangeMode: false
-  autoChangeMode: false
+  autoChangeMode: 1
 
 # Lightbox (圖片大圖查看模式)
 # --------------------------------------
@@ -878,7 +873,7 @@ note:
 pjax:
   enable: true
   exclude:
-    - /blog-cn/things/
+    # - /blog-cn/things/
     # - /blog-cn/home/
     # - /blog-cn/travel/
     # - /blog-cn/gallery/photos/
@@ -888,8 +883,8 @@ pjax:
 
 # Inject the css and script (aplayer/meting)
 aplayerInject:
-  enable: false
-  per_page: true
+  enable: true
+  per_page: false
 
 # Snackbar (Toast Notification 彈窗)
 # https://github.com/polonel/SnackBar
@@ -915,7 +910,7 @@ pangu:
 # https://github.com/verlok/vanilla-lazyload
 lazyload:
   enable: true
-  # post: /img/cube-logo.png
+  # pos: /img/cube-logo.png
   field: site # site/post
   placeholder:
   blur: true
@@ -951,16 +946,14 @@ inject:
     - <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Major+Mono+Display&family=Train+One&family=Vast+Shadow&family=Wallpoet&family=Zen+Dots&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Noto+Sans+SC&family=Poiret+One&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet">
-    - <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&display=swap" rel="stylesheet">
-    - '<style type="text/css">.app-refresh{position:fixed;top:-2.2rem;left:0;right:0;z-index:99999;padding:0 1rem;font-size:15px;height:2.2rem;transition:all .3s ease}.app-refresh-wrap{display:flex;color:#fff;height:100%;align-items:center;justify-content:center}.app-refresh-wrap a{color:#fff;text-decoration:underline;cursor:pointer}</style>'
+    # - <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao+Montserrat+Audiowide+Noto+Sans&display=swap" rel="stylesheet">
     - <audio id="bg-music" class="no-destroy" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/music/%E5%94%AF%E4%B8%80.mp3"></audio>
     - <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
-    # - <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
   bottom:
-    # - '<div class="app-refresh" id="app-refresh"> <div class="app-refresh-wrap"> <label>✨ 网站已是最新版本 👉</label> <a href="javascript:void(0)" onclick="location.reload()">点击刷新</a> </div></div><script>function showNotification(){if(GLOBAL_CONFIG.Snackbar){var t="light"===document.documentElement.getAttribute("data-theme")?GLOBAL_CONFIG.Snackbar.bgLight:GLOBAL_CONFIG.Snackbar.bgDark,e=GLOBAL_CONFIG.Snackbar.position;Snackbar.show({text:"已更新最新版本",backgroundColor:t,duration:5e5,pos:e,actionText:"点击刷新",actionTextColor:"#fff",onActionClick:function(t){location.reload()}})}else{var o=`top: 0; background: ${"light"===document.documentElement.getAttribute("data-theme")?"#49b1f5":"#1f1f1f"};`;document.getElementById("app-refresh").style.cssText=o}}"serviceWorker"in navigator&&(navigator.serviceWorker.controller&&navigator.serviceWorker.addEventListener("controllerchange",function(){showNotification()}),window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js")}));</script>'
-    - <script data-pjax src="/blog-cn/js/bg-music.js"></script>
+    - <script src="/blog-cn/js/bg-music.js"></script>
+    # - <script type="text/javascript">$("#background-music").html("<i class='fas fa-music'></i>"); ap.player()</script>
+    # - <div class="aplayer no-destroy" data-id="7394145653" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-mutex="true" > </div>
 
-    # - <script data-pjax type="module" src="/blog-cn/js/threejs/unreal_bloom.js"></script>
 # CDN
 # Don't modify the following settings unless you know how they work
 # 非必要請不要修改
@@ -1041,10 +1034,10 @@ CDN:
   justifiedGallery_js: https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js
   justifiedGallery_css: https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css
 
-  # # aplayer
-  # aplayer_css: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css
-  # aplayer_js: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
-  # meting_js: https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js
+  # aplayer
+  aplayer_css: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css
+  aplayer_js: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
+  meting_js: https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js
 
   # Prism.js
   prismjs_js: https://cdn.jsdelivr.net/npm/prismjs/prism.min.js

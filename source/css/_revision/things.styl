@@ -1,0 +1,101 @@
+
+#things.container
+  width: 100%;
+  margin: 0 auto;
+  ol,
+  ul
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  .wrapper
+    padding: 0;
+    #sortable
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: stretch;
+      .card
+        margin-bottom: 2rem;
+        overflow: hidden;
+        width: 32%;
+        border-radius: 8px;
+        background-color: var(--card-bg);
+        height: 14rem;
+        padding: 1rem;
+        box-shadow: var(--card-box-shadow)
+        border-style: solid;
+        border-width: 0.0001px;
+        border-color: rgba(255, 227, 230, 0.06);
+        +minWidth2000()
+            width: 24%;
+        +maxWidth768()
+            width: 100%;
+            margin-bottom: .8rem;
+            height: 10rem;
+        &:hover
+          box-shadow: var(--card-hover-box-shadow)
+        .card__picture
+          display: inline-block;
+          border: .2px rgba(0, 0, 0, .2)
+          height: 100%;
+          border-radius: 6px;
+          width: 50%;
+          margin-right: 1rem
+          object-fit: cover;
+        .card-infos
+          float: right
+          display: inline-block;
+          position: relative
+          width: 40%;
+          height: 100%;
+          .dropped
+            text-decoration-line: line-through
+          .card__title
+            line-height: 1;
+            transform: translateY(-12px);
+            font-size: 1rem;
+            font-weight: 60;
+            +maxWidth768()
+              font-size: .8rem;
+          .card__text
+            font-size: .6rem;
+            font-weight: 300;
+            // display: inline;
+          .state
+            position: absolute
+            bottom: 0
+            right: 0
+            opacity : .8
+            color: #7f8c8d
+            opacity : .4
+            font-size: .6rem;
+            display: inline
+            .test-post
+                margin-left: 1rem
+                cursor: not-allowed
+            &.got
+              i
+                color: #f39c12
+              .test-post
+                cursor: pointer
+                opacity: 1
+    .sortable__nav
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      font-size: .7rem;
+      .nav__link
+        padding: 0 8px 0 6px;
+        margin: 0 20px;
+        cursor: pointer
+        // font-weight: 300;
+        display: inline-block;
+      .nav__link.is-active
+        // background: rgba(150, 150, 150, .2)
+        border-bottom: 2px solid rgba(150, 150, 150, .6);
+
+
+
+
+  

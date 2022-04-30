@@ -1,0 +1,18 @@
+link(href='/blog-cn/css/sponsor.css' rel='stylesheet')
+#sponsors
+    ul.cloud(role='navigation' data-show-value='' aria-label='Webdev word cloud')
+        if site.data.sponsor
+            each i in site.data.sponsor
+                li
+                    a(href="#" data-weight=i.sponsorship)
+                        | !{i.name}
+    .sponsors-qr-codes
+        .sponsors-qr-code
+            a &#x5FAE;&#x4FE1;&#x652F;&#x4ED8;
+            img.sponsors-pay-img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/wechat.jpg')
+        .sponsors-qr-code
+            a Paypal
+            img.sponsors-pay-img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/paypal.jpg')
+        .sponsors-qr-code
+            a &#x652F;&#x4ED8;&#x5B9D;
+            img.sponsors-pay-img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/alipay.jpg')

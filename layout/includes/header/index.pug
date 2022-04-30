@@ -31,7 +31,7 @@ else
   - var isHomeClass = 'not-top-img'
 
 header#page-header(class=isHomeClass style=bg_img)
-  !=partial('includes/header/nav', {}, {cache: true})
+  !=partial('includes/header/nav', {}, {cache: false})
   if top_img !== false
     if is_post()
       include ./post-info.pug

@@ -1,0 +1,23 @@
+#douban.two-columns-layout
+  .recent-douban-posts
+    iframe(src='https://m.douban.com/people/43103367/book_charts' sandbox='allow-scripts allow-same-origin' scrolling='no')
+    #tag
+      .article-sort-title  Latest Reviews
+      .article-sort
+        - site.posts.sort(sort, -1).limit(site.posts.length).each(function (article) {
+            - let title = article.title || _p('no_title')
+              - article.categories.each(function (category) {
+                  if category.name ==  '影评'
+                    .article-sort-item
+                      a.article-sort-item-img(href=url_for(article.path) title=title)
+                          img(src=url_for(article.cover) alt=title onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'`)
+                      .article-sort-item-info
+                          .article-sort-item-time
+                              i.far.fa-calendar-alt
+                              time.post-meta-date-created(datetime=date_xml(article.date) title=_p('post.created') + ' ' + full_date(article.date))= date(article.date, config.date_format)
+                          a.article-sort-item-title(href=url_for(article.path) title=title)= title
+              - })
+        - })
+        //- include includes/pagination.pug
+  .douban
+    iframe(runat='server' allowtransparency='true' src='https://m.douban.com/people/43103367/subject_profile' sandbox='allow-scripts allow-same-origin' scrolling='no')

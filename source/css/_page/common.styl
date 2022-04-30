@@ -3,8 +3,9 @@
   display: flex
   margin: 0 auto
   padding: 4rem 1rem
-  max-width: 1700px
+  max-width: 1800px
   min-height: calc(100vh)
+  height: auto
 
   +maxWidth900()
     flex-direction: column
@@ -48,10 +49,18 @@
     // padding: 5rem 1rem
 
     +minWidth2000()
-      max-width: 2000px
+      max-width: 1800px
 
     +maxWidth600()
       padding: 1rem 10px
 
     & > div
       width: 100% !important
+
+.aplayer
+  background: var(--card-bg)
+  .aplayer-body
+    background: var(--card-bg)
+    .aplayer-miniswitcher
+        background: var(--card-bg)
+// display: none 

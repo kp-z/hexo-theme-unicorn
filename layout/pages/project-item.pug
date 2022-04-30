@@ -1,0 +1,15 @@
+- let author = article.author || config.author
+.project-cover
+    img(src=url_for(article.cover) alt=title onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'`)
+.project-info
+    .tags
+        - article.tags.each(function (tag) {
+            a.tag(style='background:# e90ff ' url_for(tag.path) title=tag.name)
+                | ◉ !{tag.name} &nbsp;
+        - })
+    br
+    a.title(href=url_for(article.path) title=article.title)
+        | !{article.title}
+    br
+    a.more
+        | by !{author}  &bull;  &nbsp; !{date(article.date, config.date_format)}

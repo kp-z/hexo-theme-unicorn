@@ -1,1 +1,0 @@
-$('#visitorMap').append('<script src="//rf.revolvermaps.com/0/0/6.js?i=5n8y7sbczs0&amp;m=0c&amp;c=baff00&amp;cr1=ffffff&amp;f=ubuntu&amp;l=0&amp;v0=-10&amp;z=13&amp;hi=30&amp;he=6&amp;hc=000000&amp;cw=1e90ff&amp;cb=f1c40f"></script>')
