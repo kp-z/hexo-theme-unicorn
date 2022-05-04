@@ -6,8 +6,9 @@
     top: 40%
     line-height: 1
     a
-        font-size: 5vw
+        font-size: 4.8vw
         color: var(--white)
+        font-family: 'Audiowide', cursive
     +maxWidth600()
         display: none
 .pined-pages
@@ -19,18 +20,21 @@
     +maxWidth600()
         display: none
     p
-        font-size: 1vw
+        font-size: .8vw
         color: var(--white)
         opacity : .6
+        font-family: 'Audiowide', cursive
     .page
         width : 80%
-        height: 6rem
+        height: 5rem
         position: absolute
         border-radius: 10px
         background: rgba(255,255,255,0.15)
         backdrop-filter: blur(20px);
         padding: .8rem
         cursor: pointer
+        +minWidth2000()
+            height: 6rem
         img
             width: 40%
             object-fit: cover
@@ -47,12 +51,14 @@
             a,p
                 line-height: 1.4;
                 display: -webkit-box;
-                -webkit-line-clamp: 4;
+                -webkit-line-clamp: 3;
                 overflow: hidden;
                 -webkit-box-orient: vertical;
                 font-weight: 1;
                 font-size: 1em;
                 color: var(--white);
+                +minWidth2000()
+                    -webkit-line-clamp: 4;
     .top
         top: 20%
     .mid
@@ -112,7 +118,8 @@
                 margin: 2rem
                 letter-spacing: 4px
                 color: var(--white)
-                font-size: 1vw
+                font-size: .8vw
+                font-family: 'Audiowide', cursive
                 +maxWidth600()
                     font-size: 7vw
                     margin: 2rem 1rem

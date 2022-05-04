@@ -16,6 +16,133 @@ img
   letter-spacing:.5rem;
   white-space: 1em
 .gallery-group-main
+    #goals
+        padding: 2rem
+        display: flex
+        flex-direction: column;
+        justify-content: space-between;
+        .goal
+            background: rgba(142, 140, 140, 0.05)
+            height: 22%
+            border-radius: 6px
+            padding: 1rem 2rem
+            a
+                color: var(--font-color)
+                opacity : .2
+                font-family: 'Audiowide', cursive
+                &:hover
+                    text-shadow: 1px 1px white, -1px -1px #444
+            
+            
+    #fitness
+        padding: 2rem
+        display: flex
+        flex-direction: column;
+        justify-content: space-between;
+        .fitness-title
+            display: flex
+            flex-direction: row;
+            flex-wrap: wrap;
+            height: 20%
+            overflow :hidden
+            #fitness-circle
+                height: 80%
+                width: 10%
+                margin-right: 10%
+                +maxWidth768()
+                    height: 100%
+                    width: 18%
+                    margin-right: 2%
+            .fitness-title-text 
+                width : 60%
+                display: flex
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                +maxWidth768()
+                    width: 80%
+                .fitness-title-e
+                    height: 100%
+                    overflow: hidden
+                    font-family: 'Audiowide', cursive
+                    
+                        
+                    a
+                        font-size: 1em
+                    p
+                        padding: 0
+                        margin: 0
+                        font-size: .5em
+                        opacity : .5
+                .red
+                    color: rgb(230, 140, 140)
+                .green
+                    color: rgb(147, 242, 147)
+                .blue
+                    color: rgb(122, 228, 255)
+        #fitness-line
+            width: 100%
+            height: 75%
+            
+    #reminder
+        position: relative
+    .link
+        position: absolute
+        right: 2rem
+        font-size: 1em
+        opacity : 0.2
+        font-family: 'Audiowide', italic
+        transform: translateY(-1.5rem)
+    .reminder
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%
+        height: 98%
+        padding: 1rem .5rem
+        +maxWidth768()
+            height: 16rem
+
+        .cell
+            background: rgba(142, 140, 140, 0.05)
+            border-radius: 10px
+            height: 42%
+            width: 47%
+            position: relative
+            .logo
+                position: absolute
+                top: 1rem
+                left: 1rem
+                font-size: 1.5em
+                opacity : 0.8
+            .num
+                position: absolute
+                top: 1rem
+                right : 1rem
+                font-size: 1.5em
+                opacity : 0.8
+            .title
+                position: absolute
+                bottom: 1rem
+                left: 1rem
+                font-family: 'Audiowide', italic
+                font-size: 1em
+                opacity : 0.3
+        #today
+            .logo
+                color: rgb(0, 166, 255)
+        #plan
+            .logo
+                color: rgba(230, 86, 54, 0.931)
+        #all
+            .logo
+                color: rgb(172, 175, 176)
+        #flay
+            .logo
+                color: rgb(215, 142, 70)
+                
     .l-title
         font-family: 'Audiowide'
         display: block
@@ -84,7 +211,7 @@ img
                 font-size: 1.8em
                 text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .3)
                 +maxWidth768()
-                    font-size: 1.2em
+                    font-size: 1.5em
                 +minWidth2000()
                     font-size: 2rem  
             &-cn
@@ -247,6 +374,8 @@ img
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
+        +maxWidth768()
+            padding: .5rem
         .interests-line
             width: 100%
             position : relative

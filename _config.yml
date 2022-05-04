@@ -948,7 +948,7 @@ inject:
     - <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet">
     # - <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao+Montserrat+Audiowide+Noto+Sans&display=swap" rel="stylesheet">
     - <audio id="bg-music" class="no-destroy" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/music/%E5%94%AF%E4%B8%80.mp3"></audio>
-    - <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+    - <script src="https://cdn.jsdelivr.net/npm/echarts@latest/dist/echarts.min.js"></script>
   bottom:
     - <script src="/blog-cn/js/bg-music.js"></script>
     # - <script type="text/javascript">$("#background-music").html("<i class='fas fa-music'></i>"); ap.player()</script>

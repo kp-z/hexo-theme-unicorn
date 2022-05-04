@@ -25,14 +25,17 @@
         position: relative
         padding: 0
         border-radius: 8px
-
+        box-shadow: var(--card-hover-box-shadow)
+        &:hover
+             box-shadow: var(--card-box-shadow)
         .project-cover
             width: 100%
             height: 100%
-            overflow: hidden
             background: var(--card-bg)
-            box-shadow: var(--card-box-shadow)
             border-radius: 8px
+            img
+                overflow: hidden;
+                object-fit: cover;
         .project-info
             position: absolute
             width: 100%
@@ -110,7 +113,7 @@
                 font-size: 1.8em
                 font-weight: bolder
                 +maxWidth768()
-                    font-size: 1.2em    
+                    font-size: .8em    
             .info
                 font-size: 1em
                 opacity : .5
@@ -151,11 +154,16 @@
                 height: 6rem
                 width: 100%
         .project-card
+            box-shadow: none
+            overflow: visible
             .project-cover
                 width: 100%
                 height: 10rem
                 overflow: hidden
                 border-radius: 8px
+                box-shadow: var(--card-hover-box-shadow)
+                &:hover
+                    box-shadow: var(--card-box-shadow)
                 +maxWidth768()
                     height: 5rem
             .project-info

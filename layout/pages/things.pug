@@ -2,17 +2,17 @@
     .wrapper
         ul.sortable__nav.nav
             li
-                a.nav__link(data-sjslink='all') &#x1F33F; 
+                a.nav__link(data-sjslink="0") &#x1F33F; 
             li
-                a.nav__link(data-sjslink='数码') &#x1F5A5; 
+                a.nav__link(data-sjslink="1") &#x1F5A5; 
             li
-                a.nav__link(data-sjslink='生活') &#x1F6CD; 
+                a.nav__link(data-sjslink="2") &#x1F6CD; 
             li
-                a.nav__link(data-sjslink='游戏') &#x1F579; 
+                a.nav__link(data-sjslink="3") &#x1F579; 
         #sortable.sjs-default
             if site.data.things 
                 each i in site.data.things
-                    .card
+                    .sortable-card(data-type=i.type)
                         img.card__picture(src=i.image alt=i.title)
                         .card-infos
                             case i.status
@@ -46,4 +46,14 @@
                                         a.test-post
                                             i.fas.fa-external-link-alt
                                                 |  &#x6D4B;&#x8BC4;
+//- script(type='text/javascript' src='/blog-cn/js/things.js')
 
+script.
+    $('.nav__link').click(function typeSwitcher(){
+    var type = $(this).data('sjslink');
+    //- console.log("typeSwitcher: " + type);
+    $('.sortable-card').hide();
+    $('.sortable-card[data-type='+type+']').show();
+    if(type === 0){
+        $('.sortable-card').show();}
+    });

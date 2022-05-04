@@ -4,7 +4,7 @@
     #tag
       .article-sort-title  Latest Reviews
       .article-sort
-        - site.posts.sort(sort, -1).limit(site.posts.length).each(function (article) {
+        - site.posts.sort('date', 'desc').limit(site.posts.length).each(function (article) {
             - let title = article.title || _p('no_title')
               - article.categories.each(function (category) {
                   if category.name ==  '影评'

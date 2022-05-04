@@ -29,7 +29,7 @@ script(src="https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/carousel.js")
   p LATEST NEWS
   - let i = 0;
   - let postLimit = 3
-  - site.posts.sort('data', -1).limit(postLimit).each(function (article){
+  - site.posts.sort('date', 'desc').limit(postLimit).each(function (article){
     - let link = article.link || article.path
     - let title = article.title || _p('no_title')
     - let no_cover = article.cover === false || !theme.cover.aside_enable ? 'no-cover' : ''
