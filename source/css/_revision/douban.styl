@@ -1,56 +1,58 @@
 #douban
     max-width: 1700px
-    margin: auto
-    .douban,
-    .recent-douban-posts
-        overflow:hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    +maxWidth600()
         display: block;
-        float: left;
-        
-    .douban
+    iframe
+        border: 0
+        background-color:  var(--white); 
         border-radius: 10px;
         box-shadow: var(--card-box-shadow)
-        float: right
-        width: 55%;
-        // margin-left: 2rem
-        +maxWidth600()
-            width: 100%;
-            height: auto
-            margin: 0 0 2rem 0
         &:hover
             box-shadow: var(--card-hover-box-shadow)
-
+        .back
+            background-color: var(--card-bg); 
+    .douban
+        overflow: hidden
+        border-radius: 10px;
+        // box-shadow: var(--card-box-shadow)
+        width: 32%;
+        height: auto;
+        // margin-left: 2rem
+        background:  var(--card-bg)
+        border-radius: 10px;
+        box-shadow: var(--card-box-shadow)
+        &:hover
+            box-shadow: var(--card-hover-box-shadow)
+        +maxWidth600()
+            width: 100%;
+            height: 350px
+            margin: 0 0 2rem 0
         iframe
-            border: 0
-            width:100%; 
-            height: calc(90vh)
-            background:  var(--card-bg)
-            border-radius: 8px
-            margin-top: -55px;
+            height: 100%
+            width:102.5%; 
 
     .recent-douban-posts
-        width: 43%
+        width: 32%
         overflow: visible
         +maxWidth600()
             width: 100%;
-            height: auto
+            height: 100%
         iframe
-            border-radius: 10px;
-            box-shadow: var(--card-box-shadow)
-            border: 0
-            background-color: var(--card-bg); 
-            width:100%; 
+
             height: 350px
-            &:hover
-                box-shadow: var(--card-hover-box-shadow)
-            .back
-                background-color: var(--card-bg); 
+            width : 100%;
+
 
         .article-sort
             margin-left: 0rem;
             padding-left: 0rem;
             border-left: none;
-            background-color: var(--card-bg); 
+            // background-color: var(--card-bg); 
             &-title
                 position: relative
                 font-family: 'Audiowide', cursive
@@ -73,7 +75,7 @@
                 padding: 1rem 
                 box-shadow: var(--card-box-shadow)
                 border-radius: 6px
-                background-color:  var(--card-bg); 
+                background-color:  var(--white); 
                 overflow: visible
                 border-style: solid;
                 border-width: 0.0001px;
@@ -88,6 +90,8 @@
 
                     .article-sort-item-info
                         padding: 0
+                &:hover
+                    box-shadow: var(--card-hover-box-shadow)
 
 
                 &-time
@@ -99,7 +103,7 @@
                         cursor: default
 
                 &-title
-                    color: var(--font-color)
+                    color: $theme-meta-color
                     font-size: 1em
                     transition: all .3s
                     -webkit-line-clamp: 2

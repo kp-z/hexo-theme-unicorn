@@ -1,31 +1,36 @@
 
-script(type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.10.1.js")
-#carousel
-  .sketchfab-embed-wrapper(style="width: 100%;height: 100%;")
-    iframe(id="sketchfab-model" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" title="Gaming Guy Room" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="xr-spatial-tracking" execution-while-out-of-viewport="execution-while-out-of-viewport" execution-while-not-rendered="execution-while-not-rendered" web-share="web-share" src="" style="height: 1603.2px;")
+script(type="text/javascript" src="https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/sketchfab-viewer-1.12.0.js")
+.sketchfab-embed-wrapper(style="width: 100%;height: 100%;")
+  iframe(id="sketchfab-model" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true")
 
+#carousel 
   each content,page in theme.carousel_contents
     .carousel-box
       //- | !{content.bg_img}
-      .site-hi Hi, I'm KP.
+      //- .site-hi Hi, I'm KP.
       .site-info 
         .site-subtitle
           | !{content.subtitle}
-        h1.site-title 
+        h1.site-title
           | !{content.title}
-          a(onclick="plusSlides(1)") Next
+          a(onclick="plusSlides()") Next
+  //- a#carouselNextSlide(onclick="plusSlides()") Next
 
   #carousel-indictors
     span.carousel-dot(onclick="currentSlide(1)")
     span.carousel-dot(onclick="currentSlide(2)")
     span.carousel-dot(onclick="currentSlide(3)")
     span.carousel-dot(onclick="currentSlide(4)")
-script(src="https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/carousel.js")
-.site-name
+//- script(src="https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/carousel.js")
+script(src="/blog-cn/js/carousel.js")
+#site-name.site-name
   a KUANGPU
   br
   a ZHANG
-.pined-pages
+#show-index-info
+  a 
+    i(class="fa-solid fa-arrow-left")
+#pined-pages.pined-pages
   p LATEST NEWS
   - let i = 0;
   - let postLimit = 3

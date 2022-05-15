@@ -17,7 +17,7 @@ img
   white-space: 1em
 .gallery-group-main
     #goals
-        padding: 2rem
+        padding: 1rem
         display: flex
         flex-direction: column;
         justify-content: space-between;
@@ -108,8 +108,8 @@ img
         .cell
             background: rgba(142, 140, 140, 0.05)
             border-radius: 10px
-            height: 42%
-            width: 47%
+            height: 46%
+            width: 48%
             position: relative
             .logo
                 position: absolute
@@ -166,13 +166,12 @@ img
             width: 101%
             object-fit: fill
     .info-top
-        float: left
+        // float: left
+        display: flex
         width : 100%
         margin: 2rem 0rem 1.5rem 0rem
         padding: 0 1rem
         height: auto
-        +maxWidth768()
-            height: auto
         .avatar
             float: left
             margin-right: 5%
@@ -199,6 +198,9 @@ img
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow: hidden
+            white-space: nowrap;
+            text-overflow: ellipsis;
             // width: 30%
             float: left
             color: var(--font-color)
@@ -209,17 +211,23 @@ img
             &-en
                 font-weight: 500
                 font-size: 1.8em
+                overflow: hidden
+                white-space: nowrap;
+                text-overflow: ellipsis;
                 text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .3)
                 +maxWidth768()
-                    font-size: 1.5em
+                    font-size: 1.2em
                 +minWidth2000()
                     font-size: 2rem  
             &-cn
                 margin: -0.5rem  0 0 0
-                font-size: 1.4em
+                font-size: 0.8rem
                 text-shadow: .2rem .2rem .2rem rgba(7, 17, 27, .3)
                 color: var(--font-color)
                 opacity: .6
+                overflow: hidden
+                white-space: nowrap;
+                text-overflow: ellipsis;
                 // text-shadow: .2rem .2rem .2rem #ededef
                 +maxWidth768()
                     margin: 0

@@ -9,8 +9,8 @@ menu:
   博客: 
     主页: / || fas fa-home 
     微博: /message/ || fas fa-blog 
-    归档: /categories/ || fas fa-archive
     豆瓣: /douban/ || fas fa-bookmark
+    归档: /categories/ || fas fa-archive
   影音:
     相册: /gallery/ || fas fa-camera
     足迹: /travel/ || fas fa-map-marked
@@ -100,7 +100,7 @@ carousel_contents:
   page_4:
     bg_img: <img src="https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210810180344.webp"/>
     title: 04 - More
-    subtitle: 本网站正在建设中，欢迎<a class="info-link" href="/blog-cn/Message/">反馈</a>错误. 如果本站内容帮助到了你，求<a class="info-link" href="/blog-cn/Sponsorship/">赞赏</a>.
+    subtitle: 本网站正在建设中，欢迎<a class="info-link" href="/blog-cn/message/">反馈</a>错误. 如果本站内容帮助到了你，求<a class="info-link" href="/blog-cn/sponsorship/">赞赏</a>.
 
 # Code Blocks (代碼相關)
 # --------------------------------------
@@ -208,7 +208,7 @@ cover:
   position: left
   # When cover is not set, the default cover is displayed (當沒有設置cover時，默認的封面顯示)
   default_cover:
-    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/cover/3.png
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/blob-scene-haikei.svg
 
 # Replace Broken Images (替換無法顯示的圖片)
 error_img:
@@ -565,8 +565,8 @@ theme_color:
   code_foreground: "#F47466"
   code_background: "rgba(27, 31, 35, .05)"
   toc_color: "#00c4b6"
-  blockquote_padding_color: "#49b1f5"
-  blockquote_background_color: "#49b1f5"
+  blockquote_padding_color: "#747d8c"
+  blockquote_background_color: "#747d8c"
 
 # The top_img settings of home page
 # default: top img - full screen, site info - middle (默認top_img全屏，site_info在中間)
@@ -661,9 +661,9 @@ display_mode: light
 
 # Beautify (美化頁面顯示)
 beautify:
-  enable: false
+  enable: true
   field: post # site/post
-  title-prefix-icon: '\f192'
+  title-prefix-icon: '\7c'
   title-prefix-icon-color: '#747d8c'
 
 # Global font settings
@@ -884,7 +884,7 @@ pjax:
 # Inject the css and script (aplayer/meting)
 aplayerInject:
   enable: true
-  per_page: false
+  per_page: true
 
 # Snackbar (Toast Notification 彈窗)
 # https://github.com/polonel/SnackBar
@@ -1026,6 +1026,8 @@ CDN:
 
   # fontawesome
   fontawesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css
+  # fontawesome:   https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css
+
 
   # Conversion between Traditional and Simplified Chinese
   translate: /js/tw_cn.js

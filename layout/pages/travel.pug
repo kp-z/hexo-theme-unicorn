@@ -1,85 +1,22 @@
 script(data-pjax='' src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js')
 script(src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js')
 link(href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet')
-#map(style='position:fixed; top:0; left:0; width: 100%; height: 100%;')
-#features
-    //- - site.posts.sort(sort, -1).limit(site.posts.length).each(function (article) { 
-    //-     if article.travel
-    //-         section
-    //-             img(src=article.top_img, alt="")
-    //-             p.year
-    //-                 | !{date(article.date, 'YYYY')}
-    //-             .section-info
-    //-                 a
-    //-                     i.far.fa-dot-circle
-    //-                         | !{article.title}
-    //-                 p 
-    //-                     | !{date(article.date, config.date_format)}
-    //- - })
-    section.active(id='荷兰比利时之行')
-        img(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210717210414.jpg')
-        p.year 2021
-        .section-info
-            a 
-                i.far.fa-dot-circle
-                | &nbsp;&nbsp; &#x8377;&#x5170;&#x6BD4;&#x5229;&#x65F6;&#x4E4B;&#x884C;
-            p 2021-06-31&nbsp;&nbsp;&nbsp; 3&#x5929;
-    section(id='慕尼黑之行')
-        img(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210717210415.jpeg')
-        p.year 2020
-        .section-info
-            a(href='https://zkpeace.com/blog-cn/posts/58505/')
-                i.far.fa-dot-circle
-                | &nbsp;&nbsp; &#x6155;&#x5C3C;&#x9ED1;&#x4E4B;&#x884C;
-            p 2021-06-31&nbsp;&nbsp;&nbsp; 2&#x5929;
-    section(id='柏林汉堡之行')
-        img(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210717210416.jpeg')
-        p.year 2020
-        .section-info
-            a(href='https://zkpeace.com/blog-cn/posts/58505/')
-                i.far.fa-dot-circle
-                | &nbsp;&nbsp; &#x67CF;&#x6797;&#x6C49;&#x5821;&#x4E4B;&#x884C;
-            p 2021-06-31&nbsp;&nbsp;&nbsp; 4&#x5929;
-    section(id='成都重庆之行')
-        img(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210717210413.jpg')
-        p.year 2019
-        .section-info
-            a
-                i.far.fa-dot-circle
-                | &nbsp;&nbsp; &#x6210;&#x90FD;&#x91CD;&#x5E86;&#x4E4B;&#x884C;
-            p 2021-09&nbsp;&nbsp;&nbsp; 6&#x5929;
-    section(id='意大利之行')
-        img(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210717210418.jpg')
-        p.year 2019
-        .section-info
-            a(href='/blog-cn/posts/60961/#直奔梵蒂冈')
-                i.far.fa-dot-circle
-                | &nbsp;&nbsp; &#x610F;&#x5927;&#x5229;&#x4E4B;&#x884C;
-            p 2021-06-31&nbsp;&nbsp;&nbsp; 7&#x5929;
-    section(id='东欧之行')
-        img(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210717210417.jpeg')
-        p.year 2018
-        .section-info
-            a
-                i.far.fa-dot-circle
-                | &nbsp;&nbsp; &#x4E1C;&#x6B27;&#x4E4B;&#x884C;
-            p 2021-06-31&nbsp;&nbsp;&nbsp; 7&#x5929;
-    section(id='巴黎之行')
-        img(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210719123728.jpg')
-        p.year 2018
-        .section-info
-            a(href='/blog-cn/posts/60961/#直奔梵蒂冈')
-                i.far.fa-dot-circle
-                | &nbsp;&nbsp; &#x5DF4;&#x9ECE;&#x4E4B;&#x884C;
-            p 2018-10&nbsp;&nbsp;&nbsp; 7&#x5929;
-    section(id='荷兰三城之行')
-        img(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718011521.jpg')
-        p.year 2018
-        .section-info
-            a(href='/blog-cn/posts/60961/#直奔梵蒂冈')
-                i.far.fa-dot-circle
-                | &nbsp;&nbsp; &#x8377;&#x5170;&#x4E09;&#x57CE;&#x4E4B;&#x884C;
-            p 2021-06-31&nbsp;&nbsp;&nbsp; 7&#x5929;
 
-
-script(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/travel.js')
+#travel-container
+    #map(style='position:fixed; top:0; left:0; width: 100%; height: 105%;')
+    section.travel-title-container
+        .card__text-sm(onclick="resetLocation()") Shanghai - China
+        .card__text-lg Traveling Record Page
+        .card__text-md I love human being and the world but i don't love anyone.
+        a.card__btn(href="/blog-cn/categories/生活/旅行/") Timeline 
+    section.travel-card-container
+        - site.posts.sort('date', 'desc').limit(site.posts.length).each(function (article) { 
+            if article.travel
+                section.card-sm(data-bearing=article.bearing data-center=article.center data-zoom=article.zoom data-pitch=article.pitch style="background-image:url("+article.top_img+"); background-position: center right;" onclick="activeSection(this)")
+                    .section-info
+                        p.card__text-sm
+                            | !{date(article.date, config.date_format)}
+                        a.card__text-lg(href=url_for(article.path))
+                            | !{article.title}
+        - })
+script(src='https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/travel.js')

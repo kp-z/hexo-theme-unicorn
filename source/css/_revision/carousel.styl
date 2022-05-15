@@ -1,6 +1,34 @@
-
+// #carousel
+//     #carouselNextSlide
+//         position: absolute
+//         left: 10%
+//         bottom: 4.3%
+//         z-index: 999
+//         color: var(--white)
+//         border-radius: 5px
+//         cursor: pointer
+//         font-family: 'Audiowide', cursive
+//         padding: 0 3px
+//         &:hover
+//             background: rgba(white, .5)
+//             transition: background 0.5s;
+//             -webkit-transition: background 0.5s; /* Safari */
+#show-index-info
+    display: none
+    position: fixed
+    bottom : 2rem
+    left: 2rem
+    color: var(--white)
+    border-radius: 5px
+    cursor: pointer
+    font-family: 'Audiowide', cursive
+    padding: 0 3px
+    &:hover
+        background: rgba(white, .5)
+        transition: background 0.5s;
+        -webkit-transition: background 0.5s; /* Safari */
 .site-name
-    
+    cursor: pointer
     position: fixed
     left: 1.5rem
     top: 40%
@@ -26,7 +54,7 @@
         font-family: 'Audiowide', cursive
     .page
         width : 80%
-        height: 5rem
+        height: 5.5rem
         position: absolute
         border-radius: 10px
         background: rgba(255,255,255,0.15)
@@ -51,7 +79,7 @@
             a,p
                 line-height: 1.4;
                 display: -webkit-box;
-                -webkit-line-clamp: 3;
+                -webkit-line-clamp: 4;
                 overflow: hidden;
                 -webkit-box-orient: vertical;
                 font-weight: 1;
@@ -71,25 +99,17 @@
             
     
 #carousel
-    background-size:100% 100%
     position: fixed
     top: 0
     left: 0
-    width: 100%
-    height: 100%
-    padding: 0
-    border-radius: 0
-    img
-        width: 100%
-        height: 100%
-        object-fit: cover
     .carousel-box
         display: none
+        transition: all 1s
         height: 100%
         width: 100%
         overflow: hidden
         .site-info
-            position: absolute
+            position: fixed
             bottom: 1rem
             padding: 0
             width: 100%
@@ -127,7 +147,7 @@
                     position: absolute
                     left: 40%
                     +maxWidth600()
-                        left: 90%
+                        left: 80%
                         
             .site-subtitle
                 letter-spacing: 1px
@@ -142,7 +162,7 @@
                     
     #carousel-indictors
         // text-align:center
-        position: absolute
+        position: fixed
         bottom: 0.5rem
         right: 1rem
         margin: 2rem
@@ -166,13 +186,22 @@
         .active, .carousel-dot:hover 
             // background-color: var(--white)
             opacity : 1
-#sketchfab-model
-    position:fixed
-    top:0
-    left:0
-    display: block;
-    width: 100%
-    margin-top: -5%
-    margin-bottom: -5%
-    +maxWidth600()
-        margin-top: -15%
+.sketchfab-embed-wrapper
+    #sketchfab-model
+        position:fixed
+        top:0
+        left:0
+        display: block;
+        width: 100%
+        margin-top: -5%
+        margin-bottom: -5%
+        +maxWidth600()
+            margin-top: -15%
+    // #model-fake-mask
+    //     width : 100%
+    //     height: 100%
+        // z-index : 100
+    // .loaded
+    //     transition: all 1s
+    //     pointer-events: none
+    //     opacity : 0

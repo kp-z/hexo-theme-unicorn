@@ -55,7 +55,7 @@ function postsChart () {
 
   return `
   <script id="postsChart">
-    var color = '#000'
+    var color = '#a4b0be'
     var postsChart = echarts.init(document.getElementById('posts-chart'), 'light');
     var postsOption = {
       textStyle: {
@@ -158,19 +158,19 @@ function tagsChart (len) {
 
   return `
   <script id="tagsChart">
-    var color = '#000'
+    var color = 'rgba(128, 255, 165)'
     var tagsChart = echarts.init(document.getElementById('tags-chart'), 'light');
     var tagsOption = {
       textStyle: {
         color: color
       },
-      title: {
-        text: 'Top ${dataLength} 标签统计图',
-        x: 'center',
-        textStyle: {
-          color: color
-        }
-      },
+      // title: {
+      //   text: 'Top ${dataLength} 标签统计图',
+      //   x: 'center',
+      //   textStyle: {
+      //     color: color
+      //   }
+      // },
       tooltip: {},
       xAxis: {
         name: '标签',
@@ -256,7 +256,7 @@ function categoriesChart () {
 
   return `
   <script id="categoriesChart">
-    var color = '#000'
+    var color = 'rgba(128, 255, 165)'
     var categoriesChart = echarts.init(document.getElementById('categories-chart'), 'light');
     var categoriesOption = {
       textStyle: {

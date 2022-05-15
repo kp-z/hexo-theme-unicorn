@@ -11,39 +11,40 @@
                 a.nav__link(data-sjslink="3") &#x1F579; 
         #sortable.sjs-default
             if site.data.things 
-                each i in site.data.things
-                    .sortable-card(data-type=i.type)
-                        img.card__picture(src=i.image alt=i.title)
+                each thing in site.data.things
+                    - var link = thing.link || '/blog-cn/things/';
+                    .sortable-card(data-type=thing.type)
+                        img.card__picture(src=thing.image alt=thing.title)
                         .card-infos
-                            case i.status
+                            case thing.status
                                 when "放弃"
                                     p.card__title.dropped
-                                        | !{i.title}
+                                        | !{thing.title}
                                 default 
                                     p.card__title
-                                        | !{i.title}
+                                        | !{thing.title}
                             p.card__text
-                                | !{i.price}
-                            case i.status
+                                | !{thing.price}
+                            case thing.status
                                 when "放弃"
                                     p.state
                                         i.fas.fa-star
-                                            |  !{i.status}
-                                        a.test-post
+                                            |  !{thing.status}
+                                        a.test-post(href=thing.url)
                                             i.fas.fa-external-link-alt
                                                 |  &#x6D4B;&#x8BC4;
                                 when "种草"
                                     p.state
                                         i.fas.fa-star
-                                            |  !{i.status}
-                                        a.test-post
+                                            |  !{thing.status}
+                                        a.test-post(href=thing.url)
                                             i.fas.fa-external-link-alt
                                                 |  &#x6D4B;&#x8BC4;
                                 when "购入"
                                     p.state.got
                                         i.fas.fa-star
-                                            |  !{i.status}
-                                        a.test-post
+                                            |  !{thing.status}
+                                        a.test-post(href=link)
                                             i.fas.fa-external-link-alt
                                                 |  &#x6D4B;&#x8BC4;
 //- script(type='text/javascript' src='/blog-cn/js/things.js')

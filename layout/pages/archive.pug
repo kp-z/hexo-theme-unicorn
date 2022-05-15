@@ -1,0 +1,13 @@
+#gallery-group-main.categories-dashboard
+  .dashboard-weight.card-style
+    #postCharts.cat-chart(data-aos='zoom-in-up')
+      #categories-chart
+  .dashboard-weight.card-style
+    #postCharts.post-chart(data-aos='zoom-in-up')
+      #posts-chart
+  .dashboard-weight.card-style
+    .category-lists
+        div!= list_categories()
+  .dashboard-weight.card-style
+    .tag-cloud-list.is-center
+        !=cloudTags({source: site.tags, minfontsize: 1, maxfontsize: 2, limit: 0,  unit: 'em'})
