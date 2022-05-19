@@ -66,11 +66,11 @@ client.init(uid, {
             if (slideIndex == 2) {
                 api.setCameraLookAt([-69.34712355741655, 2.2439526969192185, 7.88222197159061], [0.04293225738905686, -1.658814372918229, 10.535251036030234]);
             } else if (slideIndex == 3) {
-                api.setCameraLookAt([36.37281260175003, 27.43645257255782, 17.584922266628606], [-1.7340585846847143, -3.6794120137337907, 11.645991642449637]);
+                api.setCameraLookAt([10.42710558402664, 218.77945883525692, 60.6031613490485], [-0.2812965427458305, -2.5744075927023267, 11.870230319595267]);
             } else if (slideIndex == 1) {
                 api.setCameraLookAt([-37.20336656745149, -38.62964075194737, 0.6871622589092077], [-1.7741291165991424, -4.108950727105709, 10.800401312387038]);
             } else {
-                api.setCameraLookAt([50, -50, 2], [0, -2.5, 11])
+                api.setCameraLookAt([-0.07100943658257979, -2.838193770610532, 273.2725839414465], [-0.14979741551783443, 1.2632613866959885, 12.139146858457272])
             }
         });
         document.getElementById('site-name').addEventListener('click', function () {
@@ -109,7 +109,7 @@ client.init(uid, {
             //     }
             // });
             console.log('Viewer is ready');
-            document.getElementById('loading-box').classList.add("loaded");
+            // document.getElementById('loading-box').classList.add("loaded");
             api.setFov(10, function (err, angle) {
                 if (!err) {
                     // window.console.log('FOV set to', angle); // 45
@@ -132,6 +132,14 @@ client.init(uid, {
             // let $apiFrame = document.getElementById('sketchfab-model');
             // $apiFrame.classList.remove('hidden'); // Remove hidden class
         });
+        // api.addEventListener('camerastop', function() {
+        //     window.console.log('Camera stopped');
+        //     api.getCameraLookAt(function (err, camera) {
+        //         window.console.log(camera.position); // [x, y, z]
+        //         window.console.log(camera.target); // [x, y, z]
+        //     });
+        // });
+        
         // api.addEventListener('modelLoadProgress', function (factor) {
         //     window.console.log('modelLoadProgress: ' + factor);
         //     // document.getElementById('model-fake-mask').classList.add("loaded");

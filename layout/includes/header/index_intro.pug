@@ -1,7 +1,8 @@
 
-script(type="text/javascript" src="https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/sketchfab-viewer-1.12.0.js")
+script(type="text/javascript" src=url_for(theme.pages.sketchfab))
 .sketchfab-embed-wrapper(style="width: 100%;height: 100%;")
-  iframe(id="sketchfab-model" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true")
+  iframe(runat='server' id="sketchfab-model" frameborder="0" sandbox="allow-scripts allow-same-origin" allow="autoplay; fullscreen; xr-spatial-tracking")
+  //- img.loading_cover()
 
 #carousel 
   each content,page in theme.carousel_contents
@@ -22,7 +23,7 @@ script(type="text/javascript" src="https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main
     span.carousel-dot(onclick="currentSlide(3)")
     span.carousel-dot(onclick="currentSlide(4)")
 //- script(src="https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/carousel.js")
-script(src="/blog-cn/js/carousel.js")
+script(src=url_for(theme.pages.carousel))
 #site-name.site-name
   a KUANGPU
   br

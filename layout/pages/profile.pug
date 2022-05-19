@@ -2,43 +2,37 @@
   .dashboard-weight.card-style.frosted-gross
     .info-top
       .avatar
-        img(data-lazy-src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718003707.webp' alt='avatar')
+        img(data-lazy-src=url_for(theme.profile.avatar) alt='avatar')
       .author-info
-        .author-info-en Hello&#xFF0C;I&apos;m kp
-        .author-info-cn Computer Engineer
+        .author-info-en
+          | !{theme.profile.author_info.line1}
+        .author-info-cn
+          | !{theme.profile.author_info.line2}
         .author-info-status
-          i.fas.fa-code
-          | Working
+          | !{theme.profile.author_info.line3}
     .info-bot
       div
-        a.author-btn(href='https://img-1253324855.cos.ap-chengdu.myqcloud.com/%E5%BC%A0%E5%8C%A1%E6%B5%A6%28%E4%B8%AD%E8%8B%B1%29.pdf')
-          img(data-lazy-src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/icon_download.png' alt='avatar')
-          .hidden-info Resume
-        a.author-btn(href='https://img-1253324855.cos.ap-chengdu.myqcloud.com/Myweb_COS_2.0/img/wechatcode.jpg')
-          img(data-lazy-src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/icon_wechat.png' alt='avatar')
-          .hidden-info WeChat
-        a.author-btn(href='/blog-cn/projects/')
-          img(data-lazy-src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/icon_works.png' alt='avatar')
-          .hidden-info Project
-        a.author-btn(href='mailto:z.kp@outlook.com')
-          img(data-lazy-src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/icon_mail.png' alt='avatar')
-          .hidden-info Email
+        for i in theme.profile.buttons
+          a.author-btn(href=url_for(i.link))
+            img(data-lazy-src=url_for(i.img) alt='button')
+            .hidden-info
+              | !{i.name}
         .info-tips
     .info-social
-      a.info-social-i(href='https://github.com/Uzizkp')
+      a.info-social-i(href=url_for(theme.profile.github))
         i.fab.fa-github
-      a.info-social-i(href='https://500px.com.cn/kpeace?rs=56ebd9df04f709a187951df0191876718')
+      a.info-social-i(href=url_for(theme.profile.px))
         i.fab.fa-500px
-      a.info-social-i(href='https://www.instagram.com/zkpjy/')
+      a.info-social-i(href=url_for(theme.profile.instagram))
         i.fab.fa-instagram
-      a.info-social-i(href='https://t.me/kpzhang')
+      a.info-social-i(href=url_for(theme.profile.telegram))
         i.fab.fa-telegram-plane
-      a.info-social-i
+      a.info-social-i(href=url_for(theme.profile.youtube))
         i.fab.fa-youtube
-      a.info-social-i(href='https://space.bilibili.com/109909977')
+      a.info-social-i(href=url_for(theme.profile.bilibili))
         i.fab.fa-bilibili
       .plant-3d
-        img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Plant%201.png' alt='avatar')
+        img(src=url_for(theme.profile.decoration.plant_1) alt='plant_3d')
   .dashboard-weight
     .weight-half.card-style.top.frosted-gross
       #github_container
@@ -47,61 +41,31 @@
   .dashboard-weight.card-style.frosted-gross
     .skills-title SKILLS
     .plant2
-      img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Plant2.png')
+      img(src=url_for(theme.profile.decoration.plant_2) alt='plant_3d')
     #sun(style='position:relative;width:100%;height:100%')
   .dashboard-weight.card-style.frosted-gross
     div
       div
         .pattern-3d
-          img.rocket(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/rocket.png')
-          img.cloud(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Cloud.png')
+          img.rocket(src=url_for(theme.profile.decoration.rocket))
+          img.cloud(src=url_for(theme.profile.decoration.cloud))
         .declaration
-          a.main-title FIND ME, HIRE ME
-          br
-          br
-          a.description the services i can provide now 
-          br
-          br
-          a.main-content WEB DEVELOPING &amp; DESIGNING
-          br
-          br
-          a.description my dream is go to mars and to be a
-          br
-          br
-          a.main-content FULL STACK ENGINEER
-          br
-          br
-          a.description the subjects i really like are
-          br
-          br
-          a.main-content ROBOTIC AR/MR LoT DESIGN
-          br
-          br
+          | !{theme.profile.declaration}
   .dashboard-weight.card-style.video.frosted-gross
-    video.card-video-black(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/black.mp4' width='100%' height='100%' controls='controls' preload='auto')
-    video.card-video-white(src='https://img-1253324855.cos.ap-chengdu.myqcloud.com/white.mp4' width='100%' height='100%' controls='controls' preload='auto')
+    video.card-video-black(src=url_for(theme.profile.video_black) width='100%' height='100%' controls='controls' preload='auto')
+    video.card-video-white(src=url_for(theme.profile.video_white) width='100%' height='100%' controls='controls' preload='auto')
   .dashboard-weight
     .weight-quarter.card-style.frosted-gross.top.left.radar-contianer
       #radar(style='position:relative;width:100%;height:100%')
-      a.personility-title(href='https://www.16personalities.com/ch/intj-%E4%BA%BA%E6%A0%BC') INTJ
+      a.personility-title(href=url_for(theme.profile.personility))
+        | !{theme.profile.personility_title}
     .weight-quarter.card-style.frosted-gross.top.interests
       .interests-box
-        .interests-line
-          .interest
-            img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/cube%20a.png')
-          .interest
-            img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/red%20book%202.png')
-          .interest
-            img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Basketball%20Color.png')
-        .interests-line
-          .interest
-            img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/cam%201.png')
-          .interest
-            img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/gamepad.png')
-          .interest
-            img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Weight%20Color.png')
+          for i in theme.profile.interests
+            .interest
+              img(src=url_for(i) alt='interests')
     .weight-quarter.left.card-style.frosted-gross
-      img.desktop(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Desktop.png')
+      img.desktop(src=url_for(theme.profile.desktop_img))
     .weight-quarter.card-style.frosted-gross
       #visitorMap.vistor-map
 #record.gallery-group-main
@@ -153,13 +117,8 @@
           i.fas.fa-star
         .num 9
         .title Flag
-    a.link(href="https://habitica.com/") 2022 Habitica
-    
-script(src='https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/sun.js')
-script(src='https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/radar.js')
-script(src='https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/gantt.js')
-script(src='https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness.js')
-script(src='https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness_circle.js')
-script(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/visitorMap.js')
-script(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/chart/githubcalendar.js')
+    a.link(href=url_for(theme.profile.habitica))
+      | !{theme.profile.habitica_info}
 
+for i in theme.profile.scripts
+  script(src=url_for(i))

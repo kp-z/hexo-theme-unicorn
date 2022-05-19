@@ -1,7 +1,8 @@
 link(href='/blog-cn/css/weibo.css' rel='stylesheet')
 #weibo-head
-  img.weibo-head-img(src='https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/speaker%20a.png')
-  a#weibo-head-title.weibo-head-title HOLY SHIT .
+  img.weibo-head-img(src=url_for(theme.CDN.cdn_header+theme.pages.weibo_head_img))
+  a#weibo-head-title.weibo-head-title 
+    | !{theme.pages.weibo_title}
 script(type='text/javascript').
   $("#weibo-head-title").on("click", function(e){
   if($(".tk-submit").css("display") == "none"){

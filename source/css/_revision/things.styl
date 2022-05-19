@@ -49,14 +49,21 @@
           display: inline-block;
           position: relative
           width: 40%;
+          overflow: hidden;
           height: 100%;
           .dropped
             text-decoration-line: line-through
           .card__title
             line-height: 1;
             transform: translateY(-12px);
+            overflow-wrap: break-word;
             font-size: 1rem;
+            overflow: hidden;
+            display: inline-block;
+            height: 30%
             font-weight: 60;
+            -webkit-line-clamp: 3;
+            text-overflow: ellipsis
             +maxWidth768()
               font-size: .8rem;
           .card__text

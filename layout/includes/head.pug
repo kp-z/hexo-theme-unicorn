@@ -8,7 +8,8 @@
 - else pageTitle = page.title || config.title || ''
 
 - var isSubtitle = config.subtitle ? ' - ' + config.subtitle : ''
-- var tabTitle = is_home() || !pageTitle ? config.title + isSubtitle : pageTitle + ' | ' + config.title
+//- - var tabTitle = is_home() || !pageTitle ? config.title + isSubtitle : pageTitle + ' | ' + config.title
+- var tabTitle = (!page.title ? 'BLOG' : page.title) + ' | ' + config.title
 
 - var pageKeywords
 - if (page.keywords) pageKeywords = Array.isArray(page.keywords) ? (page.keywords).join(',') :  ([]).join(',') || page.keywords

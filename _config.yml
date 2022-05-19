@@ -2,7 +2,7 @@
 # --------------------------------------
 # 导航栏logo设置
 logo: 
-  img: https://zkpeace.com/blog-cn/img/kp-logo.png
+  img: /blog-cn/img/kp-logo.png
   title: ZKPEACE
 
 menu:
@@ -208,12 +208,12 @@ cover:
   position: left
   # When cover is not set, the default cover is displayed (當沒有設置cover時，默認的封面顯示)
   default_cover:
-    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/blob-scene-haikei.svg
+    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/blob-scene-haikei.svg
 
 # Replace Broken Images (替換無法顯示的圖片)
 error_img:
-  flink: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/404.png
-  post_page: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/404.png
+  flink: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/404.png
+  post_page: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/404.png
 
 # A simple 404 page
 error_404:
@@ -269,13 +269,13 @@ post_copyright:
 reward:
   enable: true
   QR_code:
-    - img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/wechat.jpg
+    - img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/wechat.jpg
       link:
       text: Wechat
-    - img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/paypal.jpg
+    - img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/paypal.jpg
       link:
       text: Paypal
-    - img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/alipay.jpg
+    - img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/alipay.jpg
       link:
       text: Alipay
 
@@ -669,8 +669,8 @@ beautify:
 # Global font settings
 # Don't modify the following settings unless you know how they work (非必要不要修改)
 font:
-  global-font-size:
-  code-font-size:
+  global-font-size: 0.8em
+  code-font-size: 0.8em
   font-family: Montserrat, Noto Sans SC, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Lato, Roboto, "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif
   code-font-family: consolas, Menlo, "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif
 # Font settings for the site title and site subtitle
@@ -873,7 +873,7 @@ note:
 pjax:
   enable: true
   exclude:
-    # - /blog-cn/things/
+    # - /blog-cn/gallery/life/
     # - /blog-cn/home/
     # - /blog-cn/travel/
     # - /blog-cn/gallery/photos/
@@ -921,11 +921,11 @@ lazyload:
 pwa:
   enable: true
   manifest: /manifest.json
-  theme_color: "#fff"
-  apple_touch_icon: /img/pwa/icon-192x192.png
-  favicon_32_32: /img/pwa/icon-192x192.png
-  favicon_16_16: /img/pwa/icon-192x192.png
-  mask_icon: /img/pwa/icon-192x192.png
+  theme_color: "#000"
+  apple_touch_icon: /img/pwa/icon-152x152.png
+  favicon_32_32: /img/pwa/icon-152x152.png
+  favicon_16_16: /img/pwa/icon-152x152.png
+  mask_icon: /img/pwa/icon-152x152.png
 
 # Open graph meta tags
 # https://developers.facebook.com/docs/sharing/webmasters/
@@ -947,17 +947,102 @@ inject:
     - <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Noto+Sans+SC&family=Poiret+One&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
     - <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet">
     # - <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao+Montserrat+Audiowide+Noto+Sans&display=swap" rel="stylesheet">
-    - <audio id="bg-music" class="no-destroy" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/music/%E5%94%AF%E4%B8%80.mp3"></audio>
+    - <audio id="bg-music" class="no-destroy" src="https://blog-1253324855.cos.arewardp-shanghai.myqcloud.com/music/%E5%94%AF%E4%B8%80.mp3"></audio>
     - <script src="https://cdn.jsdelivr.net/npm/echarts@latest/dist/echarts.min.js"></script>
   bottom:
     - <script src="/blog-cn/js/bg-music.js"></script>
     # - <script type="text/javascript">$("#background-music").html("<i class='fas fa-music'></i>"); ap.player()</script>
     # - <div class="aplayer no-destroy" data-id="7394145653" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-mutex="true" > </div>
 
+profile:
+  avatar: https://img-1253324855.cos.ap-chengdu.myqcloud.com/picgo/20210718003707.webp
+  author_info:
+    line1: Hello&#xFF0C;I&apos;m kp
+    line2: Autopilot Engineer
+    line3: <i class="fas fa-code"> &nbsp Working
+  declaration:
+    <a class="main-title">FIND ME, HIRE ME</a><br/><br/><a class="description">the services i can provide now </a><br/><br/><a class="main-content">WEB DEVELOPING &amp; DESIGNING</a><br/><br/><a class="description">my dream is go to mars and to be a</a><br/><br/><a class="main-content">FULL STACK ENGINEER</a><br/><br/><a class="description">the subjects i really like are</a><br/><br/><a class="main-content">ROBOTIC AR/MR LoT DESIGN</a><br/><br/>
+  interests:
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/cube%20a.png
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/red%20book%202.png
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Basketball%20Color.png
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/cam%201.png
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/gamepad.png
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Weight%20Color.png
+  buttons:
+    - name: Resume
+      img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/icon_download.png
+      link: https://img-1253324855.cos.ap-chengdu.myqcloud.com/%E5%BC%A0%E5%8C%A1%E6%B5%A6%28%E4%B8%AD%E8%8B%B1%29.pdf
+    - name: WeChat
+      img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/icon_wechat.png
+      link: https://img-1253324855.cos.ap-chengdu.myqcloud.com/Myweb_COS_2.0/img/wechatcode.jpg
+    - name: Project
+      img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/icon_works.png
+      link: /blog-cn/projects/
+    - name: Email
+      img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/icon_mail.png
+      link: mailto:z.kp@outlook.com
+  decoration:
+    plant_1: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Plant%201.png
+    plant_2: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Plant2.png
+    rocket: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/rocket.png
+    cloud: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Cloud.png
+  video_white: https://img-1253324855.cos.ap-chengdu.myqcloud.com/white.mp4
+  video_black: https://img-1253324855.cos.ap-chengdu.myqcloud.com/black.mp4
+  personility: https://www.16personalities.com/ch/intj-%E4%BA%BA%E6%A0%BC
+  personility_title: INTJ
+  desktop:
+  desktop_img: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/img/3dIcon/objects/Desktop.png
+  social:
+    github: https://github.com/Uzizkp
+    px: https://500px.com.cn/kpeace?rs=56ebd9df04f709a187951df0191876718
+    instagram: https://www.instagram.com/zkpjy/
+    telegram: https://t.me/kpzhang
+    youtube:
+    bilibili: https://space.bilibili.com/109909977
+
+  habitica: https://habitica.com/
+  habitica_info: 2022 Habitica
+  scripts:
+    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/sun.js
+    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/radar.js
+    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/gantt.js
+    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness.js
+    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness_circle.js
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/visitorMap.js
+    - https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/chart/githubcalendar.js
+    
+
+pages:
+  weibo_head_img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/speaker%20a.png
+  weibo_title: HOLY SHITTTT .
+  
+  sketchfab: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/js/sketchfab-viewer-1.12.0.js
+
+  carousel: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/carousel.js
+
+  sponsor_css: /css/sponsor.css
+  
+
+  travel_js: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/travel.js
+  mapbox: https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js
+  mapbox_language: https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js
+  mapbox_css: https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css
+  
+
+  friends:
+    wromhole: https://www.foreverblog.cn/go.html
+    wromhole_title: WROMHOLE
+    css: https://cdn.jsdelivr.net/gh/Uzizkp/jscdn@main/blog/css/fcircle-beta.css
+    scripts:
+      - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/fcircle-beta.js
+      - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/flinks.json
+      - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/friends.js
 # CDN
 # Don't modify the following settings unless you know how they work
 # 非必要請不要修改
 CDN:
+  cdn_header: https://blog-1253324855.cos.ap-shanghai.myqcloud.com
   # main
   main_css: /css/index.css
   jquery: https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js

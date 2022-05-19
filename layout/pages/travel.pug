@@ -1,6 +1,6 @@
-script(data-pjax='' src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js')
-script(src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js')
-link(href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet')
+script(data-pjax='' src=url_for(theme.pages.mapbox_language))
+script(src=url_for(theme.pages.mapbox))
+link(href=url_for(theme.pages.mapbox_css))
 
 #travel-container
     #map(style='position:fixed; top:0; left:0; width: 100%; height: 105%;')
@@ -19,4 +19,4 @@ link(href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='styles
                         a.card__text-lg(href=url_for(article.path))
                             | !{article.title}
         - })
-script(src='https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/travel.js')
+script(src=url_for(theme.pages.travel_js))
