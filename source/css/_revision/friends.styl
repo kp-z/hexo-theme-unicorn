@@ -24,7 +24,7 @@
         a
             color: var(--font-color)
             &:hover
-                text-shadow: 1px 1px white, -1px -1px #444
+                text-shadow: 1px 1px white, -2px -2px #444
         .tag
             float: right
             margin: 0 20px
@@ -51,7 +51,7 @@
 
     .links
         width: 52%
-        height: 50rem
+        height: auto
         overflow: visible
         +maxWidth600()
             width: 100%;
@@ -160,7 +160,7 @@
                             display: block
                             color: var(--font-color)
                         .name
-                            font-size: 1.5em
+                            font-size: 1.0em
                             opacity : .5
                             overflow: hidden
                             white-space: nowrap
@@ -177,6 +177,7 @@
 
                 .descr
                     font-size: 0.5em
+                    padding-top: 2px
                     color: var(--font-color)
                     opacity : .2
                     overflow: hidden

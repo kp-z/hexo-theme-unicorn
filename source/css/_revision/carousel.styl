@@ -13,6 +13,9 @@
 //             background: rgba(white, .5)
 //             transition: background 0.5s;
 //             -webkit-transition: background 0.5s; /* Safari */
+
+
+
 #show-index-info
     display: none
     position: fixed
@@ -95,9 +98,6 @@
     .bot
         top: 80%
         right: 30%
-
-            
-    
 #carousel
     position: fixed
     top: 0
@@ -195,8 +195,24 @@
         width: 100%
         margin-top: -5%
         margin-bottom: -5%
+        background: rgba(0,0,0,0.5)
         +maxWidth600()
             margin-top: -15%
+
+     #sketchfab_loading_cover
+        img
+            position: fixed;
+            object-fit: cover
+            width: 100%;
+            height: 100%;
+    .sketchfab_loaded
+        transition: all .5s
+        // transform: translate(-100%, 0)
+        pointer-events: none
+        display: none
+        opacity : 0
+
+        
     // #model-fake-mask
     //     width : 100%
     //     height: 100%
