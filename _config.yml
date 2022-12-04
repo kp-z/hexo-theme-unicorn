@@ -9,7 +9,7 @@ menu:
   文稿: 
     博客: / || fas fa-home 
     微博: /message/ || fas fa-blog 
-    豆瓣: /douban/ || fas fa-bookmark
+    豆瓣: https://www.douban.com/people/twilight0518/?_i=8618308mcFzDjO || fas fa-bookmark
     归档: /categories/ || fas fa-archive
   影音:
     相册: /gallery/ || fas fa-camera
@@ -22,7 +22,7 @@ menu:
     服务: /services/ || fas fa-layer-group
     商店: /store/ || fas fa-store
   空间:
-    维基: https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401 || fas fa-brain
+    维基: https://blackwhale.notion.site/f90b2f3ed8af4dea985085052c775aa0 || fas fa-brain
     速查: https://zkpeace.com/wiki/ || fas fa-lightbulb 
     论坛: https://www.zhihu.com/club/1365658701693595648 || fas fa-user-friends
     友链: /friends/ || fas fa-link
@@ -56,13 +56,13 @@ footer_text:
       Github: https://github.com/Uzizkp 
   footer_text_3:
     友链: 
-      FKUN: https://blog.fkun.tech/
+      莫比乌斯: https://onojyun.com/
       风陵渡: https://xajh.org/
       狡猫三窝: https://slykiten.com/
-      TanJia: https://www.tanj.com.cn/
       MYW: https://immyw.com/
       Liam: https://www.ccyh.xyz/
       唐曲: https://qutang.dev/
+      FKUN: https://blog.fkun.tech/
       友链申请: /blog-cn/posts/59487/
       更多友链: /blog-cn/friends/
   footer_text_4:
@@ -318,13 +318,13 @@ noticeOutdate:
 # AddThis
 # https://www.addthis.com/
 addThis:
-  enable: true
+  enable: false
   pubid: 605d09fc4cf35734
 
 # Share.js
 # https://github.com/overtrue/share.js
 sharejs:
-  enable: false
+  enable: true
   sites: twitter,wechat
 
 # AddToAny
@@ -438,9 +438,9 @@ facebook_comments:
 # Twikoo
 # https://github.com/imaegoo/twikoo
 twikoo:
-  envId: kp-cloud-0gbpqc4i2e1ec1ea
+  envId: twikoo-4gtgvibs75c56e4d
   region:
-  visitor: false
+  visitor: true
   option:
 
 # Chat Services
@@ -716,7 +716,7 @@ aside:
   position: right # left or right
   card_announcement:
     enable: true
-    content: 双目失明的汉弥尔顿为什么还坐在黑灯瞎火里头写十四行诗那就叫“自我”--王小波<br></br>走出自己的傲慢，承认自己的局限。--罗翔
+    content: <img src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/截屏2022-12-04_01.47.42-removebg-preview.png"></img>
   card_recent_post:
     enable: true
     limit: 14 # if set 0 will show all
@@ -879,8 +879,8 @@ pjax:
 
 # Inject the css and script (aplayer/meting)
 aplayerInject:
-  enable: true
-  per_page: true
+  enable: false
+  per_page: false
 
 # Snackbar (Toast Notification 彈窗)
 # https://github.com/polonel/SnackBar
@@ -935,20 +935,14 @@ css_prefix: true
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
 inject:
   head:
-    - <script src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js"></script>
-    - <script src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/ali/font_1789453_ouhjvm9rdyn.js"></script>
+    - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js"></script>
+    - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/f12_printer.js"></script>
+    - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js"></script>
+    - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/ali/font_1789453_ouhjvm9rdyn.js"></script>
     - <link rel="preconnect" href="https://fonts.gstatic.com">
-    - <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Major+Mono+Display&family=Montserrat:wght@500&family=Train+One&family=Vast+Shadow&family=Wallpoet&family=Zen+Dots&&family=Noto+Sans+SC&family=Poiret+One&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
-    # - <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet">
-    # - <audio id="bg-music" class="no-destroy" src="https://blog-1253324855.cos.arewardp-shanghai.myqcloud.com/music/%E5%94%AF%E4%B8%80.mp3"></audio>
-    # - <script src="https://cdn.jsdelivr.net/npm/echarts@latest/dist/echarts.min.js"></script>
-    - <script src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js"></script>
-    
+    - <link href="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/css/font/font.css" rel="stylesheet">
   bottom:
-    # - <script src="/blog-cn/js/bg-music.js"></script>
-    # - <script type="text/javascript">$("#background-music").html("<i class='fas fa-music'></i>"); ap.player()</script>
-    # - <div class="aplayer no-destroy" data-id="7394145653" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-mutex="true" > </div>
-
+  
 profile:
   avatar: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/avatar/20210718003707.webp
   author_info:
@@ -979,7 +973,7 @@ profile:
       link: mailto:z.kp@outlook.com
   decoration:
     plant_1: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/Plant%201.png
-    plant_2: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/Plant2.png
+    plant_2: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/Plant2.png
     rocket: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/rocket.png
     cloud: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/Cloud.png
   video_white: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/videos/white.mp4
@@ -1003,31 +997,18 @@ profile:
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/radar.js
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/gantt.js
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness.js
-    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness_circle.js
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/visitorMap.js
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/githubcalendar.js
     
 
 pages:
-  douban_book_charts: https://m.douban.com/people/43103367/book_charts
-  douban_movie_charts: https://m.douban.com/people/43103367/movie_charts
-  douban_subject_profile: https://m.douban.com/people/43103367/subject_profile
-
-
   weibo_head_img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/speaker%20a.png
   weibo_css: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/css/weibo.css
-
   weibo_title: HOLY SHITTTT .
-  
   sketchfab: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/sketchfab/sketchfab-viewer-1.12.0.js
-
   sketchfab_cover_img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/carousel/home_page_mask.png
-
   carousel: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/carousel.js
-
   sponsor_css: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/css/sponsor.css
-  
-
   travel_js: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/travel.js
   mapbox: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/mapbox/mapbox-gl.js
   mapbox_language: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/mapbox/mapbox-gl-language.js
@@ -1040,7 +1021,6 @@ pages:
     css: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/css/fcircle-beta.css
     scripts:
       - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/fcircle-beta.js
-      - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/flinks.json
       - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/friends.js
 # CDN
 # Don't modify the following settings unless you know how they work
@@ -1052,6 +1032,15 @@ CDN:
   jquery: https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js
   main: /js/main.js
   utils: /js/utils.js
+
+  # aplayer
+  # aplayer_css: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css
+  # aplayer_js: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
+  # meting_js: https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js
+
+  aplayer_css: https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css
+  aplayer_js: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js
+  meting_js: https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js
 
   # pjax
   pjax: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/pjax/pjax.min.js
@@ -1075,13 +1064,9 @@ CDN:
 
   # search
   local_search: /js/search/local-search.js
-  # algolia_js: /js/search/algolia.js
-  # algolia_search: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.js
-  # algolia_search_css: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.css
-
-  algolia_js: https://npm.elemecdn.com/js-heo@1.0.11/algolia/algolia.js
-  algolia_search: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/instantsearch.js/2.10.5/instantsearch.min.js
-  algolia_search_css: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/instantsearch.js/2.10.5/instantsearch.min.css
+  algolia_js: /js/search/algolia.js
+  algolia_search: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.js
+  algolia_search_css: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.css
 
   # math
   mathjax: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
@@ -1123,8 +1108,8 @@ CDN:
   ClickShowText: https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js
 
   # fontawesome
-  # fontawesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css
-  fontawesome: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css
+  fontawesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css
+  # fontawesome: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css
   # fontawesome:   https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css
 
 
@@ -1138,15 +1123,7 @@ CDN:
   justifiedGallery_js: https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js
   justifiedGallery_css: https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/justifiedGallery/3.8.1/css/justifiedGallery.min.css
 
-  # aplayer
-  # aplayer_css: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css
-  # aplayer_js: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
-  # meting_js: https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js
-
-  aplayer_css: https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css
-  aplayer_js: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js
-  meting_js: https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js
-
+ 
   # Prism.js
   # prismjs_js: https://cdn.jsdelivr.net/npm/prismjs/prism.min.js
   # prismjs_lineNumber_js: https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.js

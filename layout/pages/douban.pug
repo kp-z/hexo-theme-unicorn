@@ -1,6 +1,6 @@
 #douban.two-columns-layout
   .recent-douban-posts
-    iframe(src=url_for(theme.pages.douban_book_charts) sandbox='allow-scripts allow-same-origin' scrolling='no')
+    iframe(src=url_for(theme.pages.douban_book_charts)  scrolling='no')
     #tag
       .article-sort-title  Latest Reviews
       .article-sort
@@ -20,6 +20,6 @@
         - })
         //- include includes/pagination.pug
   .douban
-    iframe(runat='server' allowtransparency='true' src=url_for(theme.pages.douban_movie_charts) sandbox='allow-scripts allow-same-origin' )
+    iframe(runat='server' src=url_for(theme.pages.douban_movie_charts) )
   .douban
-    iframe(runat='server' allowtransparency='true' src=url_for(theme.pages.douban_subject_profile) sandbox='allow-scripts allow-same-origin' )
+    iframe(runat='server' src=url_for(theme.pages.douban_subject_profile) )

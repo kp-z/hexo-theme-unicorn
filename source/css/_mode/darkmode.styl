@@ -43,9 +43,12 @@ if hexo-config('darkmode.enable') || hexo-config('display_mode') == 'dark'
       position: absolute
       width: 100%
       height: 100%
-      background-color: alpha($dark-black, 1)
-      // background: url(/blog-en/img/bg/bg-5.jpg)
       content: ''
+    #web_bg:before
+      background: url(https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/bg-8.png)
+      background-size:cover 
+    #footer:before
+      background-color: alpha($dark-black, 1)
     #douban
        filter: brightness(50%)
     #article-container

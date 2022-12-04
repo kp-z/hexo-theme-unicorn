@@ -1,37 +1,109 @@
 img
     width: 100%
     height: 100%
-.dashboard-title
-  position: relative
-  float: left
-  margin: 1rem 0.6rem .5rem 0.6rem
-  width: 100%
-  height: 2rem
-  opacity : 0.3
-  font-size: 1.2rem
-  font-family: 'Audiowide', italic
-  font-weight: bold
-  color:var(--font-color)
-  padding: 0 .5rem
-  letter-spacing:.5rem;
-  white-space: 1em
+
 .gallery-group-main
+    .dashboard-title
+        position: relative
+        z-index :-1
+        width: 100%
+        opacity : 0.3
+        font-size: 1.2rem
+        margin-left: 10px
+        font-family: 'Audiowide', italic
+        font-weight: bold
+        color:var(--font-color)
+        padding: 0 .5rem
+        letter-spacing:.5rem;
+        white-space: 1em
+        +maxWidth768()
+            font-size: .8rem
     #goals
-        padding: 1rem
-        display: flex
-        flex-direction: column;
+        padding: 2rem
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
         justify-content: space-between;
-        .goal
-            background: rgba(142, 140, 140, 0.05)
-            height: 22%
-            border-radius: 6px
-            padding: 1rem 2rem
-            a
-                color: var(--font-color)
-                opacity : .2
-                font-family: 'Audiowide', cursive
-                &:hover
-                    text-shadow: 1px 1px white, -1px -1px #444
+        align-items: center;
+        font-family: 'Audiowide', cursive
+        .habitica-block
+            // background: rgba(142, 140, 140, 0.05)
+            border-radius: 10px
+            height: 48%
+            width: 48%
+        #habitica-block-1
+            padding: 0
+            // text-shadow: 0.1rem 0.1rem 0.1rem rgb(7 17 27 / 30%);
+            .habitic-profile
+                color: #ec6d51
+                opacity: 1;
+                font-size: 1em
+                +maxWidth768()
+                    font-size: .6em
+            .habitic-class,
+            .habitic-level
+                font-size: .2em
+                opacity: .6;
+                +maxWidth768()
+                    font-size: .1em
+            // .habitic-stats
+            //     color: #f6bfbc
+            //     width : 100%
+            //     height: 50%
+        #habitica-block-2
+            font-size: 0.2em
+            // +maxWidth768()
+            //         font-size: .1rem
+        #habitica-block-4
+            
+            display: flex
+            // background: rgba(142, 140, 140, 0.05)
+            padding: 0 .5rem
+            border-radius: 10px
+            border: 1px solid rgba(142, 140, 140, 0.05)
+            flex-direction: column
+            flex-wrap: wrap
+            justify-content: space-between;
+            overflow: hidden
+            // align-items: center;
+            .today-todo-title-1
+                font-size: 0.8em
+                color: #82ae46
+                +maxWidth768()
+                        font-size: 0.2em
+            a.today-todo-num
+                 font-size: 1.2em
+                 text-align: center
+                 +maxWidth768()
+                    font-size: 0.5em
+                    
+            .today-todo-title-2
+                display: block 
+                p
+                    display: inline-block
+                    float: right 
+                    font-size: 0.5em
+                    +maxWidth768()
+                        font-size: 0.2em
+                        display: none
+                .today-todo-kill
+                    margin-left: 10px
+                    color: rgb(244, 101, 101)
+                
+                
+                
+        // .goal
+        //     background: rgba(142, 140, 140, 0.05)
+        //     height: 22%
+        //     border-radius: 6px
+        //     padding: 1rem 2rem
+        //     a
+        //         color: var(--font-color)
+        //         opacity : .2
+        //         font-family: 'Audiowide', cursive
+        //         &:hover
+        //             text-shadow: 1px 1px white, -1px -1px #444
+                
             
             
     #fitness
@@ -46,15 +118,15 @@ img
             height: 20%
             overflow :hidden
             #fitness-circle
-                height: 80%
+                height: 100%
                 width: 10%
-                margin-right: 10%
+                // margin-right: 10%
                 +maxWidth768()
                     height: 100%
                     width: 18%
                     margin-right: 2%
             .fitness-title-text 
-                width : 60%
+                width : 90%
                 display: flex
                 flex-direction: row;
                 flex-wrap: wrap;
@@ -63,6 +135,7 @@ img
                     width: 80%
                 .fitness-title-e
                     height: 100%
+                    margin-left: 1rem
                     overflow: hidden
                     font-family: 'Audiowide', cursive
                     
@@ -104,7 +177,6 @@ img
         padding: 1rem .5rem
         +maxWidth768()
             height: 16rem
-
         .cell
             background: rgba(142, 140, 140, 0.05)
             border-radius: 10px
@@ -155,6 +227,7 @@ img
         transition: opacity .35s, transform .35s
         object-fit: cover
     .video
+        overflow: hidden
         .card-video-white
             display: block
             height: 101%
@@ -328,18 +401,16 @@ img
         -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
         filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
     .plant2
-        width :  40%
+        width : 20%
         position : absolute
         bottom: -1.5rem
         z-index :99
-        left: 80%
+        margin-right: -0.6rem
+        right: 0rem
         -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
         filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
         +maxWidth768()
-            left: 62%
-
-        img
-            width: 100%
+           margin-right: .5rem
     .pattern-3d
         float : left
         position : relative
