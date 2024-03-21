@@ -1,10 +1,3 @@
-.categories-dashboard
-  .dashboard-weight
-    height: 25rem
-    width: calc(50% - 1.2rem)
-    +maxWidth768()
-      width: calc(100% - 0.4rem)
-      margin: 1rem 0.2rem
 .dashboard-weight
   position: relative
   float: left
@@ -13,8 +6,8 @@
   height: 16rem
   // overflow: hidden
   -webkit-transform: translate3d(0, 0, 0)
-  +minWidth2000()
-    height: 20rem
+  // +minWidth2000()
+  //   height: 16rem
   +maxWidth768()
     width: calc(100% - 0.4rem)
     margin: 1rem 0.2rem
@@ -56,8 +49,8 @@
       height: 7.5rem
       // top: -3px
 
-      +minWidth2000()
-        height: 9.5rem
+      // +minWidth2000()
+      //   height: 9.5rem
 
       +maxWidth768()
         width: 100%
@@ -70,8 +63,8 @@
       height: 7.5rem
       width: 48%
 
-      +minWidth2000()
-        height: 9.5rem
+      // +minWidth2000()
+      //   height: 9.5rem
 
       +maxWidth768()
         width: 100%

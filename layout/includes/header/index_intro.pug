@@ -47,21 +47,21 @@ script(src=url_for(theme.pages.carousel))
       .page.top
         .description
           a(href=url_for(link) title=title)
-            | !{title} - !{description}
+            | !{title} : !{description}
           br
         img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
     else if i == 1
       .page.mid
         .description
           a(href=url_for(link) title=title)
-            | !{title} - !{description}
+            | !{title} : !{description}
           br
         img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
     else
       .page.bot
         .description
           a(href=url_for(link) title=title)
-            | !{title} - !{description}
+            | !{title} : !{description}
           br
         img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
     - i++

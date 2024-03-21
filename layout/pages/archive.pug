@@ -1,4 +1,20 @@
 #gallery-group-main.categories-dashboard
+  .weight-quarter.card-style
+    .webinfo-item
+      .item-name= _p('aside.card_webinfo.runtime.name')
+      .item-count#runtimeshow(data-publishDate=date_xml(theme.runtimeshow.publish_date))
+  .weight-quarter.card-style
+    .webinfo-item
+      .item-name= _p('aside.card_webinfo.site_uv_name')
+      .item-count#busuanzi_value_site_uv
+  .weight-quarter.card-style
+    .webinfo-item
+      .item-name= _p('aside.card_webinfo.site_pv_name')
+      .item-count#busuanzi_value_site_pv
+  .weight-quarter.card-style
+    .webinfo-item
+      .item-name= _p('aside.card_webinfo.article_name')
+      .item-count= site.posts.length
   .dashboard-weight.card-style
     #postCharts.cat-chart(data-aos='zoom-in-up')
       #categories-chart
@@ -7,7 +23,7 @@
       #posts-chart
   .dashboard-weight.card-style
     .category-lists
-        div!= list_categories()
+      div!= list_categories()
   .dashboard-weight.card-style
-    .tag-cloud-list.is-center
-        !=cloudTags({source: site.tags, minfontsize: 1, maxfontsize: 2, limit: 0,  unit: 'em'})
+    .dashboard-tagcloud
+      !=tagcloud({min_font: 0.9, max_font: 0.9, amount: tagLimit , color: true, start_color: '#999', end_color: '#99a9bf', unit: 'em'})

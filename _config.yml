@@ -53,7 +53,7 @@ footer_text:
     社区:
       SLAM: /blog-cn/home/
       Blender: /blog-cn/gallery/
-      Github: https://github.com/Uzizkp 
+      Github: https://github.com/kp-z 
   footer_text_3:
     友链: 
       莫比乌斯: https://onojyun.com/
@@ -68,7 +68,7 @@ footer_text:
   footer_text_4:
     关于本站:
       RSS订阅: https://zkpeace.com/blog-cn/rss2.xml
-      本站主题: https://github.com/Uzizkp/hexo-theme-unicorn
+      本站主题: https://github.com/kp-z/hexo-theme-unicorn
       版权声明: /blog-cn/copyright/
       支持赞助: /blog-cn/sponsorship/
     收录:
@@ -719,7 +719,7 @@ aside:
     content: <img src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/wechat_3.png"></img>
   card_recent_post:
     enable: true
-    limit: 14 # if set 0 will show all
+    limit: 6 # if set 0 will show all
     sort: date # date or updated
     sort_order: # Don't modify the setting unless you know how it works
   card_author:
@@ -737,11 +737,11 @@ aside:
     sort_order: # Don't modify the setting unless you know how it works
   card_tags:
     enable: true
-    limit: 20 # if set 0 will show all
+    limit: 16 # if set 0 will show all
     color: false
     sort_order: # Don't modify the setting unless you know how it works
   card_archives:
-    enable: true
+    enable: false
     type: yearly # yearly or monthly
     format: YYYY # eg: YYYY年MM月
     order: -1 # Sort of order. 1, asc for ascending; -1, desc for descending
@@ -749,8 +749,8 @@ aside:
     sort_order: # Don't modify the setting unless you know how it works
   card_webinfo:
     enable: false
-    post_count: true
-    last_push_date: true
+    post_count: false
+    last_push_date: false
     sort_order: # Don't modify the setting unless you know how it works
 
 # busuanzi count for PV / UV in site
@@ -764,7 +764,7 @@ busuanzi:
 # Formal: Month/Day/Year Time or Year/Month/Day Time
 runtimeshow:
   enable: false
-  publish_date:
+  publish_date: 2019/01/01
 
 # Aside widget - Newest Comments
 newest_comments:
@@ -772,7 +772,7 @@ newest_comments:
   sort_order: # Don't modify the setting unless you know how it works
   limit: 6
   storage: 10 # unit: mins, save data to localStorage
-  avatar: true
+  avatar: false
   # You can only choose one, or neither
   valine: false
   github_issues:
@@ -792,7 +792,7 @@ newest_comments:
 change_font_size: false
 
 music:
-  enable: true
+  enable: false
 # Conversion between Traditional and Simplified Chinese (簡繁轉換)
 translate:
   enable: false
@@ -983,7 +983,7 @@ profile:
   desktop:
   desktop_img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/Desktop.png
   social:
-    github: https://github.com/Uzizkp
+    github: https://github.com/kp-z
     px: https://500px.com.cn/kpeace?rs=56ebd9df04f709a187951df0191876718
     instagram: https://www.instagram.com/zkpjy/
     telegram: https://t.me/kpzhang

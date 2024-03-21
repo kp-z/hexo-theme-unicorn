@@ -1,43 +1,176 @@
 
+.categories-dashboard {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: stretch;
+    align-items: stretch;
+    height: auto;
 
-#postCharts
-    display:flex;           
-    align-items:center;
-    justify-content:center;
-    height:100%;
-    .cat-chart,
-    .post-chart,
-    .tag-chart
+    .weight-quarter {
+        width: calc(25% - 1.2rem);
+        margin: 1rem 0.6rem;
+        height: 8rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: center;
+
+        +maxWidth768() {
+            width: calc(50% - 0.6rem);
+            padding: 0;
+            margin: 1rem 0.1rem;
+        }
+
+        .webinfo-item {
+            width: 100%;
+            padding: 0 1rem;
+            height: 4rem;
+            border-left-style: solid;
+            border-color: rgba(155, 155, 155, 0.5);
+        }
+
+        .item-name {
+            transform: translateY(-6px);
+            opacity: 0.5;
+
+            +maxWidth768() {
+                font-size: 0.3rem;
+            }
+        }
+
+        .item-count {
+            font-family: 'Audiowide', cursives;
+            font-size: 1.5rem;
+
+            +maxWidth768() {
+                font-size: 1rem;
+            }
+        }
+
+        +maxWidth768() {
+            padding: 0;
+            margin: 1rem 0.2rem;
+            height: 5rem;
+        }
+    }
+
+    .weight-quarter:first-child {
+        +maxWidth768() {
+            height: 5rem;
+        }
+    }
+
+    .dashboard-tagcloud {
+        margin: 1.5rem 0.8rem;
+
+        a {
+            white-space: nowrap;
+            border-radius: 10px;
+            padding: 2px 10px;
+            background-color: rgba(150, 150, 150, 0.3);
+        }
+
+        a::before {
+            content: '# ';
+            color: rgba(189, 195, 199, 0.8);
+            line-height: 0;
+        }
+    }
+
+    .dashboard-weight {
+        height: 21rem;
+        width: calc(50% - 1.2rem);
+
+        +maxWidth768() {
+            width: calc(100% - 0.4rem);
+            margin: 1rem 0.2rem;
+            height: auto;
+        }
+    }
+}
+
+#postCharts {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    .cat-chart, .post-chart, .tag-chart {
         width: 100%;
-        display: inline-block
-    #categories-chart,
-    #posts-chart,
-    #tags-chart
-        width : 100%;
-        height:  16rem
-.category-lists
-    .category-list
-        display: flex
-        flex-direction: row
-        .category-list-item
+        display: inline-block;
+    }
+
+    #categories-chart, #posts-chart, #tags-chart {
+        width: 100%;
+        height: 16rem;
+    }
+}
+
+.category-lists {
+    .category-list {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-content: stretch;
+
+        .category-list-item {
             // border:  solid 2px #a4b0be
-            // border-radius: 5px
-            width: 100%
-            // .category-list-child
-            //     .category-list-item
-            //         display: none
+            border-radius: 5px;
+            margin: 0 0.5rem;
+            background-color: rgba(150, 150, 150, 0.05);
+            width: 30%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
 
-            
+            .category-list-item {
+                width: 100%;
+                background-color: rgba(150, 150, 150, 0);
+            }
+        }
 
-        
-.tag-cloud-list
-    padding: 10px 0
-    a
-        border-radius: 5px
-        margin: 0 2px
-        padding: 2px 10px
+        .category-list-item::before {
+            display: none;
+        }
 
-        &:hover
-            background: #e1e3e6
-        
-        
+        .category-list-child {
+            .category-list-item::before {
+                display: block;
+            }
+        }
+    }
+
+    +maxWidth768() {
+        white-space: nowrap;
+        font-size: 0.5rem;
+    }
+}
+
+.tag-cloud-list {
+    padding: 10px 0;
+
+    a {
+        border-radius: 5px;
+        margin: 0 2px;
+        display: inline-block;
+        padding: 0 0.4rem;
+        transition: all 0.3s;
+        background-color: rgba(150, 150, 150, 0.05);
+
+        &:hover {
+            color: $text-hover !important;
+            transform: scale(1.1);
+        }
+    }
+}
+
+.tag-cloud--title {
+    font-size: 2.57em;
+
+    +maxWidth768() {
+        font-size: 2em;
+    }
+}

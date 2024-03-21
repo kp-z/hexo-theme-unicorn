@@ -79,7 +79,7 @@ function postsChart () {
         data: ${monthArr}
       },
       yAxis: {
-        name: '文章篇数',
+        name: '文章数',
         type: 'value',
         splitLine: {
           show: false
@@ -95,14 +95,15 @@ function postsChart () {
         }
       },
       series: [{
-        name: '文章篇数',
-        type: 'line',
+        name: '文章数',
+        type: 'bar',
         smooth: true,
         lineStyle: {
             width: 0
         },
         showSymbol: false,
         itemStyle: {
+          borderRadius: 80,
           opacity: 1,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
             offset: 0,

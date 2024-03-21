@@ -1,0 +1,61 @@
+#twikoo {
+    margin-top: -2.5rem;
+}
+.tk-comments .tk-submit {
+    display: none;
+}
+.tk-comments .tk-submit .tk-row .tk-avatar {
+    display: none;
+}
+.tk-comments-container {
+    padding-left: 1rem;
+    border-left: solid 2px rgba(189,195,199,0.2);
+}
+.tk-comments-container .tk-comments-count {
+    opacity: 0.4;
+}
+.tk-comments-container .tk-comment {
+    border-left: none;
+}
+.tk-comments-container .tk-comment .tk-avatar {
+    display: none;
+}
+.tk-comments-container .tk-comment .tk-main {
+    position: relative;
+}
+.tk-comments-container .tk-comment .tk-main:before {
+    position: absolute;
+    content: "•";
+    color: rgba(189,195,199,0.8);
+    font-size: 3rem;
+    left: -2rem;
+    top: 0.5rem;
+    line-height: 0;
+}
+.tk-comments-container .tk-comment .tk-main:hover:before {
+    -webkit-text-stroke: 4px var(--font-color);
+   /* width and color */
+    text-stroke: 4px var(--font-color);
+}
+.tk-comments-container .tk-comment .tk-main:hover .tk-row {
+    opacity: 1;
+}
+.tk-comments-container .tk-comment .tk-main .tk-row .tk-nick {
+    display: none;
+}
+.tk-comments-container .tk-comment .tk-main .tk-row .tk-tag-green {
+    display: none;
+}
+.tk-comments-container .tk-comment .tk-main .tk-row .tk-tag {
+    border: none;
+    background: none;
+}
+.tk-comments-container .tk-comment .tk-main .tk-extras {
+    display: none;
+}
+.tk-comments-container .tk-comment .tk-main .tk-submit {
+    display: flex;
+}
+.tk-comments-container .tk-comment .tk-main .tk-submit .tk-row .tk-avatar {
+    display: flex;
+}
