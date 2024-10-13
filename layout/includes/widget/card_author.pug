@@ -6,17 +6,23 @@ if theme.aside.card_author.enable
       .author-info__description!= theme.aside.card_author.description || config.description
 
     .card-info-data
-      if site.posts.length
-        .card-info-data-item.is-center
-          a(href=url_for(config.archive_dir) + '/')
-            .headline= _p('aside.articles') 
-            .length-num= site.posts.length
 
+      if theme.aside.card_author.button.enable
+        a#card-info-btn.button--animated(href=theme.aside.card_author.button.link)
+          i(class=theme.aside.card_author.button.icon)
+          span=theme.aside.card_author.button.text
+          
       if site.tags.length
         .card-info-data-item.is-center
           a(href=url_for(config.tag_dir) + '/')
             .headline= _p('aside.tags')
             .length-num= site.tags.length
+
+      if site.posts.length
+        .card-info-data-item.is-center
+          a(href=url_for(config.archive_dir) + '/')
+            .headline= _p('aside.articles') 
+            .length-num= site.posts.length
 
       if site.categories.length
         .card-info-data-item.is-center
@@ -24,10 +30,6 @@ if theme.aside.card_author.enable
             .headline= _p('aside.categories') 
             .length-num= site.categories.length
 
-    if theme.aside.card_author.button.enable
-      a#card-info-btn.button--animated(href=theme.aside.card_author.button.link)
-        i(class=theme.aside.card_author.button.icon)
-        span=theme.aside.card_author.button.text
   
     if(theme.social)
         .card-info-social-icons.is-center

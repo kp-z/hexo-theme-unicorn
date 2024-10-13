@@ -714,14 +714,6 @@ aside:
   button: true
   mobile: true # display on mobile
   position: left # left or right
-  card_announcement:
-    enable: true
-    content: <img src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/wechat_3.png"></img>
-  card_recent_post:
-    enable: true
-    limit: 6 # if set 0 will show all
-    sort: date # date or updated
-    sort_order: # Don't modify the setting unless you know how it works
   card_author:
     enable: false
     description:
@@ -730,6 +722,14 @@ aside:
       icon: fab fa-github
       text: Follow Me
       link: https://github.com/xxxxxx
+  card_announcement:
+    enable: false
+    content: <img src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/wechat_3.png"></img>
+  card_recent_post:
+    enable: true
+    limit: 6 # if set 0 will show all
+    sort: date # date or updated
+    sort_order: # Don't modify the setting unless you know how it works
   card_categories:
     enable: false
     limit: 0 # if set 0 will show all
