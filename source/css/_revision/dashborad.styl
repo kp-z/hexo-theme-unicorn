@@ -85,6 +85,50 @@
        fill: currentColor;
        overflow: hidden;     
 
+// 磨砂基础层：升级为液态玻璃规格（大半径模糊 + 饱和度提升，营造玻璃通透感）
 .frosted-gross
     -webkit-backdrop-filter: blur(5px);    
     backdrop-filter: blur(5px); 
+
+// ===========================================================================
+// 个人简介页卡片：Apple Liquid Glass（液态玻璃）
+// 说明：#profile 是 layout/pages/profile.pug 的硬编码 id，/services/ 因
+//      front-matter 与 profile 相同而复用同一模板，故两页样式一致。
+// ===========================================================================
+#profile
+  .card-style
+    position: relative
+    border-radius: 22px
+    // 玻璃材质：斜向渐变模拟折射层次
+    background: linear-gradient(135deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, .06) 46%, rgba(255, 255, 255, .16))
+    // 大半径模糊 + 提高饱和度（液态玻璃的关键）
+    -webkit-backdrop-filter: blur(28px) saturate(180%)
+    backdrop-filter: blur(28px) saturate(180%)
+    // 高光描边
+    border: 1px solid rgba(255, 255, 255, .30)
+    // 内高光 + 内底光 + 远近视差投影
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), inset 0 -1px 0 rgba(255, 255, 255, .10), 0 8px 32px rgba(0, 0, 0, .18), 0 2px 8px rgba(0, 0, 0, .08)
+    transition: transform .5s cubic-bezier(.2, .8, .2, 1), box-shadow .5s ease, background .5s ease
+
+    // 顶部镜面反光带
+    &::before
+      content: ''
+      position: absolute
+      top: 0
+      left: 10%
+      right: 10%
+      height: 1px
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .85), transparent)
+      pointer-events: none
+      z-index: 2
+
+    // 悬停：轻微上浮 + 提亮（保持玻璃质感）
+    &:hover
+      transform: translateY(-4px)
+      background: linear-gradient(135deg, rgba(255, 255, 255, .30), rgba(255, 255, 255, .12) 46%, rgba(255, 255, 255, .22))
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .70), inset 0 -1px 0 rgba(255, 255, 255, .14), 0 16px 48px rgba(0, 0, 0, .24), 0 4px 12px rgba(0, 0, 0, .10)
+
+  // 视频卡片内部需裁切，圆角跟随玻璃卡片
+  .video
+    border-radius: 22px
+    overflow: hidden
