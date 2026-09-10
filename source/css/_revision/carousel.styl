@@ -61,15 +61,15 @@
         display: flex
         align-items: center
         justify-content: space-between
-        gap: 10px
+        gap: 7px
         width: 100%
         height: auto
-        min-height: 68px
-        padding: 12px 22px 12px 18px
-        border-radius: 999px
+        min-height: 44px
+        padding: 6px 12px 6px 11px
+        border-radius: 15px
         background: linear-gradient(135deg, rgba(255,255,255,.26), rgba(255,255,255,.12) 55%, rgba(255,255,255,.20))
         border: 1px solid rgba(255,255,255,.30)
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.12), 0 6px 20px rgba(0,0,0,.20)
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(255,255,255,.10), 0 3px 12px rgba(0,0,0,.16)
         backdrop-filter: blur(20px)
         -webkit-backdrop-filter: blur(20px)
         cursor: pointer
@@ -80,10 +80,10 @@
         &::after
             content: ''
             position: absolute
-            top: 6px
-            left: 24px
-            width: 36px
-            height: 7px
+            top: 5px
+            left: 14px
+            width: 24px
+            height: 5px
             border-radius: 50%
             background: rgba(255, 255, 255, .45)
             filter: blur(3px)
@@ -93,16 +93,16 @@
             animation-play-state: paused
             background: linear-gradient(135deg, rgba(255,255,255,.36), rgba(255,255,255,.20))
             border-color: rgba(255,255,255,.50)
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 10px 28px rgba(0,0,0,.28)
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.65), 0 6px 18px rgba(0,0,0,.22)
 
         img
             order: 2
             flex: 0 0 auto
             float: none
             width: auto
-            max-width: 30%
+            max-width: 22%
             height: auto
-            max-height: 52px
+            max-height: 32px
             object-fit: contain
             border-radius: 6px
 
@@ -115,13 +115,17 @@
             height: auto
             overflow: visible
 
+            // 模板里 a 之后有一个多余 <br>，会白白撑高约一行
+            br
+                display: none
+
             a, p
                 display: -webkit-box
                 -webkit-box-orient: vertical
                 -webkit-line-clamp: 2
                 overflow: hidden
-                line-height: 1.45
-                font-size: 13.5px
+                line-height: 1.35
+                font-size: 12px
                 font-weight: 400
                 color: var(--white)
                 text-shadow: 0 1px 2px rgba(0, 0, 0, .18)
