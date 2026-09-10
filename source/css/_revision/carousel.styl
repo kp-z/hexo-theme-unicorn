@@ -46,9 +46,11 @@
     position: fixed
     // 左移以避开右下角的轮播切换圆点（#carousel-indictors）
     right: 6rem
-    top: 35%
+    // 与左侧站点名称 .site-name 的文字对齐（其 <a> 因字体度量会溢出容器顶部约 10px）
+    top: calc(40% - 10px)
     width: 20%
-    height: 58%
+    // 相应压缩高度，保持下边缘位置基本不变
+    height: 52%
     display: flex
     flex-direction: column
     +maxWidth600()
