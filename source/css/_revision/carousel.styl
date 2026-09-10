@@ -93,10 +93,8 @@
         animation: bubble-in .7s cubic-bezier(.2, .8, .2, 1) both, bubble-float 12s ease-in-out infinite
         transition: box-shadow .45s ease, background .45s ease, border-color .45s ease
 
-        // 10 个气泡依次浮现（第 1 个子元素是 <p>，所以气泡从 nth-child(2) 开始）
-        for i in 1..10
-            &:nth-child({i + 1})
-                animation-delay: (i - 1) * .13s, (1.2s + (i - 1) * .13s)
+        // 逐个浮现：延迟由模板注入的 --i 驱动，数量变化时自动适配
+        animation-delay: calc(var(--i, 0) * .13s), calc(1.2s + var(--i, 0) * .13s)
 
         &::after
             content: ''
