@@ -1,4 +1,4 @@
-const logger = require('hexo-log')()
+const logger = (require('hexo-log').default || require('hexo-log').logger)()
 
 hexo.on('ready', () => {
   const { version } = require('../../package.json')
