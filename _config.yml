@@ -995,7 +995,7 @@ profile:
   scripts:
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/sun.js
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/radar.js
-    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/gantt.js
+    - /js/gantt.js   # 已本地化（原 COS 版本数据结构错误、时间显示不准）
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness.js
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/visitorMap.js
     - /js/githubcalendar.js   # 已本地化（原 COS 版本依赖已失效的 Vercel API）
