@@ -998,7 +998,7 @@ profile:
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/gantt.js
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness.js
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/visitorMap.js
-    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/githubcalendar.js
+    - /js/githubcalendar.js   # 已本地化（原 COS 版本依赖已失效的 Vercel API）
     
 
 pages:
