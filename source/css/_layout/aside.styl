@@ -125,43 +125,70 @@
         color: $text-hover !important
 
   .aside-list
+    display: flex
+    flex-direction: column
+    gap: .1rem
+
     & > span
       display: block
       margin-bottom: .5rem
       text-align: center
 
     & > .aside-list-item
+      position: relative
       display: flex
       align-items: center
-      padding: .3rem 0
+      gap: 12px
+      padding: 8px 10px
+      border-radius: 10px
+      // 以悬停高亮取代虚线分隔，视觉更干净
+      transition: background-color .35s ease, transform .35s ease
 
-      &:first-child
-        padding-top: 0
+      &:hover
+        background-color: rgba(73, 177, 245, .08)
+        transform: translateX(3px)
 
-      &:not(:last-child)
-        border-bottom: 1px dashed #f5f5f5
+        .content > .title
+          color: $text-hover
 
-      &:last-child
-        padding-bottom: 0
+      // 悬停时左侧浮现的强调条
+      &::before
+        content: ''
+        position: absolute
+        top: 50%
+        left: 0
+        width: 3px
+        height: 0
+        border-radius: 2px
+        background-color: $text-hover
+        transform: translateY(-50%)
+        transition: height .35s ease
+
+      &:hover::before
+        height: 55%
 
       .thumbnail
+        flex: 0 0 auto
         overflow: hidden
-        width: w = 4.2em
+        width: w = 60px
         height: w
+        border-radius: 8px
 
         & > img
           width: 100%
           height: 100%
-          transition: all .6s
           object-fit: cover
+          transition: transform .6s ease
 
-          &:hover
-            transform: scale(1.1)
+        &:hover > img
+          transform: scale(1.08)
 
       .content
         flex: 1
-        padding-left: 10px
-        word-break: break-all
+        // ★ 关键：flex 子项默认 min-width:auto 会被内容撑破，
+        //   叠加 .card-widget 的 overflow:hidden 后就表现为「文字被遮挡」
+        min-width: 0
+        padding-left: 0
 
         & > .name
           @extend .limit-more-line
@@ -171,21 +198,30 @@
         & > .name
           display: block
           color: $theme-meta-color
-          font-size: 85%
+          font-size: 75%
+          line-height: 1.4
+          opacity: .85
+
+        & > time
+          margin-top: 3px
 
         & > .title,
         & > .comment
           @extend .limit-more-line
           color: var(--font-color)
-          font-size: 95%
+          font-size: 90%
+          font-weight: 500
           line-height: 1.5
+          // 不再用 break-all（会把英文单词从中间切断）
+          word-break: break-word
+          overflow-wrap: anywhere
           -webkit-line-clamp: 2
 
           &:hover
             color: $text-hover
 
       &.no-cover
-        min-height: 4.4em
+        min-height: unset   // 移除 4.4em 造成的多余高度
   .card-archives ul.card-archive-list,
   .card-categories ul.card-category-list
     margin: 0
@@ -397,3 +433,17 @@
   if hexo-config('aside.card_webinfo.sort_order')
     .card-webinfo
       order: hexo-config('aside.card_webinfo.sort_order')
+
+// 最近文章卡片：缓慢向上漂浮
+.card-recent-post
+  animation: card-float 8s ease-in-out infinite
+  will-change: transform
+
+  &:hover
+    animation-play-state: paused   // 悬停时暂停，便于阅读点击
+
+@keyframes card-float
+  0%, 100%
+    transform: translateY(0)
+  50%
+    transform: translateY(-6px)
