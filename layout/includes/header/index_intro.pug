@@ -35,21 +35,23 @@ script(src=url_for(theme.pages.carousel))
     i(class="fa-solid fa-arrow-left")
 #pined-pages.pined-pages
   p LATEST NEWS
-  - let postLimit = 10
-  - let bubbleIndex = 0
-  - site.posts.sort('date', 'desc').limit(postLimit).each(function (article){
-    - let link = article.link || article.path
-    - let title = article.title || _p('no_title')
-    - let post_cover = article.cover
-    - let description = article.description || strip_html(article.content || '').replace(/\s+/g, ' ').substring(0, 40)
-    .page(style=`--i: ${bubbleIndex}`)
-      .description
-        a(href=url_for(link) title=title)
-          | !{title} : !{description}
-      if post_cover
-        img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
-    - bubbleIndex++
-  - })
+  //- 滚动容器：标题固定在外部，仅气泡滚动
+  .bubble-scroll
+    - let postLimit = 10
+    - let bubbleIndex = 0
+    - site.posts.sort('date', 'desc').limit(postLimit).each(function (article){
+      - let link = article.link || article.path
+      - let title = article.title || _p('no_title')
+      - let post_cover = article.cover
+      - let description = article.description || strip_html(article.content || '').replace(/\s+/g, ' ').substring(0, 40)
+      .page(style=`--i: ${bubbleIndex}`)
+        .description
+          a(href=url_for(link) title=title)
+            | !{title} : !{description}
+        if post_cover
+          img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
+      - bubbleIndex++
+    - })
 
 
 != page.content
