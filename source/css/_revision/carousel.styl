@@ -47,11 +47,24 @@
     right: 4rem
     top: 35%
     width: 20%
-    height: 50%
+    // 一次显示 3 个完整气泡（标题 18 + 3×38 + 3×3 间距 ≈ 141px，另留约 17px 让第 4 个在底部淡出）
+    max-height: 158px
     display: flex
     flex-direction: column
     gap: 3px
+    overflow-y: auto
+    overflow-x: hidden
+    // 上下边界模糊淡出（可滚动提示）
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%)
+    mask-image: linear-gradient(to bottom, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%)
+    // 隐藏滚动条（以模糊边界提示可滚动）
+    scrollbar-width: none
+    -ms-overflow-style: none
     +maxWidth600()
+        display: none
+
+    &::-webkit-scrollbar
+        width: 0
         display: none
 
     p
