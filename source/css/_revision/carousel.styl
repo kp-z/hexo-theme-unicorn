@@ -45,27 +45,41 @@
 .pined-pages
     position: fixed
     right: 4rem
-    top: 35%
+    top: 20%
     width: 16%
-    height: 50%
+    max-height: 66vh
+    display: flex
+    flex-direction: column
+    gap: 6px
+    overflow-y: auto
+    scrollbar-width: none
+    -ms-overflow-style: none
     +maxWidth600()
         display: none
+
+    &::-webkit-scrollbar
+        width: 0
+        display: none
+
     p
+        flex: 0 0 auto
+        margin: 0 0 2px 2px
         font-size: .8vw
         color: var(--white)
-        opacity : .6
+        opacity: .6
         font-family: 'Audiowide', cursive
-    // ===== 长气泡卡片 =====
+
+    // ===== 长气泡（最近 10 篇） =====
     .page
-        position: absolute
+        position: relative
+        flex: 0 0 auto
         display: flex
         align-items: center
         justify-content: space-between
         gap: 7px
         width: 100%
-        height: auto
-        min-height: 52px
-        padding: 8px 14px 8px 12px
+        min-height: 46px
+        padding: 6px 12px 6px 11px
         border-radius: 15px
         background: linear-gradient(135deg, rgba(255,255,255,.26), rgba(255,255,255,.12) 55%, rgba(255,255,255,.20))
         border: 1px solid rgba(255,255,255,.30)
@@ -74,8 +88,15 @@
         -webkit-backdrop-filter: blur(20px)
         cursor: pointer
         overflow: hidden
-        animation: bubble-float 12s ease-in-out infinite
+        // 入场：逐个向上浮现（用 translate 独立属性，避免与漂浮的 transform 互相覆盖）
+        // 漂浮：入场结束后无缝接上，缓慢循环
+        animation: bubble-in .7s cubic-bezier(.2, .8, .2, 1) both, bubble-float 12s ease-in-out infinite
         transition: box-shadow .45s ease, background .45s ease, border-color .45s ease
+
+        // 10 个气泡依次浮现（第 1 个子元素是 <p>，所以气泡从 nth-child(2) 开始）
+        for i in 1..10
+            &:nth-child({i + 1})
+                animation-delay: (i - 1) * .13s, (1.2s + (i - 1) * .13s)
 
         &::after
             content: ''
@@ -90,7 +111,7 @@
             pointer-events: none
 
         &:hover
-            animation-play-state: paused
+            animation-play-state: paused, paused
             background: linear-gradient(135deg, rgba(255,255,255,.36), rgba(255,255,255,.20))
             border-color: rgba(255,255,255,.50)
             box-shadow: inset 0 1px 0 rgba(255,255,255,.65), 0 6px 18px rgba(0,0,0,.22)
@@ -102,9 +123,9 @@
             width: auto
             max-width: 24%
             height: auto
-            max-height: 32px
+            max-height: 30px
             object-fit: contain
-            border-radius: 6px
+            border-radius: 5px
 
         .description
             order: 1
@@ -115,14 +136,13 @@
             height: auto
             overflow: visible
 
-            // 模板里 a 之后有一个多余 <br>，会白白撑高约一行
             br
                 display: none
 
             a, p
                 display: -webkit-box
                 -webkit-box-orient: vertical
-                -webkit-line-clamp: 1
+                -webkit-line-clamp: 2
                 overflow: hidden
                 line-height: 1.35
                 font-size: 12px
@@ -130,23 +150,21 @@
                 color: var(--white)
                 text-shadow: 0 1px 2px rgba(0, 0, 0, .18)
 
-    .top
-        top: 20%
-        animation-delay: 0s
-    .mid
-        top: 50%
-        right: 0
-        animation-delay: -4s
-    .bot
-        top: 80%
-        right: 30%
-        animation-delay: -8s
+// 逐个向上浮现
+@keyframes bubble-in
+    0%
+        opacity: 0
+        translate: 0 26px
+    100%
+        opacity: 1
+        translate: 0 0
 
+// 持续缓慢漂浮
 @keyframes bubble-float
     0%, 100%
-        transform: translateY(7px) scale(.995)
+        transform: translateY(5px) scale(.996)
     50%
-        transform: translateY(-9px) scale(1.005)
+        transform: translateY(-6px) scale(1.004)
 
 #carousel
     position: fixed

@@ -35,36 +35,18 @@ script(src=url_for(theme.pages.carousel))
     i(class="fa-solid fa-arrow-left")
 #pined-pages.pined-pages
   p LATEST NEWS
-  - let i = 0;
-  - let postLimit = 3
+  - let postLimit = 10
   - site.posts.sort('date', 'desc').limit(postLimit).each(function (article){
     - let link = article.link || article.path
     - let title = article.title || _p('no_title')
-    - let no_cover = article.cover === false || !theme.cover.aside_enable ? 'no-cover' : ''
     - let post_cover = article.cover
-    - let description = article.description
-    if i == 0
-      .page.top
-        .description
-          a(href=url_for(link) title=title)
-            | !{title}
-          br
+    - let description = article.description || strip_html(article.content || '').replace(/\s+/g, ' ').substring(0, 40)
+    .page
+      .description
+        a(href=url_for(link) title=title)
+          | !{title} : !{description}
+      if post_cover
         img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
-    else if i == 1
-      .page.mid
-        .description
-          a(href=url_for(link) title=title)
-            | !{title}
-          br
-        img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
-    else
-      .page.bot
-        .description
-          a(href=url_for(link) title=title)
-            | !{title}
-          br
-        img(src=url_for(post_cover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
-    - i++
   - })
 
 
