@@ -55,49 +55,95 @@
         color: var(--white)
         opacity : .6
         font-family: 'Audiowide', cursive
+    // ===== 长气泡卡片 =====
     .page
-        width : 80%
-        height: 20%
         position: absolute
-        border-radius: 10px
-        background: rgba(255,255,255,0.15)
-        backdrop-filter: blur(20px);
-        padding: .8rem
+        display: flex
+        align-items: center
+        justify-content: space-between
+        gap: 10px
+        width: 100%
+        height: auto
+        min-height: 68px
+        padding: 12px 22px 12px 18px
+        border-radius: 999px
+        background: linear-gradient(135deg, rgba(255,255,255,.26), rgba(255,255,255,.12) 55%, rgba(255,255,255,.20))
+        border: 1px solid rgba(255,255,255,.30)
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.12), 0 6px 20px rgba(0,0,0,.20)
+        backdrop-filter: blur(20px)
+        -webkit-backdrop-filter: blur(20px)
         cursor: pointer
-        +minWidth2000()
-            height: 6rem
+        overflow: hidden
+        animation: bubble-float 12s ease-in-out infinite
+        transition: box-shadow .45s ease, background .45s ease, border-color .45s ease
+
+        &::after
+            content: ''
+            position: absolute
+            top: 6px
+            left: 24px
+            width: 36px
+            height: 7px
+            border-radius: 50%
+            background: rgba(255, 255, 255, .45)
+            filter: blur(3px)
+            pointer-events: none
+
+        &:hover
+            animation-play-state: paused
+            background: linear-gradient(135deg, rgba(255,255,255,.36), rgba(255,255,255,.20))
+            border-color: rgba(255,255,255,.50)
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 10px 28px rgba(0,0,0,.28)
+
         img
-            width: 40%
-            object-fit: scale-down
-            height: 100%
-            border-radius: 5px
-            float: right 
-            display: inline-block
-            // background: var(--card-bg)
+            order: 2
+            flex: 0 0 auto
+            float: none
+            width: auto
+            max-width: 30%
+            height: auto
+            max-height: 52px
+            object-fit: contain
+            border-radius: 6px
+
         .description
-            display: inline-block
-            width: 50%
-            height: 100%
-            overflow: hidden;
-            a,p
-                line-height: 1.4;
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                overflow: hidden;
-                -webkit-box-orient: vertical;
-                font-weight: 1;
-                font-size: 1em;
-                color: var(--white);
-                +minWidth2000()
-                    -webkit-line-clamp: 4;
+            order: 1
+            flex: 1
+            min-width: 0
+            display: block
+            width: auto
+            height: auto
+            overflow: visible
+
+            a, p
+                display: -webkit-box
+                -webkit-box-orient: vertical
+                -webkit-line-clamp: 2
+                overflow: hidden
+                line-height: 1.45
+                font-size: 13.5px
+                font-weight: 400
+                color: var(--white)
+                text-shadow: 0 1px 2px rgba(0, 0, 0, .18)
+
     .top
-        top: 20%
+        top: 15%
+        animation-delay: 0s
     .mid
-        top: 50%
+        top: 45%
         right: 0
+        animation-delay: -4s
     .bot
-        top: 80%
-        right: 30%
+        top: 75%
+        right: 12%
+        animation-delay: -8s
+
+@keyframes bubble-float
+    0%, 100%
+        transform: translateY(7px) scale(.995)
+    50%
+        transform: translateY(-9px) scale(1.005)
+
 #carousel
     position: fixed
     top: 0
