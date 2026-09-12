@@ -87,7 +87,7 @@ footer_icp_address: http://www.beian.miit.gov.cn/state/outPortal/loginPortal.act
 carousel_contents:
   page_1:
     title: 01 - Info
-    subtitle: 你好啊！我是<a class="info-link" href="/blog-cn/profile">Kp</a>，无人驾驶算法攻城狮，喜欢<a class="info-link" href="/blog-cn/gallery">摄影</a> <a class="info-link" href="/blog-cn/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
+    subtitle: 你好啊！我是<a class="info-link" href="/blog-cn/profile">Kp</a>，自动驾驶仿真算法工程师，喜欢<a class="info-link" href="/blog-cn/gallery">摄影</a> <a class="info-link" href="/blog-cn/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
   page_2:
     title: 02 - Job
     subtitle: 欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/Projects/">项目</a>，有机会一起合作。
@@ -947,7 +947,7 @@ profile:
   avatar: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/avatar/20210718003707.webp
   author_info:
     line1: Hello&#xFF0C;I&apos;m kp
-    line2: Autopilot Engineer
+    line2: Autonomous Driving Simulation Engineer
     line3: <i class="fas fa-code"></i> &nbsp working
   declaration:
     <a class="main-title">FIND ME, HIRE ME</a><br/><br/><a class="description">the services i can provide now </a><br/><br/><a class="main-content">WEB DEVELOPING &amp; DESIGNING</a><br/><br/><a class="description">my dream is go to mars and to be a</a><br/><br/><a class="main-content">FULL STACK ENGINEER</a><br/><br/><a class="description">the subjects i really like are</a><br/><br/><a class="main-content">ROBOTIC AR/MR LoT DESIGN</a><br/><br/>
