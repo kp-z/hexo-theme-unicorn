@@ -271,33 +271,20 @@ function categoriesChart () {
     return { name: top.name, value: top.length, path: fullPath(top.path), itemStyle: { color: base }, children: nodes }
   })
 
-  // 标签压在色块上，用色块自身亮度决定用白字还是深字，保证任何配色下都能读清
-  // （原先统一用 #a4b0be 浅灰，压在浅色块上几乎看不见）。
-  const relLum = hex => {
-    const c = toRgb(hex).map(v => {
-      const s = v / 255
-      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
-    })
-    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
-  }
-  const labelOn = hex => (relLum(hex) > 0.45 ? '#1F2D3D' : '#FFFFFF')
-  // 所有扇区都要显示名字。
-  // 关键点：外环用「径向排字(rotate: 'radial')」—— 一张 1/51 的切片只有约 7° 圆心角，
-  // 沿弧长仅约 20px，横排无论如何放不下 4~5 个汉字；而沿半径方向可用的长度是环宽
-  // （放大后约 68px），足够写完整名字。内环只有三个一级分类、空间充足，保持横排。
-  const paint = node => {
-    node.label = { show: false }
-    if (node.children) node.children.forEach(paint)
-    return node
-  }
-  tree.forEach(paint)
-  tree.forEach(node => {
-    node.label = { show: true, color: labelOn(node.itemStyle.color), fontSize: 12, rotate: 0 }
-    node.children.forEach(child => {
-      child.label = { show: true, color: labelOn(child.itemStyle.color), fontSize: 11, rotate: 'radial' }
-    })
+  // 改成「环形饼图 + 外部引导线标签」（参考用户给的样式）：
+  // 名字放在环外并用引导线指向扇区，配 {名称：值（百分比）} 格式，
+  // 这样任何数量的分类都写得下，也不必把字压在色块上。
+  // 颜色按序号取柔和彩虹（HSL 均分色相），与参考图一致且能让相邻扇区互相区分。
+  const leaves = []
+  tree.forEach(top => {
+    top.children.forEach(c => leaves.push({ name: c.name, value: c.value, path: c.path, parent: top.name }))
   })
-  const treeJson = JSON.stringify(tree)
+  leaves.sort((a, b) => b.value - a.value)
+  const leafCount = leaves.length
+  leaves.forEach((leaf, i) => {
+    leaf.itemStyle = { color: `hsl(${Math.round((i * 330) / Math.max(1, leafCount - 1))}, 64%, 68%)` }
+  })
+  const treeJson = JSON.stringify(leaves)
 
   return `
   <script id="categoriesChart">
@@ -306,16 +293,33 @@ function categoriesChart () {
     var categoriesOption = {
       backgroundColor: 'transparent',
       textStyle: { color: chartSub },
-      tooltip: { trigger: 'item', formatter: '{b}：{c} 篇' },
+      tooltip: {
+        trigger: 'item',
+        formatter: function (p) {
+          return p.data.parent + ' / ' + p.name + '：' + p.value + ' 篇（' + p.percent + '%）';
+        }
+      },
       series: [{
         name: '文章篇数',
-        type: 'sunburst',
-        radius: ['16%', '92%'],
+        type: 'pie',
+        roseType: 'area',
+        radius: ['22%', '62%'],
         center: ['50%', '50%'],
         nodeClick: false,
         data: ${treeJson},
-        // minAngle: 0 —— 连 1 篇的极小扇区也要出字（默认会因角度太小而隐藏标签）
-        label: { show: true, minAngle: 0, overflow: 'truncate' },
+        label: {
+          show: true,
+          position: 'outside',
+          formatter: '{b}：{c}（{d}%）',
+          color: chartText,
+          fontSize: 11
+        },
+        labelLine: {
+          show: true,
+          length: 12,
+          length2: 14,
+          lineStyle: { color: chartSub }
+        },
         // 圆角切片 + 柔和投影，做出悬浮感（取值同 profile 的旭日图）
         itemStyle: {
           borderRadius: 4,
@@ -323,7 +327,7 @@ function categoriesChart () {
           shadowColor: 'rgba(0, 0, 0, .2)',
           shadowBlur: 14
         },
-        emphasis: { focus: 'ancestor' }
+        emphasis: { scale: true, scaleSize: 6 }
       }]
     };
     categoriesChart.setOption(categoriesOption);
