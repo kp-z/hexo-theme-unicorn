@@ -1,29 +1,98 @@
+//- 归档 / 统计页（/categories/，source/categories/index.md, type: flat, title: ARCHIVE）
+//- 设计语言：与「关于我」页同一套 dashboard
+//-   1) 卡片沿用站点既有 .card-style，并套用与 #profile 相同的液态玻璃配方（见 archive.styl）
+//-   2) 全部用图表表达：分类旭日图 / Top标签条形图 / 按年发布折线 / 发布节奏折线
+//-   3) 不再保留与图表重复的分类列表与标签云；因此两张图支持点击跳转（图表即导航）
+//-   4) 顶部四项统计为四张独立卡片，2×2 排布；每张除主数值外再带两行补充信息
+//-   5) 概览指标全部本地可算，不依赖 runtimeshow / busuanzi（原先 4 张卡有 3 张是空的）
+//- 样式全部 scope 在 .categories-dashboard（该类仅本页使用），不影响 profile 页与各分类页。
+
+-
+  var arcCats = site.categories.toArray()
+  var arcTags = site.tags.toArray()
+  var arcPosts = site.posts.sort('date')
+  var arcPostArr = arcPosts.toArray()
+  var arcFirst = arcPosts.first()
+  var arcLast = arcPosts.last()
+  // 写作跨度：首篇至今（构建时计算，随每次部署更新）
+  var arcSpanDays = arcFirst ? Math.max(1, Math.round((Date.now() - arcFirst.date.valueOf()) / 86400000)) : 0
+  var arcTopTags = 15
+  // ↓ 卡片补充信息，全部取自本地数据
+  var arcYears = {}
+  arcPostArr.forEach(function (p) { var y = p.date.format('YYYY'); arcYears[y] = (arcYears[y] || 0) + 1 })
+  var arcYearKeys = Object.keys(arcYears).sort()
+  var arcThisYear = arcYears[String(new Date().getFullYear())] || 0
+  var arcPeakYear = arcYearKeys.reduce(function (a, b) { return arcYears[b] > (arcYears[a] || 0) ? b : a }, arcYearKeys[0])
+  var arcTopLevel = arcCats.filter(function (c) { return !c.parent }).length
+  var arcSubLevel = arcCats.length - arcTopLevel
+  var arcTopCat = arcCats.slice().sort(function (a, b) { return b.length - a.length })[0]
+  var arcTopTag = arcTags.slice().sort(function (a, b) { return b.length - a.length })[0]
+  var arcTagTotal = arcTags.reduce(function (s, t) { return s + t.length }, 0)
+  var arcTagPerPost = (arcTagTotal / (arcPostArr.length || 1)).toFixed(1)
+
 #gallery-group-main.categories-dashboard
-  .weight-quarter.card-style
-    .webinfo-item
-      .item-name= _p('aside.card_webinfo.runtime.name')
-      .item-count#runtimeshow(data-publishDate=date_xml(theme.runtimeshow.publish_date))
-  .weight-quarter.card-style
-    .webinfo-item
-      .item-name= _p('aside.card_webinfo.site_uv_name')
-      .item-count#busuanzi_value_site_uv
-  .weight-quarter.card-style
-    .webinfo-item
-      .item-name= _p('aside.card_webinfo.site_pv_name')
-      .item-count#busuanzi_value_site_pv
-  .weight-quarter.card-style
-    .webinfo-item
-      .item-name= _p('aside.card_webinfo.article_name')
-      .item-count= site.posts.length
-  .dashboard-weight.card-style
-    #postCharts.cat-chart(data-aos='zoom-in-up')
+  //- ① 概览（四张独立卡片 2×2） + 分类占比
+  .arc-row
+    .arc-overview
+      .arc-stat.card-style
+        i.arc-stat__icon.fas.fa-file-lines
+        .arc-stat__main
+          .arc-stat__label 文章
+          .arc-stat__body
+            span.arc-stat__value= site.posts.length
+            span.arc-stat__unit 篇
+          .arc-stat__meta
+            span= '最多 ' + arcPeakYear + ' · ' + arcYears[arcPeakYear] + ' 篇'
+            span= '今年 ' + arcThisYear + ' 篇'
+      .arc-stat.card-style
+        i.arc-stat__icon.fas.fa-folder-open
+        .arc-stat__main
+          .arc-stat__label 分类
+          .arc-stat__body
+            span.arc-stat__value= arcCats.length
+            span.arc-stat__unit 个
+          .arc-stat__meta
+            span= '一级 ' + arcTopLevel + ' · 二级 ' + arcSubLevel
+            if arcTopCat
+              span= '最多 ' + arcTopCat.name + ' ' + arcTopCat.length
+      .arc-stat.card-style
+        i.arc-stat__icon.fas.fa-tags
+        .arc-stat__main
+          .arc-stat__label 标签
+          .arc-stat__body
+            span.arc-stat__value= arcTags.length
+            span.arc-stat__unit 个
+          .arc-stat__meta
+            if arcTopTag
+              span= '最多 ' + arcTopTag.name + ' ' + arcTopTag.length + ' 篇'
+            span= '篇均 ' + arcTagPerPost + ' 个'
+      .arc-stat.card-style
+        i.arc-stat__icon.fas.fa-clock
+        .arc-stat__main
+          .arc-stat__label 写作跨度
+          .arc-stat__body
+            span.arc-stat__value= arcSpanDays
+            span.arc-stat__unit 天
+          .arc-stat__meta
+            if arcFirst && arcLast
+              span= arcFirst.date.format('YYYY.MM') + ' — ' + arcLast.date.format('YYYY.MM')
+            span= '跨 ' + arcYearKeys.length + ' 个年度'
+
+    .arc-chart.card-style
+      .arc-chart__title 分类占比
       #categories-chart
-  .dashboard-weight.card-style
-    #postCharts.post-chart(data-aos='zoom-in-up')
+
+  //- ② Top 标签 + 按年发布
+  .arc-row
+    .arc-chart.card-style
+      .arc-chart__title Top #{arcTopTags} 标签
+      #tags-chart(data-length=arcTopTags)
+    .arc-chart.card-style
+      .arc-chart__title 按年发布
+      #year-chart
+
+  //- ③ 发布节奏：97 个月的时间序列，独占整行
+  .arc-row.arc-row--single
+    .arc-chart.card-style
+      .arc-chart__title 发布节奏
       #posts-chart
-  .dashboard-weight.card-style
-    .category-lists
-      div!= list_categories()
-  .dashboard-weight.card-style
-    .dashboard-tagcloud
-      !=tagcloud({min_font: 0.9, max_font: 0.9, amount: tagLimit , color: true, start_color: '#999', end_color: '#99a9bf', unit: 'em'})

@@ -6,9 +6,10 @@ hexo.extend.filter.register('after_render:html', function (locals) {
   const post = $('#posts-chart')
   const tag = $('#tags-chart')
   const category = $('#categories-chart')
+  const year = $('#year-chart')
   let htmlEncode = false
 
-  if (post.length > 0 || tag.length > 0 || category.length > 0) {
+  if (post.length > 0 || tag.length > 0 || category.length > 0 || year.length > 0) {
     if (post.length > 0 && $('#postsChart').length === 0) {
       if (post.attr('data-encode') === 'true') htmlEncode = true
       post.after(postsChart())
@@ -21,6 +22,10 @@ hexo.extend.filter.register('after_render:html', function (locals) {
       if (category.attr('data-encode') === 'true') htmlEncode = true
       category.after(categoriesChart())
     }
+    if (year.length > 0 && $('#yearChart').length === 0) {
+      if (year.attr('data-encode') === 'true') htmlEncode = true
+      year.after(yearChart())
+    }
 
     if (htmlEncode) {
       return $.root().html().replace(/&amp;#/g, '&#')
@@ -32,8 +37,24 @@ hexo.extend.filter.register('after_render:html', function (locals) {
   }
 }, 15)
 
+// 图表配色统一从 CSS 变量取值，使亮/暗模式都能读清（原先硬编码 #a4b0be 灰在亮色下对比不足）。
+// --font-color：亮色 #4C4948 / 暗色 #fff；--toc-link-color：亮色 #666261 / 暗色 rgba(255,255,255,.6)
+const CHART_COLOR_SNIPPET = `
+    var __cs = getComputedStyle(document.documentElement);
+    var chartText = (__cs.getPropertyValue('--font-color') || '').trim() || '#4c4948';
+    var chartSub = (__cs.getPropertyValue('--toc-link-color') || '').trim() || '#666261';
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+`
+
+// 图表配色对齐「关于我」页的图表语言（source/js/json/sun.js、fitness.js）：
+// 手挑的柔和粉彩，同色系内父级深、子级浅一档；并配圆角 + 柔和投影做出悬浮感。
+const CHART_PASTEL = ['#74b9ff', '#97e245', '#ff8fa0', '#f4d142', '#83ccd2', '#b5ea7b']
+
 function postsChart () {
-  const startDate = moment('2021-01')
+  // 起点取最早一篇文章所在月，而非硬编码 moment('2021-01')：
+  // 原写法会把 2018-09 ~ 2020-12 的 29 篇文章静默排除在时间图之外（本站最早一篇是 2018-09）。
+  const allDates = hexo.locals.get('posts').toArray().map(p => p.date).sort((a, b) => a - b)
+  const startDate = allDates.length ? moment(allDates[0]).startOf('month') : moment().startOf('month')
   const endDate = moment()
 
   const monthMap = new Map()
@@ -55,12 +76,14 @@ function postsChart () {
 
   return `
   <script id="postsChart">
-    var color = '#a4b0be'
-    var postsChart = echarts.init(document.getElementById('posts-chart'), 'light');
+    ${CHART_COLOR_SNIPPET}
+    var postsChart = echarts.init(document.getElementById('posts-chart'), isDark ? 'dark' : 'light');
     var postsOption = {
+      backgroundColor: 'transparent',
       textStyle: {
-        color: color
+        color: chartSub
       },
+      grid: { left: 8, right: 16, top: 30, bottom: 6, containLabel: true },
       tooltip: {
         trigger: 'axis'
       },
@@ -70,10 +93,13 @@ function postsChart () {
         axisTick: {
           show: false
         },
+        axisLabel: {
+          color: chartSub
+        },
         axisLine: {
           show: true,
           lineStyle: {
-            color: color
+            color: chartSub
           }
         },
         data: ${monthArr}
@@ -87,41 +113,38 @@ function postsChart () {
         axisTick: {
           show: false
         },
+        axisLabel: {
+          color: chartSub
+        },
         axisLine: {
           show: true,
           lineStyle: {
-            color: color
+            color: chartSub
           }
         }
       },
       series: [{
         name: '文章数',
-        type: 'bar',
+        type: 'line',
         smooth: true,
-        lineStyle: {
-            width: 0
-        },
         showSymbol: false,
+        symbol: 'circle',
+        symbolSize: 5,
+        lineStyle: {
+          width: 2,
+          color: 'rgba(116, 185, 255, 1)'
+        },
         itemStyle: {
-          borderRadius: 80,
-          opacity: 1,
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-            offset: 0,
-            color: 'rgba(128, 255, 165)'
-          },
-          {
-            offset: 1,
-            color: 'rgba(1, 191, 236)'
-          }])
+          color: 'rgba(116, 185, 255, 1)'
         },
         areaStyle: {
           opacity: 1,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
             offset: 0,
-            color: 'rgba(128, 255, 165)'
+            color: 'rgba(116, 185, 255, .45)'
           }, {
             offset: 1,
-            color: 'rgba(1, 191, 236)'
+            color: 'rgba(116, 185, 255, .04)'
           }])
         },
         data: ${monthValueArr},
@@ -141,149 +164,246 @@ function postsChart () {
 }
 
 function tagsChart (len) {
+  const root = hexo.config.root || '/'
+  const fullPath = p => (!p ? '' : (p.charAt(0) === '/' ? p : root + p))
   const tagArr = []
   hexo.locals.get('tags').map(function (tag) {
-    tagArr.push({ name: tag.name, value: tag.length })
+    tagArr.push({ name: tag.name, value: tag.length, path: fullPath(tag.path) })
   })
   tagArr.sort((a, b) => { return b.value - a.value })
 
-  let dataLength = Math.min(tagArr.length, len) || tagArr.length
-  const tagNameArr = []
-  const tagCountArr = []
-  for (let i = 0; i < 10; i++) {
-    tagNameArr.push(tagArr[i].name)
-    tagCountArr.push(tagArr[i].value)
-  }
-  const tagNameArrJson = JSON.stringify(tagNameArr)
-  const tagCountArrJson = JSON.stringify(tagCountArr)
+  // 原先固定循环 10 次且忽略 data-length，标签不足 10 个时还会取到 undefined 而报错。
+  const topN = Math.min(parseInt(len, 10) || 10, tagArr.length)
+  const picked = tagArr.slice(0, topN)
+  // 横向条形图：中文标签名横排才读得清（竖向柱状图的标签会挤成一团）。
+  // reverse() 让文章数最多的标签显示在最上方（yAxis category 是自下而上排的）。
+  const tagNameArrJson = JSON.stringify(picked.map(t => t.name).reverse())
+  // 系列数据用对象形式，附带 path，供点击跳转使用
+  const tagSeriesJson = JSON.stringify(picked.map(t => ({ value: t.value, path: t.path })).reverse())
 
   return `
   <script id="tagsChart">
-    var color = 'rgba(128, 255, 165)'
-    var tagsChart = echarts.init(document.getElementById('tags-chart'), 'light');
+    ${CHART_COLOR_SNIPPET}
+    var tagsChart = echarts.init(document.getElementById('tags-chart'), isDark ? 'dark' : 'light');
     var tagsOption = {
-      textStyle: {
-        color: color
-      },
-      // title: {
-      //   text: 'Top ${dataLength} 标签统计图',
-      //   x: 'center',
-      //   textStyle: {
-      //     color: color
-      //   }
-      // },
-      tooltip: {},
+      backgroundColor: 'transparent',
+      textStyle: { color: chartSub },
+      grid: { left: 8, right: 30, top: 10, bottom: 6, containLabel: true },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: '{b}：{c} 篇' },
       xAxis: {
-        name: '标签',
-        type: 'category',
-        axisTick: {
-          show: false
-        },
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: color
-          }
-        },
-        data: ${tagNameArrJson}
+        type: 'value',
+        axisLabel: { color: chartSub },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        splitLine: { show: false }
       },
       yAxis: {
-        name: '文章篇数',
-        type: 'value',
-        splitLine: {
-          show: false
-        },
-        axisTick: {
-          show: false
-        },
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: color
-          }
-        }
+        type: 'category',
+        data: ${tagNameArrJson},
+        axisLabel: { color: chartSub },
+        axisLine: { lineStyle: { color: chartSub } },
+        axisTick: { show: false }
       },
       series: [{
         name: '文章篇数',
         type: 'bar',
-        data: ${tagCountArrJson},
+        data: ${tagSeriesJson},
+        barMaxWidth: 14,
         itemStyle: {
-          opacity: 1,
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+          borderRadius: [0, 4, 4, 0],
+          color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
             offset: 0,
-            color: 'rgba(128, 255, 165)'
-          },
-          {
+            color: 'rgba(116, 185, 255, .55)'
+          }, {
             offset: 1,
-            color: 'rgba(1, 191, 236)'
+            color: 'rgba(116, 185, 255, 1)'
           }])
         },
-        emphasis: {
-          itemStyle: {
-            opacity: 1,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(128, 255, 195)'
-            },
-            {
-              offset: 1,
-              color: 'rgba(1, 211, 255)'
-            }])
-          }
-        },
-        markLine: {
-          data: [{
-            name: '平均值',
-            type: 'average'
-          }]
-        }
+        label: { show: true, position: 'right', color: chartSub, fontSize: 10 }
       }]
     };
     tagsChart.setOption(tagsOption);
-    window.addEventListener("resize", () => { 
+    // 本页已去掉标签云，图表即导航：点击柱子跳到该标签页
+    tagsChart.on('click', function (p) {
+      if (p && p.data && p.data.path) window.location.href = p.data.path;
+    });
+    window.addEventListener("resize", () => {
       tagsChart.resize();
     });
     </script>`
 }
 
 function categoriesChart () {
-  const categoryArr = []
-  hexo.locals.get('categories').map(function (category) {
-    if(category.name != '技术'&& category.name != '生活'&& category.name != '项目')
-      {categoryArr.push({ name: category.name, value: category.length })}
+  const cats = hexo.locals.get('categories').toArray()
+  // 原实现是饼图，且用 if(name != '技术' && ... ) 硬编码排除了三个一级分类，
+  // 导致图上只有叶子分类、且「认知机器」因分属 技术/ 与 项目/ 而出现两块同名扇区。
+  // 现改为旭日图：一级分类为主色（内环），二级用同色系深浅（外环），层级与归属一目了然。
+  // 本页已去掉分类列表，因此节点带上 path 并支持点击跳转，图表本身就是导航。
+  const root = hexo.config.root || '/'
+  const fullPath = p => (!p ? '' : (p.charAt(0) === '/' ? p : root + p))
+  const tops = cats.filter(c => !c.parent).sort((a, b) => b.length - a.length)
+  const palette = CHART_PASTEL
+  const toRgb = hex => [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16))
+  const mix = (hex, ratio, towardsWhite) => {
+    const src = toRgb(hex)
+    const dst = towardsWhite ? [255, 255, 255] : [0, 0, 0]
+    return '#' + src
+      .map((v, i) => Math.round(v + (dst[i] - v) * ratio))
+      .map(v => v.toString(16).padStart(2, '0'))
+      .join('')
+  }
+  const tree = tops.map((top, i) => {
+    const base = palette[i % palette.length]
+    const children = cats
+      .filter(c => c.parent === top._id)
+      .sort((a, b) => b.length - a.length)
+    const nodes = children.map((child, j) => ({
+      name: child.name,
+      value: child.length,
+      path: fullPath(child.path),
+      itemStyle: { color: mix(base, 0.1 + j * 0.09, true) }
+    }))
+    // 直接挂在一级分类下、没有再分二级的文章（例如只写 categories: [生活]）
+    const rest = top.length - children.reduce((sum, c) => sum + c.length, 0)
+    if (rest > 0) {
+      nodes.push({ name: '未细分', value: rest, path: fullPath(top.path), itemStyle: { color: mix(base, 0.25, false) } })
+    }
+    return { name: top.name, value: top.length, path: fullPath(top.path), itemStyle: { color: base }, children: nodes }
   })
-  categoryArr.sort((a, b) => { return b.value - a.value });
-  const categoryArrJson = JSON.stringify(categoryArr)
+
+  // 标签压在色块上，用色块自身亮度决定用白字还是深字，保证任何配色下都能读清
+  // （原先统一用 #a4b0be 浅灰，压在浅色块上几乎看不见）。
+  const relLum = hex => {
+    const c = toRgb(hex).map(v => {
+      const s = v / 255
+      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
+    })
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+  }
+  const labelOn = hex => (relLum(hex) > 0.45 ? '#1F2D3D' : '#FFFFFF')
+  // 所有扇区都要显示名字。
+  // 关键点：外环用「径向排字(rotate: 'radial')」—— 一张 1/51 的切片只有约 7° 圆心角，
+  // 沿弧长仅约 20px，横排无论如何放不下 4~5 个汉字；而沿半径方向可用的长度是环宽
+  // （放大后约 68px），足够写完整名字。内环只有三个一级分类、空间充足，保持横排。
+  const paint = node => {
+    node.label = { show: false }
+    if (node.children) node.children.forEach(paint)
+    return node
+  }
+  tree.forEach(paint)
+  tree.forEach(node => {
+    node.label = { show: true, color: labelOn(node.itemStyle.color), fontSize: 12, rotate: 0 }
+    node.children.forEach(child => {
+      child.label = { show: true, color: labelOn(child.itemStyle.color), fontSize: 11, rotate: 'radial' }
+    })
+  })
+  const treeJson = JSON.stringify(tree)
 
   return `
   <script id="categoriesChart">
-    var color = 'rgba(128, 255, 165)'
-    var categoriesChart = echarts.init(document.getElementById('categories-chart'), 'light');
+    ${CHART_COLOR_SNIPPET}
+    var categoriesChart = echarts.init(document.getElementById('categories-chart'), isDark ? 'dark' : 'light');
     var categoriesOption = {
-      textStyle: {
-        color: color,
-      },
+      backgroundColor: 'transparent',
+      textStyle: { color: chartSub },
+      tooltip: { trigger: 'item', formatter: '{b}：{c} 篇' },
       series: [{
         name: '文章篇数',
-        type: 'pie',
-        radius: [20, 150],
+        type: 'sunburst',
+        radius: ['16%', '92%'],
         center: ['50%', '50%'],
-        roseType: 'area',
-        label: {color: '#a4b0be',formatter: "{b} : {c} ({d}%)"},
-        data: ${categoryArrJson},
+        nodeClick: false,
+        data: ${treeJson},
+        // minAngle: 0 —— 连 1 篇的极小扇区也要出字（默认会因角度太小而隐藏标签）
+        label: { show: true, minAngle: 0, overflow: 'truncate' },
+        // 圆角切片 + 柔和投影，做出悬浮感（取值同 profile 的旭日图）
         itemStyle: {
-          emphasis: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(255, 255, 255, 0.5)',
-          },
           borderRadius: 4,
-        }
+          borderWidth: 0,
+          shadowColor: 'rgba(0, 0, 0, .2)',
+          shadowBlur: 14
+        },
+        emphasis: { focus: 'ancestor' }
       }]
     };
     categoriesChart.setOption(categoriesOption);
-    window.addEventListener("resize", () => { 
+    // 本页已无分类列表，图表即导航：点击扇区跳到对应分类页
+    categoriesChart.on('click', function (p) {
+      if (p && p.data && p.data.path) window.location.href = p.data.path;
+    });
+    window.addEventListener("resize", () => {
       categoriesChart.resize();
+    });
+    </script>`
+}
+
+function yearChart () {
+  const posts = hexo.locals.get('posts').toArray()
+  const cats = hexo.locals.get('categories').toArray()
+  const tops = cats.filter(c => !c.parent).sort((a, b) => b.length - a.length).map(c => c.name)
+  const palette = CHART_PASTEL
+
+  const years = [...new Set(posts.map(p => p.date.format('YYYY')))].sort()
+  const groups = tops.concat(['未分类'])
+  const bucket = {}
+  groups.forEach(g => {
+    bucket[g] = {}
+    years.forEach(y => { bucket[g][y] = 0 })
+  })
+  posts.forEach(p => {
+    const y = p.date.format('YYYY')
+    const raw = p.categories
+    const cs = raw && raw.toArray ? raw.toArray() : (raw || [])
+    const top = cs.filter(c => !c.parent)[0]
+    const name = top ? top.name : '未分类'
+    if (!bucket[name]) {
+      bucket[name] = {}
+      years.forEach(yy => { bucket[name][yy] = 0 })
+    }
+    bucket[name][y] = (bucket[name][y] || 0) + 1
+  })
+
+  const used = groups.filter(g => years.some(y => bucket[g] && bucket[g][y] > 0))
+  const series = used.map((g, i) => ({
+    name: g,
+    type: 'line',
+    smooth: true,
+    showSymbol: true,
+    symbolSize: 6,
+    lineStyle: { width: 2 },
+    itemStyle: { color: g === '未分类' ? '#a0a0a0' : palette[i % palette.length] },
+    data: years.map(y => (bucket[g] && bucket[g][y]) || 0)
+  }))
+
+  return `
+  <script id="yearChart">
+    ${CHART_COLOR_SNIPPET}
+    var yearChart = echarts.init(document.getElementById('year-chart'), isDark ? 'dark' : 'light');
+    var yearOption = {
+      backgroundColor: 'transparent',
+      textStyle: { color: chartSub },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { top: 0, itemWidth: 10, itemHeight: 10, textStyle: { color: chartSub } },
+      grid: { left: 8, right: 12, top: 38, bottom: 6, containLabel: true },
+      xAxis: {
+        type: 'category',
+        data: ${JSON.stringify(years)},
+        axisLabel: { color: chartSub },
+        axisLine: { lineStyle: { color: chartSub } },
+        axisTick: { show: false }
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { color: chartSub },
+        splitLine: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false }
+      },
+      series: ${JSON.stringify(series)}
+    };
+    yearChart.setOption(yearOption);
+    window.addEventListener("resize", () => {
+      yearChart.resize();
     });
     </script>`
 }

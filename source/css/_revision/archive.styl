@@ -1,111 +1,197 @@
+// ─────────────────────────────────────────────────────────────
+// 归档 / 统计页（/categories/）
+// 全部规则 scope 在 .categories-dashboard 之下 —— 该类仅 pages/archive.pug 使用，
+// 因此不影响「关于我」页与各分类页。下方 .category-lists 与标签云规则为共用规则，保持原样。
+// 视觉语言：卡片沿用站点既有 .card-style，并镜像 #profile .card-style 的液态玻璃配方，
+//           使本页与「关于我」页属于同一套 dashboard。圆角 12px（与 #profile 一致）。
+// 注意：主题 html 根字号为 20px（非 16px），故 1rem = 20px。
+// ─────────────────────────────────────────────────────────────
 
 .categories-dashboard {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-content: stretch;
-    align-items: stretch;
+    flex-direction: column;
+    gap: 1rem;
     height: auto;
 
-    .weight-quarter {
-        width: calc(25% - 1.2rem);
-        margin: 1rem 0.6rem;
-        height: 8rem;
+    // 液态玻璃：与「关于我」页 #profile .card-style 完全一致的取值。
+    // 此处镜像一份而非复用选择器，是为了不改动 profile 侧已定稿的规则。
+    .card-style {
+        position: relative;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .04) 46%, rgba(255, 255, 255, .08));
+        -webkit-backdrop-filter: blur(26px) saturate(150%);
+        backdrop-filter: blur(26px) saturate(150%);
+        border: 1px solid rgba(255, 255, 255, .18);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), inset 0 -1px 0 rgba(255, 255, 255, .06), 0 6px 20px rgba(0, 0, 0, .14), 0 2px 6px rgba(0, 0, 0, .06);
+        transition: transform .45s cubic-bezier(.2, .8, .2, 1), box-shadow .45s ease, background .45s ease;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, .22);
+
+        // 顶部镜面反光带
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .30), transparent);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .05) 46%, rgba(255, 255, 255, .09));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .30), inset 0 -1px 0 rgba(255, 255, 255, .06), 0 10px 30px rgba(0, 0, 0, .18), 0 3px 10px rgba(0, 0, 0, .08);
+        }
+    }
+
+    // ① 概览：四张**独立**小卡片排成 2×2；行高与右侧旭日图对齐（1fr 1fr 撑满，不留空）
+    .arc-overview {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 1fr 1fr;
+        gap: .8rem;
+        min-width: 0;
+
+        +maxWidth768() {
+            gap: .6rem;
+        }
+
+        .arc-stat {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            padding: .8rem 1rem;
+            min-width: 0;
+
+            .arc-stat__icon {
+                font-size: 1.3rem;
+                color: $theme-color;
+                flex-shrink: 0;
+                text-shadow: none;   // 图标不需要文字投影
+            }
+
+            .arc-stat__main {
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+            }
+
+            // 次要文字统一用 --toc-link-color（亮色 #666261 / 暗色 rgba(255,255,255,.6)），
+            // 不用 opacity 淡化 —— 那会把对比度压到约 2:1，实际看不清。
+            .arc-stat__label {
+                font-size: .64rem;
+                color: var(--toc-link-color);
+                letter-spacing: .06em;
+            }
+
+            .arc-stat__body {
+                display: flex;
+                align-items: baseline;
+                gap: .25rem;
+            }
+
+            .arc-stat__value {
+                font-family: 'Audiowide', cursive;
+                font-size: 1.55rem;
+                line-height: 1.15;
+                color: var(--font-color);
+            }
+
+            .arc-stat__unit {
+                font-size: .62rem;
+                color: var(--toc-link-color);
+            }
+
+            // 补充信息：两行小字，比主数值弱一档但仍用 --toc-link-color 保证可读
+            .arc-stat__meta {
+                display: flex;
+                flex-direction: column;
+                gap: .12rem;
+                margin-top: .3rem;
+                min-width: 0;
+
+                span {
+                    font-size: .58rem;
+                    line-height: 1.25;
+                    color: var(--toc-link-color);
+                    letter-spacing: .02em;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+
+    // ②③ 每行两列，等高（align-items: stretch）避免参差
+    .arc-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        align-items: stretch;
+
+        +maxWidth768() {
+            grid-template-columns: 1fr;
+        }
+
+        // 独占整行（97 个月的发布节奏横向空间更值钱）
+        &.arc-row--single {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    // 图表卡
+    .arc-chart {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-content: center;
+        flex-direction: column;
+        padding: 1rem 1rem .6rem;
+        min-width: 0;
+        overflow: hidden;
 
-        +maxWidth768() {
-            width: calc(50% - 0.6rem);
-            padding: 0;
-            margin: 1rem 0.1rem;
+        .arc-chart__title {
+            font-size: .7rem;
+            color: var(--toc-link-color);
+            letter-spacing: .06em;
+            margin-bottom: .2rem;
+            flex-shrink: 0;
         }
 
-        .webinfo-item {
+        #categories-chart, #year-chart, #posts-chart {
             width: 100%;
-            padding: 0 1rem;
-            height: 4rem;
-            border-left-style: solid;
-            border-color: rgba(155, 155, 155, 0.5);
-        }
-
-        .item-name {
-            transform: translateY(-6px);
-            opacity: 0.5;
+            height: 17rem;
 
             +maxWidth768() {
-                font-size: 0.3rem;
+                height: 15rem;
             }
         }
 
-        .item-count {
-            font-family: 'Audiowide', cursives;
-            font-size: 1.5rem;
+        // 旭日图要在扇区上写出全部一/二级分类名，需要更大的直径，
+        // 因此比其他图更高（外环径向排字可用长度＝环宽，越大越好写）
+        #categories-chart {
+            height: 23rem;
 
             +maxWidth768() {
-                font-size: 1rem;
+                height: 18rem;
             }
         }
 
-        +maxWidth768() {
-            padding: 0;
-            margin: 1rem 0.2rem;
-            height: 5rem;
+
+        // 标签条形图有 15 行，需要更高一点
+        #tags-chart {
+            width: 100%;
+            height: 20rem;
+
+            +maxWidth768() {
+                height: 17rem;
+            }
         }
     }
 
-    .weight-quarter:first-child {
-        +maxWidth768() {
-            height: 5rem;
-        }
-    }
-
-    .dashboard-tagcloud {
-        margin: 1.5rem 0.8rem;
-
-        a {
-            white-space: nowrap;
-            border-radius: 10px;
-            padding: 2px 10px;
-            background-color: rgba(150, 150, 150, 0.3);
-        }
-
-        a::before {
-            content: '# ';
-            color: rgba(189, 195, 199, 0.8);
-            line-height: 0;
-        }
-    }
-
-    .dashboard-weight {
-        height: 21rem;
-        width: calc(50% - 1.2rem);
-
-        +maxWidth768() {
-            width: calc(100% - 0.4rem);
-            margin: 1rem 0.2rem;
-            height: auto;
-        }
-    }
-}
-
-#postCharts {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-    .cat-chart, .post-chart, .tag-chart {
-        width: 100%;
-        display: inline-block;
-    }
-
-    #categories-chart, #posts-chart, #tags-chart {
-        width: 100%;
-        height: 16rem;
+    // 整行的发布节奏给更高的图
+    .arc-row--single .arc-chart #posts-chart {
+        height: 18rem;
     }
 }
 
