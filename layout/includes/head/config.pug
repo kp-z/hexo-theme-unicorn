@@ -19,7 +19,7 @@
   let localSearch = 'undefined';
   if (theme.local_search && theme.local_search.enable) {
     localSearch = JSON.stringify({
-      path: config.search.path,
+      path: (config.search && config.search.path) || 'search.xml',
       languages: {
         // search languages
         hits_empty: _p("local_search.hits_empty")

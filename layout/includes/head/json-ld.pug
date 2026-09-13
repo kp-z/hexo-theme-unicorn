@@ -1,0 +1,35 @@
+//- JSON-LD 结构化数据（schema.org）
+//- 为什么用服务端 Pug 而不是 theme.inject.head：inject 只能注入静态字符串、拿不到 page 上下文。
+//- 字段用 JSON.stringify 包裹，避免标题/描述含引号时破坏 JSON。
+//- 关于两个被刻意省略的字段：
+//-   1) dateModified —— 全站 updated_option: 'mtime'，而 git checkout 会刷新 mtime，
+//-      会出现 dateModified 早于 datePublished 的时间倒挂（实测 09-10T20:04 < 09-11T06:00）。
+//-      宁可省略（Google 视为建议字段）也不输出错误数据。
+//-   2) image —— 本主题文章 front-matter 普遍写 `cover: false` / `top_img: false`，
+//-      在 JS 中为 truthy，会取到字符串 "false" 并回落到 theme.avatar.img（通用 3.9KB 头像），
+//-      并非本文配图。加真实的每篇配图后再恢复该字段。
+- var ldAuthor = config.author || config.title
+- var ldSiteName = config.title
+- var ldDesc = page.description || config.description || ''
+
+if is_post()
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": !{JSON.stringify(page.title || '')},
+      "description": !{JSON.stringify(ldDesc)},
+      "datePublished": "!{date_xml(page.date)}",
+      "author": { "@type": "Person", "name": !{JSON.stringify(ldAuthor)} },
+      "publisher": { "@type": "Organization", "name": !{JSON.stringify(ldSiteName)} },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "!{full_url_for(page.path)}" }
+    }
+else
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": !{JSON.stringify(ldSiteName)},
+      "url": "!{full_url_for('/')}",
+      "description": !{JSON.stringify(ldDesc)}
+    }

@@ -33,6 +33,9 @@ meta(name="theme-color" content=themeColor)
 //- Open_Graph
 include ./head/Open_Graph.pug
 
+//- JSON-LD 结构化数据
+include ./head/json-ld.pug
+
 !=favicon_tag(theme.favicon || config.favicon)
 link(rel="canonical" href=urlNoIndex())
 

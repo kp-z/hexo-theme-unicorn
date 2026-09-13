@@ -127,14 +127,16 @@ social:
 # --------------------------------------
 
 # Algolia search
+# 已停用：hexo-algoliasearch 的索引命令不在 build.sh/deploy.sh 流程内（索引不随发布更新），
+# 且 *.algolia.net 在内地网络不可达。改用下方本地搜索。
 algolia_search:
-  enable: true
+  enable: false
   hits:
     per_page: 6
 
-# Local search
+# Local search（索引由 hexo-generator-search 生成 public/search.xml，路径取自根 _config.yml 的 search.path）
 local_search:
-  enable: false
+  enable: true
 
 # Math (數學)
 # --------------------------------------
