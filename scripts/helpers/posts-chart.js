@@ -303,7 +303,9 @@ function categoriesChart () {
         name: '文章篇数',
         type: 'pie',
         roseType: 'area',
-        radius: ['22%', '62%'],
+        // 卡片是整行宽度，饼图直径受高度限制；半径给足并加长引导线，
+        // 让圆环更大、标签铺开到卡片两侧，避免中间一小团、四周大片留白
+        radius: ['30%', '88%'],
         center: ['50%', '50%'],
         nodeClick: false,
         data: ${treeJson},
@@ -316,8 +318,8 @@ function categoriesChart () {
         },
         labelLine: {
           show: true,
-          length: 12,
-          length2: 14,
+          length: 16,
+          length2: 46,
           lineStyle: { color: chartSub }
         },
         // 圆角切片 + 柔和投影，做出悬浮感（取值同 profile 的旭日图）
