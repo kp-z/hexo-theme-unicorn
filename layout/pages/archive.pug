@@ -79,20 +79,20 @@
             span= '跨 ' + arcYearKeys.length + ' 个年度'
 
     .arc-chart.card-style
-      .arc-chart__title Top #{arcTopTags} 标签
-      #tags-chart(data-length=arcTopTags)
-
-  //- ② 分类占比：环形饼图 + 外部引导线标签，标签要占横向空间，故独占整行
-  .arc-row.arc-row--single
-    .arc-chart.card-style
       .arc-chart__title 分类占比
       #categories-chart
 
-  //- ③ 按年发布 + 发布节奏
+  //- ② Top 标签 + 按年发布
   .arc-row
+    .arc-chart.card-style
+      .arc-chart__title Top #{arcTopTags} 标签
+      #tags-chart(data-length=arcTopTags)
     .arc-chart.card-style
       .arc-chart__title 按年发布
       #year-chart
+
+  //- ③ 发布节奏：97 个月的时间序列，独占整行
+  .arc-row.arc-row--single
     .arc-chart.card-style
       .arc-chart__title 发布节奏
       #posts-chart

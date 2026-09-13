@@ -303,23 +303,25 @@ function categoriesChart () {
         name: '文章篇数',
         type: 'pie',
         roseType: 'area',
-        // 卡片是整行宽度，饼图直径受高度限制；半径给足并加长引导线，
-        // 让圆环更大、标签铺开到卡片两侧，避免中间一小团、四周大片留白
-        radius: ['30%', '88%'],
+        // 卡片是首行右列（半宽约 520px），圆环要留出两侧放标签的空间，
+        // 因此半径比整行版本收小；引导线也相应缩短
+        radius: ['26%', '76%'],
         center: ['50%', '50%'],
         nodeClick: false,
         data: ${treeJson},
         label: {
           show: true,
           position: 'outside',
-          formatter: '{b}：{c}（{d}%）',
+          // 半宽列放不下「名称：值（百分比）」，改为「名称 值」；
+          // 百分比与所属一级分类放在 tooltip 里
+          formatter: '{b} {c}',
           color: chartText,
           fontSize: 11
         },
         labelLine: {
           show: true,
-          length: 16,
-          length2: 46,
+          length: 10,
+          length2: 18,
           lineStyle: { color: chartSub }
         },
         // 圆角切片 + 柔和投影，做出悬浮感（取值同 profile 的旭日图）
