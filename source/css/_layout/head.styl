@@ -339,21 +339,25 @@ _:future,
         li
           list-style: none
 
-          &:hover
-            border-radius: 6px
-            background: var(--text-bg-hover)
-
           a
             display: inline-block
             opacity: 1
             padding: .3rem .7rem
             border-radius: 6px
-            background-color: var(--sidebar-bg)
+            // 液态玻璃：不透明底 + 玻璃高光（不靠半透明，深浅背景下都可读）
+            background: linear-gradient(135deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .04) 46%, rgba(255, 255, 255, .09)), var(--sidebar-bg)
+            border: 1px solid rgba(255, 255, 255, .22)
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .26), 0 5px 30px -4px rgba($dark-black, .5)
             margin: 3px 0
-            box-shadow: 0 5px 30px -4px rgba($dark-black, .5)
             width: 100%
             color: var(--font-color) !important
             text-shadow: none !important
+            transition: border-color .3s ease, box-shadow .3s ease
+
+            &:hover
+              // 底色与未选中一致，仅增强光效（提亮上缘高光 + 外发光 + 加深投影）
+              border-color: rgba(255, 255, 255, .42)
+              box-shadow: inset 0 1px 0 rgba(255, 255, 255, .52), 0 0 12px rgba(255, 255, 255, .25), 0 10px 28px rgba(0, 0, 0, .18), 0 2px 8px rgba(0, 0, 0, .08)
 
   &.hide-menu
     #toggle-menu
