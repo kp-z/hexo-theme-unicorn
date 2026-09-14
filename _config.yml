@@ -995,7 +995,7 @@ profile:
   habitica: https://habitica.com/
   habitica_info: 2022 Habitica
   scripts:
-    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/sun.js
+    - /js/json/sun.js   # 已本地化（原 COS 版本内容为技能数据，现为项目图）
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/radar.js
     - /js/gantt.js   # 已本地化（原 COS 版本数据结构错误、时间显示不准）
     - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness.js
