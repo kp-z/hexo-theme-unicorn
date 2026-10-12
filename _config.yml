@@ -38,7 +38,7 @@ footer_text:
       导航:
         博客: /blog-cn/
         相册: /blog-cn/gallery/
-        项目: /blog-cn/Projects/
+        项目: /blog-cn/projects/
         时间轴:  /blog-cn/archives/
         统计: /blog-cn/categories/
       笔记:
@@ -47,7 +47,7 @@ footer_text:
   footer_text_2:
     标签:
       技术杂谈: /blog-cn/tags/技术/
-      HEXO相关: /blog-cn/tags/Hexo/
+      HEXO相关: /blog-cn/tags/hexo/
       生活随想: /blog-cn/tags/生活/
       旅行记录: /blog-cn/tags/旅行/
     社区:
@@ -90,7 +90,7 @@ carousel_contents:
     subtitle: 你好啊！我是<a class="info-link" href="/blog-cn/profile">Kp</a>，自动驾驶仿真算法工程师，喜欢<a class="info-link" href="/blog-cn/gallery">摄影</a> <a class="info-link" href="/blog-cn/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
   page_2:
     title: 02 - Job
-    subtitle: 欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/Projects/">项目</a>，有机会一起合作。
+    subtitle: 欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/projects/">项目</a>，有机会一起合作。
   page_3:
     title: 03 - SNS
     subtitle: 欢迎加入我的 <a href="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/qrcode/wechatcode.jpeg"><i class="fab fa-weixin"></i></a> <a  href="https://t.me/kpzhang"><i class="fab fa-telegram-plane"></i></a> 交流群，关注我的<a class="info-link" href="/blog-cn/profile/">社交账号</a>，查阅我的<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术笔记</a>.
