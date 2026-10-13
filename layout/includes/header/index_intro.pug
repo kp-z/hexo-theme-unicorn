@@ -1,10 +1,54 @@
 
-script(type="text/javascript" src=url_for(theme.pages.sketchfab))
+//- R-060：首页 3D 改为自托管 model-viewer + 本地 GLB（不再引用 sketchfab.com）。
+//- theme.model_viewer 缺失也能用：enable=true / src=/models/home.glb / viewer_js=/js/vendor/model-viewer/model-viewer.min.js。
+- var mv = (theme.model_viewer || {})
+- var mv_enable = (mv.enable === undefined) ? true : mv.enable
+- var mv_src = mv.src || '/models/home.glb'
+- var mv_js = mv.viewer_js || '/js/vendor/model-viewer/model-viewer.min.js'
+- var mv_poster = mv.poster || ((theme.pages && theme.pages.sketchfab_cover_img) || '')
 
-.sketchfab-embed-wrapper(style="width: 100%;height: 100%;")
-  iframe(runat='server' id="sketchfab-model" frameborder="0" sandbox="allow-scripts allow-same-origin" allow="autoplay; fullscreen; xr-spatial-tracking")
-  #sketchfab_loading_cover
-    img(src=url_for(theme.pages.sketchfab_cover_img))
+if mv_enable
+  script(type="text/javascript" src=url_for(mv_js) defer)
+  .model-viewer-wrapper
+    model-viewer#home-model(
+      src=url_for(mv_src)
+      alt="首页 3D 模型"
+      camera-controls
+      auto-rotate
+      loading="lazy"
+      reveal="auto"
+      shadow-intensity="1"
+      environment-image="neutral"
+      poster=(mv_poster ? url_for(mv_poster) : null)
+    )
+    #model_viewer_loading_cover
+      if mv_poster
+        img(src=url_for(mv_poster))
+    .model-viewer-fallback#model_viewer_fallback
+      if mv_poster
+        img(src=url_for(mv_poster))
+      else
+        p 3D 模型暂不可用
+  script.
+    (function () {
+      var el = document.getElementById('home-model');
+      if (!el) return;
+      var cover = document.getElementById('model_viewer_loading_cover');
+      var fb = document.getElementById('model_viewer_fallback');
+      el.addEventListener('load', function () { if (cover) cover.style.display = 'none'; });
+      el.addEventListener('error', function () {
+        if (cover) cover.style.display = 'none';
+        if (fb) fb.style.display = 'flex';
+        el.style.display = 'none';
+      });
+    })();
+else
+  //- 配置关闭（theme.model_viewer.enable=false）时回退原始 Sketchfab iframe
+  script(type="text/javascript" src=url_for(theme.pages.sketchfab))
+  .sketchfab-embed-wrapper(style="width: 100%;height: 100%;")
+    iframe(runat='server' id="sketchfab-model" frameborder="0" sandbox="allow-scripts allow-same-origin" allow="autoplay; fullscreen; xr-spatial-tracking")
+    #sketchfab_loading_cover
+      img(src=url_for(theme.pages.sketchfab_cover_img))
 
 #carousel
   each content,page in theme.carousel_contents

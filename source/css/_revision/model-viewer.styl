@@ -1,0 +1,32 @@
+// R-060：首页自托管 model-viewer（替代 Sketchfab iframe）。
+// 说明：主题样式入口 themes/hexo-theme-unicorn/source/css/index.styl 已有 @import '_revision/*'，
+// 本文件放在 _revision/ 下即自动生效，无需改入口。
+
+.model-viewer-wrapper
+  position: relative
+  width: 100%
+  height: 100%
+  overflow: hidden
+
+.model-viewer-wrapper model-viewer,
+model-viewer
+  width: 100%
+  height: 100%
+  display: block
+  background-color: transparent
+
+#model_viewer_loading_cover
+  position: absolute
+  inset: 0
+  display: flex
+  align-items: center
+  justify-content: center
+  pointer-events: none
+
+.model-viewer-fallback
+  position: absolute
+  inset: 0
+  display: none
+  align-items: center
+  justify-content: center
+  z-index: 2

@@ -475,7 +475,7 @@ daovoice:
 # gitter
 # https://gitter.im/
 gitter:
-  enable: true
+  enable: false
   room: Zkpeace/community
 
 # crisp
@@ -941,7 +941,6 @@ inject:
     - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/f12_printer.js"></script>
     - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js"></script>
     - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/ali/font_1789453_ouhjvm9rdyn.js"></script>
-    - <link rel="preconnect" href="https://fonts.gstatic.com">
     - <link href="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/css/font/font.css" rel="stylesheet">
   bottom:
   
@@ -1024,6 +1023,15 @@ pages:
     scripts:
       - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/fcircle-beta.js
       - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/friends.js
+
+# R-059 阶段 1：首页 3D 模型（model-viewer；dev2 首页改造只读本块）
+# enable 为总开关；viewer_js 为站内自托管路径（不依赖境外网）；poster 沿用原 sketchfab_cover_img 的 COS 地址。
+model_viewer:
+  enable: true
+  src: /models/home.glb
+  viewer_js: /js/vendor/model-viewer/model-viewer.min.js
+  poster: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/carousel/home_page_mask.png
+
 # CDN
 # Don't modify the following settings unless you know how they work
 # 非必要請不要修改
@@ -1031,7 +1039,7 @@ CDN:
   cdn_header: https://blog-1253324855.cos.ap-shanghai.myqcloud.com
   # main
   main_css: /css/index.css
-  jquery: https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js
+  jquery: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js   # COS 已有副本（jQuery v3.6.0，curl 实测 200）
   main: /js/main.js
   utils: /js/utils.js
 
@@ -1040,77 +1048,77 @@ CDN:
   # aplayer_js: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
   # meting_js: https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js
 
-  aplayer_css: https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css
-  aplayer_js: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js
+  aplayer_css: https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.css   # bytecdntp 已 404 → npmmirror
+  aplayer_js: https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.js
   meting_js: https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js
 
   # pjax
   pjax: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/pjax/pjax.min.js
 
   # comments
-  gitalk: https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js
-  gitalk_css: https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css
-  valine: https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js
-  disqusjs: https://cdn.jsdelivr.net/npm/disqusjs@1/dist/disqus.js
-  disqusjs_css: https://cdn.jsdelivr.net/npm/disqusjs@1/dist/disqusjs.css
+  gitalk: https://registry.npmmirror.com/gitalk/1.8.0/files/dist/gitalk.min.js
+  gitalk_css: https://registry.npmmirror.com/gitalk/1.8.0/files/dist/gitalk.css
+  valine: https://registry.npmmirror.com/valine/1.4.16/files/dist/Valine.min.js
+  disqusjs: https://cdn.bootcdn.net/ajax/libs/disqusjs/1.3.0/disqus.js   # npmmirror 403；bootcdn 实测 200（v1.3.0）
+  disqusjs_css: https://cdn.bootcdn.net/ajax/libs/disqusjs/1.3.0/disqusjs.css
   utterances: https://utteranc.es/client.js
-  twikoo: https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js
+  twikoo: https://registry.npmmirror.com/twikoo/1.6.44/files/dist/twikoo.all.min.js
   # twikoo: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/twikoo/1.4.18/twikoo.all.min.js
   # twikoo: https://cdn.jsdelivr.net/gh/zhheo/twikoo@dev/dist/twikoo.all.min.js
-  waline: https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js
+  waline: https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/Waline.js   # v3 无 UMD dist/Waline.min.js，固定 2.15.8
 
   # share
   addtoany: https://static.addtoany.com/menu/page.js
   sharejs: https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js
-  sharejs_css: https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css
+  sharejs_css: https://cdn.bootcdn.net/ajax/libs/social-share.js/1.0.0/css/share.min.css   # npmmirror 403；bootcdn 实测 200（v1.0.0）
 
   # search
   local_search: /js/search/local-search.js
   algolia_js: /js/search/algolia.js
-  algolia_search: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.js
+  algolia_search: https://cdn.bootcdn.net/ajax/libs/instantsearch.js/4.38.1/instantsearch.production.min.js   # npmmirror 无；bootcdn 实测 200（固定 4.38.1 的 production 文件名）
   algolia_search_css: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.css
 
   # math
-  mathjax: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-  katex: https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css
-  katex_copytex: https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js
-  katex_copytex_css: https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css
-  mermaid: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+  mathjax: https://registry.npmmirror.com/mathjax/3.2.2/files/es5/tex-mml-chtml.js
+  katex: https://registry.npmmirror.com/katex/0.16.22/files/dist/katex.min.css
+  katex_copytex: https://registry.npmmirror.com/katex/0.16.22/files/dist/contrib/copy-tex.min.js
+  katex_copytex_css: https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/copy-tex.css   # 未覆盖：npmmirror 0.16.22 无此文件；0.15.6 实测 200（仅去 @latest）
+  mermaid: https://registry.npmmirror.com/mermaid/10.9.1/files/dist/mermaid.min.js   # 必须 10.x：11.x dist 是 ESM 非 UMD，classic script 会失败
 
   # count
   busuanzi: //busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js
 
   # background effect
-  canvas_ribbon: https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js
-  canvas_fluttering_ribbon: https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js
-  canvas_nest: https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js
+  canvas_ribbon: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/canvas-ribbon.min.js
+  canvas_fluttering_ribbon: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/canvas-fluttering-ribbon.min.js
+  canvas_nest: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/canvas-nest.min.js
 
   lazyload: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/lazyload.iife.min.js
   # instantpage: https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js
-  instantpage: https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js
-  typed: https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js
-  pangu: https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js
+  instantpage: https://cdn.bootcdn.net/ajax/libs/instant.page/5.1.0/instantpage.min.js   # bytecdntp 已 404 → bootcdn（实测 200）
+  typed: https://registry.npmmirror.com/typed.js/2.0.12/files/lib/typed.min.js
+  pangu: https://registry.npmmirror.com/pangu/4.0.7/files/dist/browser/pangu.min.js
 
   # photo
   # fancybox_css: https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css
   # fancybox: https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js
-  fancybox_css: https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/fancybox/3.5.7/jquery.fancybox.min.css
-  fancybox: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/fancybox/3.5.7/jquery.fancybox.min.js
+  fancybox_css: https://registry.npmmirror.com/@fancyapps/fancybox/3.5.7/files/dist/jquery.fancybox.min.css   # bytecdntp 已 404
+  fancybox: https://registry.npmmirror.com/@fancyapps/fancybox/3.5.7/files/dist/jquery.fancybox.min.js
   # medium_zoom: https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js
-  medium_zoom: https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/medium-zoom/1.0.6/medium-zoom.min.js
+  medium_zoom: https://registry.npmmirror.com/medium-zoom/1.0.6/files/dist/medium-zoom.min.js
   # snackbar
   # snackbar_css: https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css
   # snackbar: https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js
-  snackbar_css: https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/node-snackbar/0.1.16/snackbar.min.css
-  snackbar: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/node-snackbar/0.1.16/snackbar.min.js
+  snackbar_css: https://cdn.bootcdn.net/ajax/libs/node-snackbar/0.1.16/snackbar.min.css   # bytecdntp 已 404 → bootcdn（实测 200）
+  snackbar: https://cdn.bootcdn.net/ajax/libs/node-snackbar/0.1.16/snackbar.min.js
   # effect
-  activate_power_mode: https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js
-  fireworks: https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js
-  click_heart: https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js
-  ClickShowText: https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js
+  activate_power_mode: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/activate-power-mode.min.js
+  fireworks: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/fireworks.min.js
+  click_heart: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/click-heart.min.js
+  ClickShowText: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/click-show-text.min.js
 
   # fontawesome
-  fontawesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css
+  fontawesome: https://registry.npmmirror.com/@fortawesome/fontawesome-free/6.7.2/files/css/all.min.css   # COS 的 css/fontasome/all.min.css 缺 webfonts，故用 npmmirror（含 webfonts，实测 200）
   # fontawesome: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css
   # fontawesome:   https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css
 
@@ -1122,8 +1130,8 @@ CDN:
   # justifiedGallery_js: https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js
   # justifiedGallery_css: https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css
 
-  justifiedGallery_js: https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js
-  justifiedGallery_css: https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/justifiedGallery/3.8.1/css/justifiedGallery.min.css
+  justifiedGallery_js: https://registry.npmmirror.com/justifiedGallery/3.8.1/files/dist/js/jquery.justifiedGallery.min.js
+  justifiedGallery_css: https://registry.npmmirror.com/justifiedGallery/3.8.1/files/dist/css/justifiedGallery.min.css
 
  
   # Prism.js
