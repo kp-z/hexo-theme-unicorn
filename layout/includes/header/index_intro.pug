@@ -1,46 +1,141 @@
 
-//- R-060：首页 3D 改为自托管 model-viewer + 本地 GLB（不再引用 sketchfab.com）。
-//- theme.model_viewer 缺失也能用：enable=true / src=/models/home.glb / viewer_js=/js/vendor/model-viewer/model-viewer.min.js。
+//- R-060 / R-075：首页 3D = 自托管 model-viewer + 本地 GLB（不引用境外 CDN）。
+//- R-075 修复三点：
+//-   ① @google/model-viewer 4.4.0 自托管包是 ESM，旧代码按 classic script 加载（无 type=module）→
+//-      SyntaxError → customElements.define 永不执行 → <model-viewer> 永不升级 → 3D 区域空白；
+//-   ② 封面 <img> 会被主题 post_lazyload 过滤器改写为 1x1 占位（data-lazy-src），加载期等于空白，
+//-      故改用 CSS background-image（不经懒加载、首帧即可见）；
+//-   ③ 1 MiB viewer 脚本国内自托管源实测 ≈39 s，故改为「先封面、后按需加载」：
+//-      saveData/2g/3g/reduced-motion 只给点击按钮；超时/失败保持封面 + 点击入口，绝不整片空白。
 - var mv = (theme.model_viewer || {})
 - var mv_enable = (mv.enable === undefined) ? true : mv.enable
 - var mv_src = mv.src || '/models/home.glb'
 - var mv_js = mv.viewer_js || '/js/vendor/model-viewer/model-viewer.min.js'
+- var mv_js_fb = (mv.viewer_js_fallbacks || []).join('|')
 - var mv_poster = mv.poster || ((theme.pages && theme.pages.sketchfab_cover_img) || '')
+- var mv_timeout = mv.timeout_ms || 8000
+//- mode: click（默认）= 首屏只出封面，点击后才下载 3D；auto = 直连下自动加载
+- var mv_mode = mv.mode || 'click'
+- var mv_cover_style = mv_poster ? ("background-image:url('" + url_for(mv_poster) + "')") : null
 
 if mv_enable
-  script(type="text/javascript" src=url_for(mv_js) defer)
-  .model-viewer-wrapper
+  .model-viewer-wrapper#model_viewer_wrapper(
+    data-viewer-js=url_for(mv_js)
+    data-viewer-js-fallbacks=mv_js_fb
+    data-timeout=String(mv_timeout)
+    data-mode=mv_mode
+  )
     model-viewer#home-model(
       src=url_for(mv_src)
       alt="首页 3D 模型"
       camera-controls
       auto-rotate
-      loading="lazy"
       reveal="auto"
       shadow-intensity="1"
       environment-image="neutral"
       poster=(mv_poster ? url_for(mv_poster) : null)
     )
-    #model_viewer_loading_cover
-      if mv_poster
-        img(src=url_for(mv_poster) alt="首页 3D 模型封面")
+    #model_viewer_loading_cover.mv-cover(style=mv_cover_style role="img" aria-label="首页 3D 模型封面")
+      span.model-viewer-hint#model_viewer_hint 点击加载 3D 模型
     .model-viewer-fallback#model_viewer_fallback
       if mv_poster
-        img(src=url_for(mv_poster) alt="首页 3D 模型封面")
-      else
-        p 3D 模型暂不可用
+        .mv-cover.mv-cover-fallback(style=mv_cover_style role="img" aria-label="首页 3D 模型封面")
+      span.model-viewer-hint 3D 模型暂不可用
   script.
     (function () {
+      var wrap = document.getElementById('model_viewer_wrapper');
       var el = document.getElementById('home-model');
-      if (!el) return;
+      if (!wrap || !el) return;
       var cover = document.getElementById('model_viewer_loading_cover');
+      var hint = document.getElementById('model_viewer_hint');
       var fb = document.getElementById('model_viewer_fallback');
-      el.addEventListener('load', function () { if (cover) cover.style.display = 'none'; });
-      el.addEventListener('error', function () {
+      var jsList = [wrap.getAttribute('data-viewer-js')]
+        .concat((wrap.getAttribute('data-viewer-js-fallbacks') || '').split('|'))
+        .filter(function (u) { return !!u; });
+      var timeout = parseInt(wrap.getAttribute('data-timeout'), 10) || 8000;
+      var conn = navigator.connection || {};
+      var slow = conn.saveData === true || /(^|-)2g$|(^|-)3g$/.test(String(conn.effectiveType || ''));
+      var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      var mode = wrap.getAttribute('data-mode') || 'click';
+      var optin = false;
+      try { optin = localStorage.getItem('mv-optin') === '1'; } catch (err) { optin = false; }
+      var started = false, settled = false, timer = null, poll = null;
+
+      function stopTimers() {
+        if (timer) { clearTimeout(timer); timer = null; }
+        if (poll) { clearInterval(poll); poll = null; }
+      }
+      function ready() {
+        if (settled) return;
+        settled = true;
+        stopTimers();
+        wrap.classList.remove('mv-needs-click');
+        wrap.classList.add('mv-ready');
+        if (cover) cover.style.display = 'none';
+        if (fb) fb.style.display = 'none';
+      }
+      function needClick(msg) {
+        if (settled) return;
+        wrap.classList.add('mv-needs-click');
+        if (hint && msg) hint.textContent = msg;
+      }
+      function fail() {
+        if (settled) return;
+        settled = true;
+        stopTimers();
+        wrap.classList.remove('mv-needs-click');
         if (cover) cover.style.display = 'none';
         if (fb) fb.style.display = 'flex';
-        el.style.display = 'none';
-      });
+      }
+      function loadScript(i) {
+        if (i >= jsList.length) { needClick('3D 模型加载失败，点击重试'); return; }
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.async = true;
+        s.src = jsList[i];
+        s.onerror = function () { loadScript(i + 1); };
+        document.head.appendChild(s);
+      }
+      function arm() {
+        if (started) return;
+        started = true;
+        if (el.loaded) { ready(); return; }
+        el.addEventListener('load', ready);
+        el.addEventListener('error', function () {
+          if (!settled) needClick('3D 模型加载失败，点击重试');
+        });
+        loadScript(0);
+        poll = setInterval(function () {
+          if (settled) { stopTimers(); return; }
+          if (el.loaded) ready();
+        }, 500);
+        timer = setTimeout(function () {
+          if (settled) return;
+          if (el.loaded) { ready(); return; }
+          needClick('点击加载 3D 模型');
+        }, timeout);
+      }
+
+      if (slow || reduce) {
+        needClick('点击加载 3D 模型（已为你省流，可点击加载）');
+      } else if (mode === 'click' && !optin) {
+        // 默认不自动下载 1 MiB viewer：首屏只保留封面，用户点击后再加载（可记住选择）
+        needClick('点击加载 3D 模型');
+      } else {
+        arm();
+      }
+      if (cover) {
+        cover.addEventListener('click', function () {
+          if (settled) return;
+          if (started) return;
+          try { localStorage.setItem('mv-optin', '1'); } catch (err) { /* ignore */ }
+          arm();
+        });
+      }
+      window.addEventListener('error', function (e) {
+        if (!started || settled) return;
+        if (e && e.target && e.target.id === 'home-model') fail();
+      }, true);
     })();
 else
   //- 配置关闭（theme.model_viewer.enable=false）时回退原始 Sketchfab iframe

@@ -1032,6 +1032,16 @@ model_viewer:
   enable: true
   src: /models/home.glb
   viewer_js: /js/vendor/model-viewer/model-viewer.min.js
+  # R-075：可选的国内镜像回退链（按顺序试，任一成功即停）。该 1 MiB 包走 GitHub Pages 源在国内实测 ≈39 s。
+  # 待用户把文件上传到既有上海 COS 桶后取消注释即可生效（无需改模板）：
+  # viewer_js_fallbacks:
+  #   - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/vendor/model-viewer/model-viewer.min.js
+  # 1 MiB viewer 的等待上限；超时只切到「点击加载」，不放弃下载，绝不整片空白
+  timeout_ms: 8000
+  # click（默认）：首屏只出封面，点击后才下载 3D（国内 1 MiB 走 GitHub Pages 源实测 ≈39 s，不自动加载）
+  # auto：直连（saveData=false 且非 2g/3g、无 reduced-motion）时自动加载 3D
+  mode: click
+  # R-075：封面由模板用 CSS background-image 渲染（不参与主题懒加载），加载期/弱网期都以它兜底
   poster: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/carousel/home_page_mask.png
 
 # CDN

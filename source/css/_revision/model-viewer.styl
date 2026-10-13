@@ -14,7 +14,21 @@ model-viewer
   height: 100%
   display: block
   background-color: transparent
+  opacity: 0
+  transition: opacity .35s ease
 
+//- R-075：模型真正 load 之后（JS 加 .mv-ready）才淡入，避免未升级元素长期占位
+.model-viewer-wrapper.mv-ready model-viewer
+  opacity: 1
+
+//- R-075：封面用 background-image（绕开 post_lazyload 过滤器；否则 <img> 被改写成 1x1 占位 → 加载期空白）
+.mv-cover
+  background-size: cover
+  background-position: center center
+  background-repeat: no-repeat
+  background-color: transparent
+
+//- R-075：不设 z-index —— 靠 DOM 顺序保证封面在 model-viewer 之上、但在 #site-name / #pined-pages 等文案之下
 #model_viewer_loading_cover
   position: absolute
   inset: 0
@@ -23,10 +37,38 @@ model-viewer
   justify-content: center
   pointer-events: none
 
+.model-viewer-hint
+  display: none
+  position: absolute
+  left: 50%
+  bottom: 32px
+  transform: translateX(-50%)
+  padding: 8px 18px
+  border-radius: 999px
+  background-color: rgba(0, 0, 0, .55)
+  color: #fff
+  font-size: 14px
+  line-height: 1.2
+  white-space: nowrap
+
+//- 弱网/省流/超时/失败：封面变成可点击入口，点后才下载 1 MiB viewer 脚本
+#model_viewer_wrapper.mv-needs-click #model_viewer_loading_cover
+  pointer-events: auto
+  cursor: pointer
+
+#model_viewer_wrapper.mv-needs-click #model_viewer_loading_cover .model-viewer-hint
+  display: inline-block
+
 .model-viewer-fallback
   position: absolute
   inset: 0
   display: none
   align-items: center
   justify-content: center
-  z-index: 2
+
+.mv-cover-fallback
+  position: absolute
+  inset: 0
+
+.model-viewer-fallback .model-viewer-hint
+  display: inline-block
