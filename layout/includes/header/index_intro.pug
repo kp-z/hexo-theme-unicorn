@@ -23,10 +23,10 @@ if mv_enable
     )
     #model_viewer_loading_cover
       if mv_poster
-        img(src=url_for(mv_poster))
+        img(src=url_for(mv_poster) alt="首页 3D 模型封面")
     .model-viewer-fallback#model_viewer_fallback
       if mv_poster
-        img(src=url_for(mv_poster))
+        img(src=url_for(mv_poster) alt="首页 3D 模型封面")
       else
         p 3D 模型暂不可用
   script.
@@ -48,7 +48,7 @@ else
   .sketchfab-embed-wrapper(style="width: 100%;height: 100%;")
     iframe(runat='server' id="sketchfab-model" frameborder="0" sandbox="allow-scripts allow-same-origin" allow="autoplay; fullscreen; xr-spatial-tracking")
     #sketchfab_loading_cover
-      img(src=url_for(theme.pages.sketchfab_cover_img))
+      img(src=url_for(theme.pages.sketchfab_cover_img) alt="首页 3D 模型封面")
 
 #carousel
   each content,page in theme.carousel_contents
