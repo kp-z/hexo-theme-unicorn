@@ -164,7 +164,7 @@ favicon: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/icon/40x40.png
 
 # Avatar (頭像)
 avatar:
-  img: https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png
+  img: /img/site-avatar.png   # R-059 阶段 1：原境外图床本地化（512×512 PNG，3,895 B，sha256 482a91cb8803bdaf59a2f3e395cc54aa72b50852f1088d39434c5ed7a832727d）
   effect: false
 
 # Disable all banner image
@@ -217,7 +217,7 @@ error_img:
 error_404:
   enable: true
   subtitle: 'Page Not Found'
-  background: https://i.loli.net/2020/05/19/aKOcLiyPl2JQdFD.png
+  background: /img/error-404-bg.png   # R-059 阶段 1：原境外图床本地化（2049×1457 PNG，34,538 B，sha256 32730685b85a46be90c7c5f704711e9973f03ce3f5d7baaf7a5752190195bdfa）
 
 post_meta:
   page: # Home Page
@@ -1044,9 +1044,9 @@ CDN:
   utils: /js/utils.js
 
   # aplayer
-  # aplayer_css: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css
-  # aplayer_js: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
-  # meting_js: https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js
+  # aplayer_css: https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.css
+  # aplayer_js: https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.js
+  # meting_js: https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js
 
   aplayer_css: https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.css   # bytecdntp 已 404 → npmmirror
   aplayer_js: https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.js
@@ -1064,25 +1064,25 @@ CDN:
   utterances: https://utteranc.es/client.js
   twikoo: https://registry.npmmirror.com/twikoo/1.6.44/files/dist/twikoo.all.min.js
   # twikoo: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/twikoo/1.4.18/twikoo.all.min.js
-  # twikoo: https://cdn.jsdelivr.net/gh/zhheo/twikoo@dev/dist/twikoo.all.min.js
+  # twikoo: https://registry.npmmirror.com/twikoo/1.6.44/files/dist/twikoo.all.min.js
   waline: https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/Waline.js   # v3 无 UMD dist/Waline.min.js，固定 2.15.8
 
   # share
   addtoany: https://static.addtoany.com/menu/page.js
-  sharejs: https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js
-  sharejs_css: https://cdn.bootcdn.net/ajax/libs/social-share.js/1.0.0/css/share.min.css   # npmmirror 403；bootcdn 实测 200（v1.0.0）
+  sharejs: https://cdn.bootcdn.net/ajax/libs/social-share.js/1.0.16/js/social-share.min.js   # npmmirror unpkg 白名单不含 social-share.js（403）；cdnjs 仅有 1.0.16，bootcdn 1.0.16 实测 200
+  sharejs_css: https://cdn.bootcdn.net/ajax/libs/social-share.js/1.0.16/css/share.min.css   # 与 js 同版本 1.0.16（字体 ../fonts/iconfont.* 实测 200；1.0.0 已从 cdnjs 下架）
 
   # search
   local_search: /js/search/local-search.js
   algolia_js: /js/search/algolia.js
   algolia_search: https://cdn.bootcdn.net/ajax/libs/instantsearch.js/4.38.1/instantsearch.production.min.js   # npmmirror 无；bootcdn 实测 200（固定 4.38.1 的 production 文件名）
-  algolia_search_css: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.css
+  algolia_search_css: https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.min.css   # 未覆盖：cdnjs instantsearch.js 无任何 css 文件、npmmirror 4.38.1 无 dist css（均实测 404）；且 algolia_search.enable=false 不产出该引用，保留原引用
 
   # math
   mathjax: https://registry.npmmirror.com/mathjax/3.2.2/files/es5/tex-mml-chtml.js
   katex: https://registry.npmmirror.com/katex/0.16.22/files/dist/katex.min.css
   katex_copytex: https://registry.npmmirror.com/katex/0.16.22/files/dist/contrib/copy-tex.min.js
-  katex_copytex_css: https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/copy-tex.css   # 未覆盖：npmmirror 0.16.22 无此文件；0.15.6 实测 200（仅去 @latest）
+  katex_copytex_css: https://registry.npmmirror.com/katex/0.15.6/files/dist/contrib/copy-tex.css   # npmmirror 0.16.22 无此文件；0.15.6 实测 200（447 B，仅换 host，版本仍 0.15.6）
   mermaid: https://registry.npmmirror.com/mermaid/10.9.1/files/dist/mermaid.min.js   # 必须 10.x：11.x dist 是 ESM 非 UMD，classic script 会失败
 
   # count
@@ -1094,21 +1094,21 @@ CDN:
   canvas_nest: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/canvas-nest.min.js
 
   lazyload: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/lazyload.iife.min.js
-  # instantpage: https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js
+  # instantpage: https://cdn.bootcdn.net/ajax/libs/instant.page/5.1.0/instantpage.min.js
   instantpage: https://cdn.bootcdn.net/ajax/libs/instant.page/5.1.0/instantpage.min.js   # bytecdntp 已 404 → bootcdn（实测 200）
   typed: https://registry.npmmirror.com/typed.js/2.0.12/files/lib/typed.min.js
   pangu: https://registry.npmmirror.com/pangu/4.0.7/files/dist/browser/pangu.min.js
 
   # photo
-  # fancybox_css: https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css
-  # fancybox: https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js
+  # fancybox_css: https://registry.npmmirror.com/@fancyapps/fancybox/3.5.7/files/dist/jquery.fancybox.min.css
+  # fancybox: https://registry.npmmirror.com/@fancyapps/fancybox/3.5.7/files/dist/jquery.fancybox.min.js
   fancybox_css: https://registry.npmmirror.com/@fancyapps/fancybox/3.5.7/files/dist/jquery.fancybox.min.css   # bytecdntp 已 404
   fancybox: https://registry.npmmirror.com/@fancyapps/fancybox/3.5.7/files/dist/jquery.fancybox.min.js
-  # medium_zoom: https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js
+  # medium_zoom: https://registry.npmmirror.com/medium-zoom/1.0.6/files/dist/medium-zoom.min.js
   medium_zoom: https://registry.npmmirror.com/medium-zoom/1.0.6/files/dist/medium-zoom.min.js
   # snackbar
-  # snackbar_css: https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css
-  # snackbar: https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js
+  # snackbar_css: https://cdn.bootcdn.net/ajax/libs/node-snackbar/0.1.16/snackbar.min.css
+  # snackbar: https://cdn.bootcdn.net/ajax/libs/node-snackbar/0.1.16/snackbar.min.js
   snackbar_css: https://cdn.bootcdn.net/ajax/libs/node-snackbar/0.1.16/snackbar.min.css   # bytecdntp 已 404 → bootcdn（实测 200）
   snackbar: https://cdn.bootcdn.net/ajax/libs/node-snackbar/0.1.16/snackbar.min.js
   # effect
@@ -1120,24 +1120,24 @@ CDN:
   # fontawesome
   fontawesome: https://registry.npmmirror.com/@fortawesome/fontawesome-free/6.7.2/files/css/all.min.css   # COS 的 css/fontasome/all.min.css 缺 webfonts，故用 npmmirror（含 webfonts，实测 200）
   # fontawesome: https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css
-  # fontawesome:   https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css
+  # fontawesome:   https://registry.npmmirror.com/@fortawesome/fontawesome-free/6.7.2/files/css/all.min.css
 
 
   # Conversion between Traditional and Simplified Chinese
   translate: /js/tw_cn.js
 
   # justifiedGallery
-  # justifiedGallery_js: https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js
-  # justifiedGallery_css: https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css
+  # justifiedGallery_js: https://registry.npmmirror.com/justifiedGallery/3.8.1/files/dist/js/jquery.justifiedGallery.min.js
+  # justifiedGallery_css: https://registry.npmmirror.com/justifiedGallery/3.8.1/files/dist/css/justifiedGallery.min.css
 
   justifiedGallery_js: https://registry.npmmirror.com/justifiedGallery/3.8.1/files/dist/js/jquery.justifiedGallery.min.js
   justifiedGallery_css: https://registry.npmmirror.com/justifiedGallery/3.8.1/files/dist/css/justifiedGallery.min.css
 
  
   # Prism.js
-  # prismjs_js: https://cdn.jsdelivr.net/npm/prismjs/prism.min.js
-  # prismjs_lineNumber_js: https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.js
-  # prismjs_autoloader: https://cdn.jsdelivr.net/npm/prismjs/plugins/autoloader/prism-autoloader.min.js
+  # prismjs_js: https://npm.elemecdn.com/prismjs@1.1.0/prism.js
+  # prismjs_lineNumber_js: https://npm.elemecdn.com/prismjs/plugins/line-numbers/prism-line-numbers.min.js
+  # prismjs_autoloader: https://npm.elemecdn.com/prismjs/plugins/autoloader/prism-autoloader.min.js
 
   prismjs_js: https://npm.elemecdn.com/prismjs@1.1.0/prism.js
   prismjs_lineNumber_js: https://npm.elemecdn.com/prismjs/plugins/line-numbers/prism-line-numbers.min.js
