@@ -947,6 +947,9 @@ inject:
   bottom:
   
 profile:
+  # profile 页是否复用首页（/home/，type: blog）的 full_page 展示（3D 封面 + 点击加载 3D 模型）
+  # true = 与首页同样的整页展示；false = 保持 not-top-img（无 hero）
+  use_home_display: true
   avatar: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/avatar/20210718003707.webp
   author_info:
     line1: Hello&#xFF0C;I&apos;m kp
