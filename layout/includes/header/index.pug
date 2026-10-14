@@ -1,7 +1,8 @@
-//- profile 页（type: flat / title: PROFILE）复用首页（type: blog）的 full_page 展示：
+//- profile 页（source/profile/index.md → page.path === 'profile/index.html'）复用首页（type: blog）的 full_page 展示：
 //- 与 /blog-cn/home/ 一样渲染 index_intro.pug（3D 封面 + 点击加载），不再停留在 not-top-img。
 //- 关闭方式：主题配置 profile.use_home_display: false。
-- var homeDisplayPage = (page.type === 'blog') || (page.type === 'flat' && page.title === 'PROFILE' && (theme.profile ? theme.profile.use_home_display !== false : true))
+//- 注意：按 page.path 精确匹配（不按 title，避免与 /services/ 等 title 相同的 flat 页误命中）。
+- var homeDisplayPage = (page.type === 'blog') || (page.type === 'flat' && page.path === 'profile/index.html' && (theme.profile ? theme.profile.use_home_display !== false : true))
 
 if !theme.disable_top_img && (page.top_img !== false || homeDisplayPage)
   if is_post()
