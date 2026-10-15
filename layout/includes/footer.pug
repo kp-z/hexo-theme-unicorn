@@ -9,10 +9,10 @@
                 ul.footer-link
                   each val, lab in secVal
                       li
-                        a(href=val)=lab 
+                        a(href=rp(val))=lab
     #footer-info
-      a.copyright(href=theme.footer_copyright_address)=theme.footer_copyright
-      a.icp(href=theme.footer_icp_address)=theme.footer_icp
+      a.copyright(href=rp(theme.footer_copyright_address))=theme.footer_copyright
+      a.icp(href=rp(theme.footer_icp_address))=theme.footer_icp
          
 
   //- if theme.footer.owner.enable

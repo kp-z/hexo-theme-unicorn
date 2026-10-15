@@ -88,6 +88,6 @@ script.
 
   document.addEventListener('pjax:error', (e) => {
     if (e.request.status === 404) {
-      pjax.loadUrl('/blog-cn/404.html')
+      pjax.loadUrl('#{rp('/404.html')}')
     }
   })

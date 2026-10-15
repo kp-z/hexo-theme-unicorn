@@ -5,7 +5,7 @@
 // 维护说明（今后新增「项目」分类的文章时）：
 //   1. 在对应分组（认知机器 / 应用开发 / 其他项目）的 children 里按日期新→旧插入一条；
 //   2. name 用文章标题原文，value: 1；
-//   3. link 用 '/blog-cn/posts/<abbrlink>/'（abbrlink 见文章 front-matter，或直接复制线上文章 URL）；
+//   3. link 用 '/posts/<abbrlink>/'（运行时前缀 ROOT，见文件顶部 ROOT 定义）（abbrlink 见文章 front-matter，或直接复制线上文章 URL）；
 //   4. 一级分组的 value 改成该分组的文章篇数（只影响扇形角度）；
 //   5. 新增二级分类时沿用原色板分配颜色（一级深、二级浅一档）。
 // 旧的「技能」数据可在主题仓库历史提交 e9bf9b1 找回。
@@ -24,6 +24,14 @@
 //
 // 注意：整段包在 IIFE 里。profile.scripts 里的 radar.js / gantt.js 等也在全局声明 var myChart/var data，
 // 若此处不隔离，resize 回调闭包会读到被后加载脚本覆盖掉的 myChart，导致本图永远不重排（并误改别的图表）。
+// R-156：站点根由主题注入的 GLOBAL_CONFIG.root 驱动（回退 window.config.root / 最终 "/"），
+// 本文件内所有站内链接只写根相对路径，运行时统一前缀，避免主题里硬编码站点根。
+const ROOT = (function () {
+  try { if (typeof GLOBAL_CONFIG !== 'undefined' && GLOBAL_CONFIG && GLOBAL_CONFIG.root) return GLOBAL_CONFIG.root; } catch (e) {}
+  try { if (window.config && window.config.root) return window.config.root; } catch (e) {}
+  return '/';
+})();
+
 (function () {
     'use strict';
 
@@ -38,7 +46,7 @@
             itemStyle: {
                 color: '#97e245'
             },
-            link: '/blog-cn/categories/项目/认知机器/',
+            link: ROOT + '/categories/项目/认知机器/',
             target: '_self',
             children: [{
                 name: '此图(Graph)分类非彼图(Image)分类',
@@ -47,7 +55,7 @@
                 itemStyle: {
                     color: '#b5ea7b'
                 },
-                link: '/blog-cn/posts/16005/',
+                link: ROOT + '/posts/16005/',
                 target: '_self',
             }, {
                 name: '手臂机器人:机器人检测物体与运动规划',
@@ -56,7 +64,7 @@
                 itemStyle: {
                     color: '#b5ea7b'
                 },
-                link: '/blog-cn/posts/12591/',
+                link: ROOT + '/posts/12591/',
                 target: '_self',
             }, {
                 name: '认知机器人：感知物体位置和形态',
@@ -65,7 +73,7 @@
                 itemStyle: {
                     color: '#b5ea7b'
                 },
-                link: '/blog-cn/posts/27207/',
+                link: ROOT + '/posts/27207/',
                 target: '_self',
             }]
         }, {
@@ -75,7 +83,7 @@
             itemStyle: {
                 color: '#f4d142'
             },
-            link: '/blog-cn/categories/项目/应用开发/',
+            link: ROOT + '/categories/项目/应用开发/',
             target: '_self',
             children: [{
                 name: '蜜蜂速查-速查表收集站',
@@ -84,7 +92,7 @@
                 itemStyle: {
                     color: '#f8e07f'
                 },
-                link: '/blog-cn/posts/61713/',
+                link: ROOT + '/posts/61713/',
                 target: '_self',
             }, {
                 name: '微信小程序-找地儿住-官方文档',
@@ -93,7 +101,7 @@
                 itemStyle: {
                     color: '#f8e07f'
                 },
-                link: '/blog-cn/posts/771/',
+                link: ROOT + '/posts/771/',
                 target: '_self',
             }]
     }, {
@@ -103,7 +111,7 @@
         itemStyle: {
             color: '#ff8fa0'
         },
-        link: '/blog-cn/categories/项目/其他项目/',
+        link: ROOT + '/categories/项目/其他项目/',
         target: '_self',
         children: [{
             name: '黑鲸智能系统知识库',
@@ -112,7 +120,7 @@
             itemStyle: {
                 color: '#ffb7c2'
             },
-            link: '/blog-cn/posts/30954/',
+            link: ROOT + '/posts/30954/',
             target: '_self',
         }, {
             name: ' zkpeace.com',
@@ -121,7 +129,7 @@
             itemStyle: {
                 color: '#ffb7c2'
             },
-            link: '/blog-cn/posts/16907/',
+            link: ROOT + '/posts/16907/',
             target: '_self',
         }, {
             name: '岛屿--个人网站博客搜集页',
@@ -130,7 +138,7 @@
             itemStyle: {
                 color: '#ffb7c2'
             },
-            link: '/blog-cn/posts/24491/',
+            link: ROOT + '/posts/24491/',
             target: '_self',
         }]
     }];

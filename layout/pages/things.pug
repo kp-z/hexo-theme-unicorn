@@ -12,7 +12,7 @@
         #sortable.sjs-default
             if site.data.things 
                 each thing in site.data.things
-                    - var link = thing.link || '/blog-cn/things/';
+                    - var link = thing.link || url_for('/things/');
                     .sortable-card(data-type=thing.type)
                         img.card__picture(src=thing.image alt=thing.title)
                         .card-infos

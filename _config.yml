@@ -2,7 +2,7 @@
 # --------------------------------------
 # 导航栏logo设置
 logo: 
-  img: /blog-cn/img/kp-logo.png
+  img: /img/kp-logo.png
   title: ZKPEACE
 
 menu:
@@ -36,23 +36,23 @@ hide_sidebar_menu_child: false
 footer_text:
   footer_text_1:
       导航:
-        博客: /blog-cn/
-        相册: /blog-cn/gallery/
-        项目: /blog-cn/projects/
-        时间轴:  /blog-cn/archives/
-        统计: /blog-cn/categories/
+        博客: /
+        相册: /gallery/
+        项目: /projects/
+        时间轴:  /archives/
+        统计: /categories/
       笔记:
         维基: https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401
-        速查: /wiki/
+        速查: https://zkpeace.com/wiki/
   footer_text_2:
     标签:
-      技术杂谈: /blog-cn/tags/技术/
-      HEXO相关: /blog-cn/tags/hexo/
-      生活随想: /blog-cn/tags/生活/
-      旅行记录: /blog-cn/tags/旅行/
+      技术杂谈: /tags/技术/
+      HEXO相关: /tags/hexo/
+      生活随想: /tags/生活/
+      旅行记录: /tags/旅行/
     社区:
-      SLAM: /blog-cn/home/
-      Blender: /blog-cn/gallery/
+      SLAM: /home/
+      Blender: /gallery/
       Github: https://github.com/kp-z 
   footer_text_3:
     友链: 
@@ -63,21 +63,21 @@ footer_text:
       Liam: https://www.ccyh.xyz/
       唐曲: https://qutang.dev/
       FKUN: https://blog.fkun.tech/
-      友链申请: /blog-cn/posts/59487/
-      更多友链: /blog-cn/friends/
+      友链申请: /posts/59487/
+      更多友链: /friends/
   footer_text_4:
     关于本站:
       RSS订阅: https://zkpeace.com/blog-cn/rss2.xml
       本站主题: https://github.com/kp-z/hexo-theme-unicorn
-      版权声明: /blog-cn/copyright/
-      支持赞助: /blog-cn/sponsorship/
+      版权声明: /copyright/
+      支持赞助: /sponsorship/
     收录:
       十年之约: https://www.foreverblog.cn/
       开往: https://travellings.link
       虫洞: https://www.foreverblog.cn/go.html
 
 footer_copyright: Copyright © 2021 Kuangpu Zhang.
-footer_copyright_address: /blog-cn/copyright/
+footer_copyright_address: /copyright/
 footer_icp: 鲁ICP备20008114号-1
 footer_icp_address: http://www.beian.miit.gov.cn/state/outPortal/loginPortal.action
 
@@ -87,16 +87,16 @@ footer_icp_address: http://www.beian.miit.gov.cn/state/outPortal/loginPortal.act
 carousel_contents:
   page_1:
     title: 01 - Info
-    subtitle: 你好啊！我是<a class="info-link" href="/blog-cn/profile">Kp</a>，自动驾驶仿真算法工程师，喜欢<a class="info-link" href="/blog-cn/gallery">摄影</a> <a class="info-link" href="/blog-cn/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
+    subtitle: 你好啊！我是<a class="info-link" href="/profile">Kp</a>，自动驾驶仿真算法工程师，喜欢<a class="info-link" href="/gallery">摄影</a> <a class="info-link" href="/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
   page_2:
     title: 02 - Job
-    subtitle: 欢迎大佬们查看我的<a class="info-link" href="/blog-cn/profile/">简历</a>和<a class="info-link" href="/blog-cn/projects/">项目</a>，有机会一起合作。
+    subtitle: 欢迎大佬们查看我的<a class="info-link" href="/profile/">简历</a>和<a class="info-link" href="/projects/">项目</a>，有机会一起合作。
   page_3:
     title: 03 - SNS
-    subtitle: 欢迎加入我的 <a href="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/qrcode/wechatcode.jpeg"><i class="fab fa-weixin"></i></a> <a  href="https://t.me/kpzhang"><i class="fab fa-telegram-plane"></i></a> 交流群，关注我的<a class="info-link" href="/blog-cn/profile/">社交账号</a>，查阅我的<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术笔记</a>.
+    subtitle: 欢迎加入我的 <a href="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/qrcode/wechatcode.jpeg"><i class="fab fa-weixin"></i></a> <a  href="https://t.me/kpzhang"><i class="fab fa-telegram-plane"></i></a> 交流群，关注我的<a class="info-link" href="/profile/">社交账号</a>，查阅我的<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术笔记</a>.
   page_4:
     title: 04 - More
-    subtitle: 本网站正在建设中，欢迎<a class="info-link" href="/blog-cn/message/">反馈</a>错误. 如果本站内容帮助到了你，求<a class="info-link" href="/blog-cn/sponsorship/">赞赏</a>.
+    subtitle: 本网站正在建设中，欢迎<a class="info-link" href="/message/">反馈</a>错误. 如果本站内容帮助到了你，求<a class="info-link" href="/sponsorship/">赞赏</a>.
 
 # Code Blocks (代碼相關)
 # --------------------------------------
