@@ -1,40 +1,20 @@
 extends includes/layout.pug
 
 block content
+  - var views = theme.page_views || {}
+  - var viewPath = page.view && views[page.view]
   if page.type ==='flat'
     #page.recent-posts
-      case page.title 
-        when 'FRIENDS'
-          include pages/friends.pug
-        when 'THINGS'
-          include pages/things.pug
-        when 'DOUBAN'
-          include pages/douban.pug
-        when 'PROJECTS'
-          include pages/projects.pug
-        when 'SPONSOR'
-          include pages/sponsor.pug
-        when 'TRAVEL'
-          include pages/travel.pug
-        when 'PROFILE'
-          include pages/profile.pug
-        when 'ARCHIVE'
-          include pages/archive.pug
-        default  
-          != page.content
+      if viewPath
+        !=partial(viewPath)
+      else
+        != page.content
   else 
     #page
-      case page.type
-        when 'tags'
-          include includes/page/tags.pug
-        when 'link'
-          include includes/page/flink.pug
-        when 'categories'
-          include includes/page/categories.pug
-        when 'weibo'
-          include pages/weibo.pug
-        default
-          include includes/page/default-page.pug
+      if viewPath
+        !=partial(viewPath)
+      else
+        !=partial(views.default_page || 'includes/page/default-page.pug')
 
       if page.comments !== false && theme.comments && theme.comments.use
         - var commentsJsLoad = true

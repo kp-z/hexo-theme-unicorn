@@ -1033,6 +1033,22 @@ pages:
       - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/fcircle-beta.js
       - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/friends.js
 
+page_views:
+  # R-161 S5：页面 → 视图模板派发表（front-matter `view:` 键驱动 layout/page.pug）
+  friends: pages/friends.pug
+  things: pages/things.pug
+  douban: pages/douban.pug
+  projects: pages/projects.pug
+  sponsor: pages/sponsor.pug
+  travel: pages/travel.pug
+  profile: pages/profile.pug
+  archive: pages/archive.pug
+  weibo: pages/weibo.pug
+  tags: includes/page/tags.pug
+  flink: includes/page/flink.pug
+  categories: includes/page/categories.pug
+  default_page: includes/page/default-page.pug
+
 # R-059 阶段 1：首页 3D 模型（model-viewer；dev2 首页改造只读本块）
 # enable 为总开关；viewer_js 为站内自托管路径（不依赖境外网）；poster 沿用原 sketchfab_cover_img 的 COS 地址。
 model_viewer:
