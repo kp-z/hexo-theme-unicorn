@@ -1,9 +1,14 @@
 /**
- * Butterfly
- * ramdom cover
+ * Butterfly / R-223（round-19 S13）
+ * ramdom cover（标题沿用历史拼写）——改由纯 core random_cover_core.selectCover 决定，
+ * 按 data.path 稳定选择，源码中不含任何随机数调用；post_asset_folder / data.cover===false 分支行为不变。
  */
 
 'use strict'
+
+const { selectCover } = require('../lib/random_cover_core')
+
+const FALLBACK_COVER = 'https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/img/default.jpg'
 
 hexo.extend.filter.register('before_post_render', function (data) {
   const { config } = this
@@ -16,30 +21,15 @@ hexo.extend.filter.register('before_post_render', function (data) {
   }
 
   if (data.cover === false) {
-    data.randomcover = randomCover()
+    data.randomcover = randomCover(data.path)
     return data
   }
 
-  data.cover = data.cover || randomCover()
+  data.cover = data.cover || randomCover(data.path)
   return data
 })
 
-function randomCover () {
+function randomCover (key) {
   const theme = hexo.theme.config
-  let cover
-  let num
-
-  if (theme.cover && theme.cover.default_cover) {
-    if (!Array.isArray(theme.cover.default_cover)) {
-      cover = theme.cover.default_cover
-      return cover
-    } else {
-      num = Math.floor(Math.random() * theme.cover.default_cover.length)
-      cover = theme.cover.default_cover[num]
-      return cover
-    }
-  } else {
-    cover = theme.default_top_img || 'https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/img/default.jpg'
-    return cover
-  }
+  return selectCover(theme.cover && theme.cover.default_cover, key, theme.default_top_img || FALLBACK_COVER)
 }

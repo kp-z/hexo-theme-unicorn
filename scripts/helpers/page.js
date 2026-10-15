@@ -9,6 +9,7 @@
 
 const { stripHTML, escapeHTML, prettyUrls } = require('hexo-util')
 const crypto = require('crypto')
+const cloudTagsCore = require('../lib/cloud_tags_core')
 
 hexo.extend.helper.register('page_description', function () {
   const { config, page } = this
@@ -22,36 +23,20 @@ hexo.extend.helper.register('page_description', function () {
   }
 })
 
+// R-223（round-046）：薄包装 —— 口径/排序/颜色全部在 scripts/lib/cloud_tags_core.js（纯函数，可 node 直接测）。
+// helper 名与 options 兼容不变；颜色语义复原调用点声明（tags.pug:5 的 start_color/end_color），删净随机颜色。
 hexo.extend.helper.register('cloudTags', function (options = {}) {
   const env = this
-  let source = options.source
-  const minfontsize = options.minfontsize
-  const maxfontsize = options.maxfontsize
-  const limit = options.limit
-  const unit = options.unit || 'px'
-
-  let result = ''
-  if (limit > 0) {
-    source = source.limit(limit)
-  }
-
-  const sizes = []
-  source.sort('length').forEach(tag => {
-    const { length } = tag
-    if (sizes.includes(length)) return
-    sizes.push(length)
+  return cloudTagsCore.buildCloud(options.source, {
+    minfontsize: options.minfontsize,
+    maxfontsize: options.maxfontsize,
+    unit: options.unit,
+    limit: options.limit,
+    color: options.color,
+    start_color: options.start_color,
+    end_color: options.end_color,
+    urlFor: function (path) { return env.url_for(path) }
   })
-
-  const length = sizes.length - 1
-  source.forEach(tag => {
-    const ratio = length ? sizes.indexOf(tag.length) / length : 0
-    const size = minfontsize + ((maxfontsize - minfontsize) * ratio)
-    let style = `font-size: ${parseFloat(size.toFixed(2))}${unit};`
-    const color = 'rgb(' + Math.floor(Math.random() * 221) + ', ' + Math.floor(Math.random() * 221) + ', ' + Math.floor(Math.random() * 221) + ')' // 0,0,0 -> 200,200,200
-    style += ` color: ${color}`
-    result += `<a href="${env.url_for(tag.path)}" style="${style}">${tag.name}</a>`
-  })
-  return result
 })
 
 hexo.extend.helper.register('urlNoIndex', function (url = null) {
