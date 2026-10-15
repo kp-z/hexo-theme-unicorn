@@ -49,7 +49,8 @@ div
     else if (!is_post() && page.aside !== false)
       !=partial('includes/third-party/newest-comments/index', {}, {cache: true})
 
-  !=fragment_cache('injectBottom', function(){return injectHtml(theme.inject.bottom)})
+  //- R-162 S6（round-038）：bottom 槽改由声明式 inject.assets 表派发。
+  !=inject_assets('bottom')
 
   !=partial('includes/third-party/effect', {}, {cache: true})
 

@@ -78,4 +78,5 @@ include ./head/noscript.pug
 
 !=fragment_cache('injectHeadJs', function(){return inject_head_js()})
 
-!=fragment_cache('injectHead', function(){return injectHtml(theme.inject.head)})
+//- R-162 S6（round-038）：head 槽改由声明式 inject.assets 表派发；因条目可按页过滤，不再使用 fragment_cache。
+!=inject_assets('head')

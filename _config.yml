@@ -67,7 +67,7 @@ footer_text:
       更多友链: /friends/
   footer_text_4:
     关于本站:
-      RSS订阅: https://zkpeace.com/blog-cn/rss2.xml
+      RSS订阅: /rss2.xml
       本站主题: https://github.com/kp-z/hexo-theme-unicorn
       版权声明: /copyright/
       支持赞助: /sponsorship/
@@ -935,24 +935,46 @@ css_prefix: true
 # Inject
 # Insert the code to head (before '</head>' tag) and the bottom (before '</body>' tag)
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
+# R-162 S6（round-038）：原 inject.head / inject.bottom / inject.echarts_src /
+# inject.echarts_on_chart_pages 四个散落键合并为单一声明式表 inject.assets，
+# 由 scripts/helpers/inject_assets.js 的 inject_assets(slot) 按槽位读取。每项字段：
+#   name     = 可读标识（仅用于阅读/排障）
+#   slot     = head | bottom | charts（模板按槽位取用）
+#   html     = 原样注入的 HTML 串（与 src / href 三选一）
+#   src      = 生成 <script type="text/javascript" src="..."></script>
+#   href+rel = 生成 <link href="..." rel="...">
+#   pages    = 页面白名单，缺省 = 全站；页面身份 = page.path 去掉前导斜杠与 /index.html，
+#              或 page.view / page.type 命中
+#   enabled  = false 时跳过（缺省启用）
 inject:
-  head:
-    - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js"></script>
-    - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/f12_printer.js"></script>
-    - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/ali/font_1789453_ouhjvm9rdyn.js"></script>
+  assets:
+    # head 槽：顺序 = 输出顺序，与原 inject.head 四条完全一致
+    - name: jquery
+      slot: head
+      src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js
+    - name: f12_printer
+      slot: head
+      src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/f12_printer.js
+    - name: ali_font
+      slot: head
+      src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/ali/font_1789453_ouhjvm9rdyn.js
     # R-059 阶段 1.2（task-105）：自托管字体子集；R-157 S1b（task-249）：改用 __ROOT__ 占位符，
     # 由主题 scripts/filters/root_placeholder.js 按站点 config.root 展开，站点换 root 自动跟随；原 COS 副本 CSS 不再引用。
-    - <link href="__ROOT__img/cdn/css/font/font.css" rel="stylesheet">
-  bottom:
-
-  # R-128b（round-030）：echarts 不再全站注入（原先 223 个页面各下载约 1 MB），
-  # 改为只在真正调用 echarts.init 的图表页按需注入（见 layout/pages/profile.pug、layout/pages/archive.pug）。
-  #   echarts_src           = 两处按页注入复用的同一 URL（与旧 inject.head 那行完全一致）
-  #   echarts_on_chart_pages= true（默认）只在 profile / services / categories 三个图表页注入；
-  #                            false = 完全不再注入（此时须自行在站点层提供 echarts，
-  #                            例如把 echarts_src 这一行加回上面的 head 列表）
-  echarts_src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js
-  echarts_on_chart_pages: true
+    - name: font_subset_css
+      slot: head
+      href: __ROOT__img/cdn/css/font/font.css
+      rel: stylesheet
+    # charts 槽：R-128b（round-030）echarts 不再全站注入（原先 223 个页面各下载约 1 MB），
+    # 只在真正调用 echarts.init 的图表页按需注入（layout/pages/profile.pug 覆盖 profile/services，
+    # layout/pages/archive.pug 覆盖 categories）。删掉本项即完全不再注入
+    # （此时须自行在站点层提供 echarts，例如把上面的 src 形式条目加回 head 槽）。
+    - name: echarts
+      slot: charts
+      src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js
+      pages:
+        - categories
+        - profile
+        - services
   
 profile:
   avatar: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/avatar/20210718003707.webp

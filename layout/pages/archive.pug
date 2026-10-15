@@ -32,8 +32,8 @@
 
 //- R-128b（round-030）：echarts 只在本页（/categories/ 归档统计）按需加载，
 //- 且必须先于各图表容器之后由 posts-chart.js 内联注入的 echarts.init 脚本。
-if theme.inject && theme.inject.echarts_on_chart_pages
-  script(type='text/javascript', src=theme.inject.echarts_src)
+//- R-162 S6（round-038）：改由 inject.assets 表中 slot: charts 的条目派发（pages: categories）。
+!=inject_assets('charts')
 #gallery-group-main.categories-dashboard
   //- ① 概览（四张独立卡片 2×2） + 分类占比
   .arc-row

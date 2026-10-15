@@ -1,5 +1,5 @@
 //- JSON-LD 结构化数据（schema.org）
-//- 为什么用服务端 Pug 而不是 theme.inject.head：inject 只能注入静态字符串、拿不到 page 上下文。
+//- 为什么用服务端 Pug 而不是 inject.assets 的 html 条目：注入只能插入静态字符串、拿不到 page 上下文。
 //- 字段用 JSON.stringify 包裹，避免标题/描述含引号时破坏 JSON。
 //- 关于两个被刻意省略的字段：
 //-   1) dateModified —— 全站 updated_option: 'mtime'，而 git checkout 会刷新 mtime，

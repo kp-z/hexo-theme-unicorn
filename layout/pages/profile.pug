@@ -126,7 +126,7 @@
 
 //- R-128b（round-030）：echarts 只在本页（profile / services 共用本模板）按需加载，
 //- 且必须先于下方 profile.scripts 里的 sun/gantt/radar/fitness（它们会调用 echarts.init）。
-if theme.inject && theme.inject.echarts_on_chart_pages
-  script(type='text/javascript', src=theme.inject.echarts_src)
+//- R-162 S6（round-038）：改由 inject.assets 表中 slot: charts 的条目派发（pages: profile/services）。
+!=inject_assets('charts')
 for i in theme.profile.scripts
   script(src=url_for(i))
