@@ -3,7 +3,7 @@
  * rp / rp_html：站点根（config.root）路径前缀助手
  *
  * 站点配置里的「站内路径」一律写成根相对形式（如 /archives/），由本助手在渲染期补上当前
- * 部署根（Hexo 的 config.root，本站为 /blog-cn/）。这样站点换到任意子路径部署时链接自动
+ * 部署根（Hexo 的 config.root）。这样站点换到任意子路径部署时链接自动
  * 跟随，主题模板与主题配置里不再出现站点根字面量。
  *
  * 规则（rp）：
@@ -14,7 +14,7 @@
  *   - 不以 / 开头（相对路径）→ 原样返回
  *
  * @example
- *   rp('/archives/')          // root=/blog-cn/ → /blog-cn/archives/
+ *   rp('/archives/')          // 例：root=<root>/ → <root>/archives/（如 root=/blog-x/ → /blog-x/archives/）
  *   rp('https://a.example/')  // → https://a.example/
  *   rp_html('<a href="/x/">') // 富文本（subtitle 等）里的 href/src 同样补 root
  */
