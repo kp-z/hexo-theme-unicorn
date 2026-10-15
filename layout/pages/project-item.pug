@@ -4,7 +4,7 @@
 .project-info
     .tags
         - article.tags.each(function (tag) {
-            a.tag(style='background:# e90ff ' url_for(tag.path) title=tag.name)
+            a.tag(href=url_for(tag.path) style='background:#e90ff' title=tag.name)
                 | ◉ !{tag.name} &nbsp;
         - })
     br

@@ -20,6 +20,15 @@
  * R-200：validateAssets() 把「未知键静默忽略 / 槽位拼错永不输出」变成生成期 fail-loud。
  * R-201：neverMatchedEntries() / redundantEntries() 基于生成期页面观测给出白名单「从未命中」与
  *        「被其它条目覆盖」告警（例：echarts.pages 单列 services 时，服务页已由 view: profile 覆盖）。
+ *
+ * R-211（round-041）：**两层语义显式契约**（行为零变更，仅把既有语义写成注释与测试）：
+ *   - core 层（本模块，可被 `node -e "require(…)"` 纯直调）：对不可信输入一律 fail-closed ——
+ *     pages 非数组（字符串 / 数字 / 对象）⇒ matchPages() 返回 false ⇒ 该条不注入（绝不静默退化为全站注入）；
+ *     pages 缺省（undefined / null）或 [] ⇒ 返回 true（语义上就是「全站」，不算错误输入）。
+ *   - helper 层（scripts/helpers/inject_assets.js）：before_generate 用 validateAssets() / validateItem() 校验，
+ *     非法 pages（非数组、元素非字符串 / 空串）⇒ ERROR + 终止构建（process.exit(-1)），渲染期再 failLoud。
+ *   - 互补关系：core 保证「即使没有前置校验也不会误注入」，helper 保证「配置写错就当场失败」。
+ *     两层契约的测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑯ 组（16a–16e）。
  */
 
 'use strict'

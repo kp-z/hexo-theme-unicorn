@@ -24,6 +24,13 @@
  *   - 时机：hexo 8.1.2 的 after_generate 早于文件写盘（页面在 console/generate.js
  *     的 writeFile() 里经 route.get() 惰性渲染），故 flush 同时挂 after_generate、
  *     hexo 'exit'、process 'exit' 三处；audit 非空才输出，输出后 clear，不重复告警。
+ * R-211（round-041）：双层语义（core fail-closed / helper fail-loud）显式契约，行为零变更：
+ *   - core 层（lib/inject_assets_core.js）对不可信 pages 返回 false ⇒ 不注入（绝不静默全站）；
+ *   - helper 层（本文件）对非法 pages 一律 logger.error + 终止构建（before_generate 的 process.exit(-1)），
+ *     绝不让形态写错的条目进入渲染期；两层互补，测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑯ 组。
+ * R-212（round-041）：渲染期兜底分支（failLoud）由 throw 改为 process.exit(-1) ——
+ *   hexo 8.1.2 吞掉 route 渲染期异常（仅 throw ⇒ BUILD_RC=0 且 public 仍产出），
+ *   兜底必须与 before_generate 同样是「真失败」；测试见同文件第 ⑰ 组。
  */
 
 'use strict'
@@ -55,7 +62,13 @@ function observe (index, item, page, ids) {
 
 function failLoud (errors) {
   errors.forEach(function (e) { logger.error(PREFIX + e) })
-  throw new Error(PREFIX + '条目校验失败：拒绝静默输出（R-200）')
+  // R-212（round-041）：渲染期兜底分支必须**真的失败** —— hexo 8.1.2 会吞掉 route
+  // 渲染期异常（tester M12 实测：before_generate 注册缺失时，仅 throw ⇒ BUILD_RC=0
+  // 且 public 照常产出），故与 before_generate 的 process.exit(-1) 语义保持一致：
+  // 记完 logger.error 后直接终止进程。hexo server --watch 下同样终止，与
+  // before_generate 行为一致，属预期（宁可中断，也不静默产出缺注入的页面）。
+  logger.error(PREFIX + '条目校验失败：拒绝静默输出（R-200），终止构建（R-212）')
+  process.exit(-1)
 }
 
 hexo.extend.helper.register('inject_assets', function (slot) {
