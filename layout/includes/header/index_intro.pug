@@ -178,7 +178,7 @@ script(src=url_for(theme.pages.carousel))
   .bubble-scroll
     - let postLimit = 10
     - let bubbleIndex = 0
-    - site.posts.sort('date', 'desc').limit(postLimit).each(function (article){
+    - stable_posts(site.posts, -1).slice(0, postLimit).forEach(function (article){
       - let link = article.link || article.path
       - let title = article.title || _p('no_title')
       - let post_cover = article.cover

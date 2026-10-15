@@ -61,12 +61,24 @@
  *   - 退出阶段的 cmd 门禁：只在真在生成产物的进程里复核（hexo server / 其它 console 的
  *     public_dir 可能是陈旧产物，且其观测来自被服务的请求 ⇒ 会误报），
  *     程序化调用（hexo.env.cmd === ''）仍复核。
- *   - **已知盲区（Lead round-042 登记为 round-043 残余）**：expectedInjections 只覆盖「本轮渲染中
- *     出现过观测」的页面；route 在 layout/helper 之前就渲染失败（例：hexo 打印
- *     ERROR Render HTML failed 但继续）⇒ 无观测 ⇒ 本机制不捕获，需 route 级检测
- *     （hexo.route.list() vs public_dir 实际文件集），不在 R-213 范围内。
- *     测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑱ 组（18a–18m）与第 ⑲ 组（19a–19e，
- *     after_generate 陈旧产物假阳性回归）。
+ *   - R-213 的已知盲区（round-042 登记的残余）已由 R-214 补上：expectedInjections 只覆盖
+ *     「本轮渲染中出现过观测」的页面；route 在 layout / helper 之前就渲染失败（例：hexo 打印
+ *     ERROR Render HTML failed 但继续，round-041 实测 52 条）⇒ 无观测 ⇒ R-213 不捕获。
+ * R-214（round-043）：route 级产物核对（补 R-213 盲区）。
+ *   - 退出阶段除 R-213 的注入落地复核外，再取 hexo.route.list() 中 .html 结尾的路由，
+ *     在 hexo.public_dir 下 statSync 对账：ENOENT / 读取异常 / **size === 0** ⇒ 缺失，
+ *     逐条点名「路由产物缺失：<route>」+ 汇总一行（附清单前 5 条）后 process.exit(-1)。
+ *     纯函数在 core.missingRouteOutputs（可 node require，不依赖 hexo），本文件只做 IO 适配。
+ *   - 为什么 size === 0 也判缺失：round-042 的 .each() 回归产出 0 字节 projects 页时 hexo 仍
+ *     打印 "INFO Generated: projects/index.html"；干净基线实测（Lead /tmp/t42 的三棵树）
+ *     各 225 个 .html、0 字节文件 0 个 ⇒ 该判据在干净构建零误报。
+ *   - 不判 hexo server / watch：其 public_dir 可能是陈旧产物、观测来自被服务的请求 ⇒ 误报；
+ *     只在 isGenerateConsole() 时核对，且与 R-213 一样只核对一次（hexo 'exit' + process 'exit'）。
+ * R-215（round-043）：flushAudit 的覆盖审计（从未命中 / 冗余 / 未渲染 + 停用点名）只在
+ *   isGenerateConsole() 时输出 —— 局部观测（hexo server 重载只渲染了被请求的少数页）不作判据
+ *   （实测：server 重载会打 1 行「echarts 从未命中」WARN，属误报）。
+ *   测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑱–⑳ 组、第 ㉑ 组（R-214）、第 ㉒ 组（R-215）、
+ *   第 ㉓ 组（R-216 稳定排序，纯函数在 scripts/lib/stable_posts_core.js）。
  */
 
 'use strict'
@@ -279,7 +291,42 @@ function isGenerateConsole () {
   return /^(g|generate)$/.test(cmd)
 }
 
+// R-214（round-043）：route 级产物核对 —— 补 R-213 的盲区（route 在 layout/helper 之前就失败 ⇒
+// 没有任何观测 ⇒ expectedInjections 为空 ⇒ R-213 无从发现）。这里拿 hexo.route.list() 与实际
+// 产物对账，只判「文件存在且非空」，**不**比对字节（gulp 后处理 + hexo hash-skip 会让盘上字节
+// ≠ 渲染字节）。判据见 core.missingRouteOutputs 的注释。
+// 只核对一次：失败路径会先后经 hexo 'exit' 与 process 'exit'（同一批缺失否则打印两遍）。
+let routeVerifiedOnce = false
+
+function verifyRouteOutputs (write) {
+  if (routeVerifiedOnce) return
+  const publicDir = (typeof hexo !== 'undefined' && typeof hexo.public_dir === 'string') ? hexo.public_dir : ''
+  if (publicDir === '') return
+  let hasPublic = false
+  try { hasPublic = fs.existsSync(publicDir) } catch (err) { hasPublic = false }
+  if (!hasPublic) return // public_dir 不存在（被清理 / 尚未写盘）⇒ 无产物可核对，跳过不崩
+  const routes = (hexo.route && typeof hexo.route.list === 'function') ? hexo.route.list() : []
+  if (!routes || routes.length === 0) return
+  routeVerifiedOnce = true // 先置位：process.exit(-1) 后 process 'exit' 会再进来一次
+  const missing = core.missingRouteOutputs(routes, function (rel) {
+    try { return fs.statSync(path.join(publicDir, rel)) } catch (err) { return null }
+  })
+  if (missing.length === 0) return
+  missing.forEach(function (m) { write(PREFIX + '路由产物缺失：' + m.route) })
+  const sample = missing.slice(0, 5).map(function (m) { return m.route }).join('；')
+  write(PREFIX + '路由产物缺失汇总：共 ' + missing.length + ' 个（清单前 ' + Math.min(5, missing.length) + ' 条：' + sample + '），终止构建（R-214）')
+  process.exit(-1)
+}
+
 function flushAudit (write) {
+  // R-215（round-043）：覆盖审计只在真在生成产物的进程里输出。hexo server / watch 下
+  // after_generate 的观测来自「被服务的少数页」（局部观测），拿它判定「从未命中 / 冗余 /
+  // 未渲染」会误报（实测：server 重载打了 1 行 echarts 从未命中 WARN），且停用点名同样
+  // 不应在服务进程中刷屏。audit 仍清空，避免常驻进程无限增长。
+  if (!isGenerateConsole()) {
+    audit.clear()
+    return
+  }
   const messages = []
   // R-203：显式停用条目点名 —— 只在真有 enabled:false 条目时输出，且整个进程只输出一次（幂等，
   // 不污染干净构建的 0 输出纪律：无停用条目 ⇒ messages 不含停用点名）。
@@ -330,6 +377,13 @@ function flushAtExit () {
   // （generate.js:74-80 hash 相同 / generate.js:33-45 route 未修改）盘上字节 **不等于** 本轮
   // 渲染字节（build.sh 的 gulp 压缩改写过它们），故 core.missingInjections 会先做归一化比对。
   verifyInjections(function (msg) {
+    try {
+      fs.writeSync(process.stderr.fd, 'ERROR ' + msg + '\n')
+    } catch (e) { /* stderr 不可写时忽略，进程仍以非 0 退出 */ }
+  })
+  // R-214：route 级对账（补「渲染失败 ⇒ 无观测」的盲区）。R-213 已经点名过的页面这里可能再点一次
+  // （注入缺失 + 路由产物缺失），两条信息视角不同，保留。
+  verifyRouteOutputs(function (msg) {
     try {
       fs.writeSync(process.stderr.fd, 'ERROR ' + msg + '\n')
     } catch (e) { /* stderr 不可写时忽略，进程仍以非 0 退出 */ }

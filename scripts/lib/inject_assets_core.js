@@ -386,6 +386,36 @@ function missingInjections (expected, readFileFn) {
   return out
 }
 
+// R-214（round-043）：route 级产物核对 —— 渲染在 layout / helper 之前就失败时，该 route
+// **没有任何观测**（R-213 的 expectedInjections 只覆盖出现过观测的页面），只能拿路由表与实际
+// 产物文件对账。纯函数：statFn(relPath) 返回 { size } 或 null（ENOENT / 读取异常）。
+// 判据（Lead round-043 补充 + 实测）：ENOENT / 读取异常 / size === 0 ⇒ 缺失。
+//   - size === 0 是必需判据：round-042 的 .each() 回归曾产出 0 字节 projects 页而 hexo 仍报
+//     "INFO Generated: projects/index.html"；干净基线实测（Lead /tmp/t42 base1/base2/rootbase1）
+//     各 225 个 .html、0 字节文件 0 个 ⇒ 该判据在干净构建零误报。
+//   - 只看「存在且非空」，**不得**用「本轮渲染字节」做基准（build.sh 的 gulp 后处理 + hexo 的
+//     "Skip generating if hash is unchanged"（generate.js:74-80）会让盘上字节 ≠ 渲染字节）。
+function missingRouteOutputs (routes, statFn) {
+  const out = []
+  const seen = {}
+  if (!Array.isArray(routes)) return out
+  for (let i = 0; i < routes.length; i++) {
+    const route = routes[i]
+    if (typeof route !== 'string') continue
+    const clean = route.replace(/^\/+/, '')
+    if (clean === '' || !/\.html$/i.test(clean)) continue
+    if (seen[clean]) continue
+    let stat = null
+    try { stat = statFn(clean) } catch (err) { stat = null }
+    const bad = !stat || typeof stat.size !== 'number' || stat.size === 0
+    if (!bad) continue
+    seen[clean] = true
+    out.push({ route: clean })
+  }
+  out.sort(function (a, b) { return a.route < b.route ? -1 : (a.route > b.route ? 1 : 0) })
+  return out
+}
+
 module.exports = {
   KNOWN_SLOTS: KNOWN_SLOTS,
   ALLOWED_KEYS: ALLOWED_KEYS,
@@ -398,6 +428,7 @@ module.exports = {
   validateAssets: validateAssets,
   expectedInjections: expectedInjections,
   missingInjections: missingInjections,
+  missingRouteOutputs: missingRouteOutputs,
   normalizeCompareBytes: normalizeCompareBytes,
   neverMatchedEntries: neverMatchedEntries,
   disabledEntries: disabledEntries,

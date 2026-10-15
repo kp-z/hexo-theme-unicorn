@@ -10,10 +10,10 @@
 -
   var arcCats = site.categories.toArray()
   var arcTags = site.tags.toArray()
-  var arcPosts = site.posts.sort('date')
-  var arcPostArr = arcPosts.toArray()
-  var arcFirst = arcPosts.first()
-  var arcLast = arcPosts.last()
+  // R-216：稳定 tiebreak（date 升序 + 字典序并列），纯函数见 scripts/lib/stable_posts_core.js
+  var arcPostArr = stable_posts(site.posts, 1)
+  var arcFirst = arcPostArr[0]
+  var arcLast = arcPostArr[arcPostArr.length - 1]
   // 写作跨度：首篇至今（构建时计算，随每次部署更新）
   var arcSpanDays = arcFirst ? Math.max(1, Math.round((Date.now() - arcFirst.date.valueOf()) / 86400000)) : 0
   var arcTopTags = 15

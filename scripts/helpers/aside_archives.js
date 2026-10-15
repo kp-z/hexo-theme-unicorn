@@ -5,6 +5,9 @@
 
 'use strict'
 
+// R-216（round-043）：并列 date 的稳定 tiebreak（data 口径与 projects 页一致）
+const { stableSortPosts } = require('../lib/stable_posts_core')
+
 hexo.extend.helper.register('aside_archives', function (options = {}) {
   const { config } = this
   const archiveDir = config.archive_dir
@@ -25,7 +28,7 @@ hexo.extend.helper.register('aside_archives', function (options = {}) {
     format = type === 'monthly' ? 'MMMM YYYY' : 'YYYY'
   }
 
-  const posts = this.site.posts.sort('date', order)
+  const posts = stableSortPosts(this.site.posts, order)
   if (!posts.length) return result
 
   const data = []

@@ -1,11 +1,11 @@
 #projects-dashbord
   // fetch articles
-  // R-198（round-042）：稳定排序。hexo 的 warehouse .sort() 对并列项不保证顺序
-  // （输入顺序来自 DB 装载顺序，同日期文章会摇奖），此处显式改为 date 降序、
-  // 其次 abbrlink/slug/path 字典序、再其次 path/title 字典序。
-  - function stableProjectPosts () { return site.posts.toArray().slice().sort(function (a, b) { var da = a.date ? new Date(a.date).valueOf() : 0; var db = b.date ? new Date(b.date).valueOf() : 0; if (da !== db) return db - da; var ka = String(a.abbrlink || a.slug || a.path || ''); var kb = String(b.abbrlink || b.slug || b.path || ''); if (ka !== kb) return ka < kb ? -1 : 1; var pa = String(a.path || ''); var pb = String(b.path || ''); if (pa !== pb) return pa < pb ? -1 : 1; var ta = String(a.title || ''); var tb = String(b.title || ''); if (ta === tb) return 0; return ta < tb ? -1 : 1 }) }
+  // R-198（round-042）+ R-216（round-043）：稳定排序。hexo 的 warehouse .sort() 对并列项不保证
+  // 顺序（输入顺序来自 DB 装载顺序，同日期文章会摇奖）。口径统一在 scripts/lib/stable_posts_core.js
+  // （date 降序 → abbrlink/slug/path → path → title 字典序），模板 helper = stable_posts()。
+  // 注意返回的是普通数组 ⇒ 只能 .forEach/.slice，不能 .each()（round-042 曾因此产出 0 字节页面）。
   .head
-      - stableProjectPosts().forEach(function (article) {
+      - stable_posts(site.posts, -1).forEach(function (article) {
         
         if article.projectSticky == 1
           .div1.project-card
@@ -37,7 +37,7 @@
       .project-tag(style='background:#1e90ff')
         a(href=rp('/categories/项目/认知机器/')) &#x25C9; &#x8BA4;&#x77E5;&#x673A;&#x5668;
   .more-project
-    - stableProjectPosts().forEach(function (article) {
+    - stable_posts(site.posts, -1).forEach(function (article) {
       if article.project
         .more-project-weight.project-card
           include project-item.pug
