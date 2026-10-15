@@ -408,6 +408,15 @@ function missingInjections (expected, readFileFn) {
 //     各 225 个 .html、0 字节文件 0 个 ⇒ 该判据在干净构建零误报。
 //   - 只看「存在且非空」，**不得**用「本轮渲染字节」做基准（build.sh 的 gulp 后处理 + hexo 的
 //     "Skip generating if hash is unchanged"（generate.js:74-80）会让盘上字节 ≠ 渲染字节）。
+//   - R-224（round-046）：**覆盖非 .html 路由产物**（此前 :419 只放行 .html，js/gantt.js /
+//     js/json/github-calendar.json 这类 skip_render 静态资源成了 M27/M25c 组合盲区：截断成 0 字节
+//     仍 rc=0）。目录形态 route 归一到 index.html；同一 path 只报一次；与 R-219 分工不变。
+// R-224：**允许为空的派生 CSS 占位**（设计使然，不是缺失）—— 唯一豁免表，逐项写明理由。
+//   css/var.css：由 source/css/var.styl 编译而来，而 var.styl 只含 stylus 变量定义（无任何规则）
+//   ⇒ 产物恒为 0 字节。round-046 干净构建实测：全树唯一 0 字节文件就是它（.html 0 字节 0 个）。
+//   该表之外的任何 route（含非 HTML）缺失 / 0 字节仍然 fail-loud。
+const ROUTE_EMPTY_OK = { 'css/var.css': true }
+
 function missingRouteOutputs (routes, statFn) {
   const out = []
   const seen = {}
@@ -415,12 +424,19 @@ function missingRouteOutputs (routes, statFn) {
   for (let i = 0; i < routes.length; i++) {
     const route = routes[i]
     if (typeof route !== 'string') continue
-    const clean = route.replace(/^\/+/, '')
-    if (clean === '' || !/\.html$/i.test(clean)) continue
+    let clean = route.replace(/^\/+/, '')
+    if (clean === '') continue
+    // R-224（round-046）：目录形态 route 归一到 <dir>index.html（与 R-219 docOutputPath 同口径）；
+    // 不再按 .html 过滤 —— 非 HTML 的 skip_render 静态资源（js/gantt.js、js/json/github-calendar.json 等）
+    // 同样是 route 表产物，缺失 / 0 字节必须 fail-loud（M27/M25c：截断成 0 字节仍 rc=0 的组合盲区）。
+    // 同一 path 只报一次（seen），与 R-219 的分工不变：表内 route 由本函数负责，missingDocOutputs 见
+    // routes.indexOf(rel) !== -1 即跳过，避免同一缺失报两遍。
+    if (/\/$/.test(clean)) clean += 'index.html'
     if (seen[clean]) continue
     let stat = null
     try { stat = statFn(clean) } catch (err) { stat = null }
-    const bad = !stat || typeof stat.size !== 'number' || stat.size === 0
+    const emptyByDesign = ROUTE_EMPTY_OK[clean] === true
+    const bad = (!stat || typeof stat.size !== 'number' || stat.size === 0) && !emptyByDesign
     if (!bad) continue
     seen[clean] = true
     out.push({ route: clean })
