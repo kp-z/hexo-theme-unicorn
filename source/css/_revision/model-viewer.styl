@@ -37,27 +37,66 @@ model-viewer
   justify-content: center
   pointer-events: none
 
+//- R-092（round-045 用户报障#1）：3D 入口图标化 —— 48×48 触控目标、按钮内只有内联 SVG，
+//-   没有任何可见文案；状态由 [data-state] 切换图标（idle/slow → 立方体，loading → 圆环，retry → 重试箭头）。
+//-   z-index: 3 必须压过 #carousel .site-info：后者 fixed 定位且 DOM 在 wrapper 之后（z-index auto），
+//-   修复前它把入口整个吞掉，Lead 用 CDP elementFromPoint(中心) 实测到 DIV#.site-info。
 .model-viewer-hint
   display: none
   position: absolute
   left: 50%
   bottom: 32px
+  z-index: 3
   transform: translateX(-50%)
-  padding: 8px 18px
+  width: 48px
+  height: 48px
+  min-width: 48px
+  min-height: 48px
+  padding: 0
+  border: 0
   border-radius: 999px
   background-color: rgba(0, 0, 0, .55)
   color: #fff
-  font-size: 14px
-  line-height: 1.2
-  white-space: nowrap
+  cursor: pointer
+  align-items: center
+  justify-content: center
+  -webkit-tap-highlight-color: transparent
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .25)
+  &:focus-visible
+    outline: 2px solid #fff
+    outline-offset: 2px
+  svg
+    display: none
+    width: 26px
+    height: 26px
+    fill: currentColor
+  &[data-state=idle] svg.mv-ico-idle,
+  &[data-state=slow] svg.mv-ico-idle
+    display: block
+  &[data-state=loading] svg.mv-ico-loading
+    display: block
+    animation: mv-ico-spin 1s linear infinite
+  &[data-state=retry] svg.mv-ico-retry
+    display: block
+  +maxWidth600()
+    //- 移动端：抬到 .site-info 文案块（实测高约 257px，占底部 ~30%）之上，且避开右侧 #carousel-indictors
+    bottom: 42%
 
-//- 弱网/省流/超时/失败：封面变成可点击入口，点后才下载 1 MiB viewer 脚本
+@keyframes mv-ico-spin
+  to
+    transform: rotate(360deg)
+
+@media (prefers-reduced-motion: reduce)
+  .model-viewer-hint[data-state=loading] svg.mv-ico-loading
+    animation: none
+
+//- 弱网/省流/超时/失败：封面 + 图标入口变成可点击，点后才下载 1 MiB viewer 脚本
 #model_viewer_wrapper.mv-needs-click #model_viewer_loading_cover
   pointer-events: auto
   cursor: pointer
 
-#model_viewer_wrapper.mv-needs-click #model_viewer_loading_cover .model-viewer-hint
-  display: inline-block
+#model_viewer_wrapper.mv-needs-click #model_viewer_hint
+  display: flex
 
 .model-viewer-fallback
   position: absolute
@@ -71,4 +110,4 @@ model-viewer
   inset: 0
 
 .model-viewer-fallback .model-viewer-hint
-  display: inline-block
+  display: flex

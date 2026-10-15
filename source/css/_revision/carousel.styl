@@ -201,6 +201,13 @@
             bottom: 1rem
             padding: 0
             width: 100%
+            //- R-092（round-045 用户报障#1）：.site-info 是 fixed + width:100% 的透明盒子，DOM 在 3D 入口之后，
+            //-   修复前它吞掉首页 3D 入口的点击（Lead CDP elementFromPoint 实测命中 DIV#.site-info）。
+            //-   这里整体放行指针事件，只在自己的可交互子元素上恢复，保证「Next / Info 链接」仍可点。
+            pointer-events: none
+            a,
+            .info-link
+                pointer-events: auto
             .site-title,
             .site-subtitle
                 text-shadow: .1rem .1rem .2rem rgba(0, 0, 0, .15)
@@ -254,11 +261,14 @@
         bottom: 0.5rem
         right: 1rem
         margin: 2rem
+        //- R-092：轮播圆点必须保持可点（相对 3D 入口 z-index:3 在自己所在的层叠上下文里仍是上层）。
+        pointer-events: auto
         +maxWidth600()
             bottom: 4.5rem
             margin: 2rem 0rem
         .carousel-dot 
             cursor: pointer
+            pointer-events: auto
             height: 20px
             width: 20px
             margin: 10px 0 0 0

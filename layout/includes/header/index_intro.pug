@@ -36,11 +36,33 @@ if mv_enable
       poster=(mv_poster ? url_for(mv_poster) : null)
     )
     #model_viewer_loading_cover.mv-cover(style=mv_cover_style role="img" aria-label="首页 3D 模型封面")
-      span.model-viewer-hint#model_viewer_hint 点击加载 3D 模型
+    //- R-092（round-045 用户报障#1）：3D 入口图标化 —— 按钮内只有内联 SVG，没有任何可见中英文文案；
+    //-   状态只在 data-state 上表达（idle|slow|loading|retry|ready），无障碍文案放在 aria-label/title。
+    //-   入口必须是最上层命中目标：.model-viewer-hint 有 z-index:3，且 #carousel .site-info 改 pointer-events:none
+    //-   （_revision/carousel.styl），否则 fixed 定位的 .site-info 会吞掉点击（Lead CDP 实测）。
+    button.model-viewer-hint#model_viewer_hint(
+      type="button"
+      data-state="idle"
+      aria-label="加载 3D 场景"
+      title="加载 3D 场景"
+    )
+      svg.mv-ico.mv-ico-idle(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
+        path(d="M12 2 3 7v10l9 5 9-5V7l-9-5zm0 2.3 6.5 3.6L12 11.5 5.5 7.9l6.5-3.6zM5 9.6l6 3.3v6.5l-6-3.3V9.6zm8 9.8v-6.5l6-3.3v6.5l-6 3.3z")
+      svg.mv-ico.mv-ico-loading(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
+        circle(cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="15 42" stroke-linecap="round")
+      svg.mv-ico.mv-ico-retry(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
+        path(d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z")
     .model-viewer-fallback#model_viewer_fallback
       if mv_poster
         .mv-cover.mv-cover-fallback(style=mv_cover_style role="img" aria-label="首页 3D 模型封面")
-      span.model-viewer-hint 3D 模型暂不可用
+      button.model-viewer-hint#model_viewer_hint_retry(
+        type="button"
+        data-state="retry"
+        aria-label="3D 场景暂不可用，点按重试"
+        title="3D 场景暂不可用，点按重试"
+      )
+        svg.mv-ico.mv-ico-retry(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
+          path(d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z")
   script.
     (function () {
       var wrap = document.getElementById('model_viewer_wrapper');
@@ -48,6 +70,7 @@ if mv_enable
       if (!wrap || !el) return;
       var cover = document.getElementById('model_viewer_loading_cover');
       var hint = document.getElementById('model_viewer_hint');
+      var hintRetry = document.getElementById('model_viewer_hint_retry');
       var fb = document.getElementById('model_viewer_fallback');
       var jsList = [wrap.getAttribute('data-viewer-js')]
         .concat((wrap.getAttribute('data-viewer-js-fallbacks') || '').split('|'))
@@ -60,6 +83,22 @@ if mv_enable
       var optin = false;
       try { optin = localStorage.getItem('mv-optin') === '1'; } catch (err) { optin = false; }
       var started = false, settled = false, timer = null, poll = null;
+      var injected = {};
+      // R-092：入口没有可见文案，状态只写 data-state；无障碍文案同步到 aria-label/title。
+      var HINT_LABEL = {
+        idle: '加载 3D 场景',
+        slow: '加载 3D 场景',
+        loading: '正在加载 3D 场景',
+        retry: '3D 场景加载失败，点按重试',
+        ready: '3D 场景已加载'
+      };
+      function setHintState(state) {
+        if (!hint) return;
+        hint.setAttribute('data-state', state);
+        var label = HINT_LABEL[state] || HINT_LABEL.idle;
+        hint.setAttribute('aria-label', label);
+        hint.setAttribute('title', label);
+      }
 
       function stopTimers() {
         if (timer) { clearTimeout(timer); timer = null; }
@@ -71,13 +110,14 @@ if mv_enable
         stopTimers();
         wrap.classList.remove('mv-needs-click');
         wrap.classList.add('mv-ready');
+        setHintState('ready');
         if (cover) cover.style.display = 'none';
         if (fb) fb.style.display = 'none';
       }
-      function needClick(msg) {
+      function needClick(state) {
         if (settled) return;
         wrap.classList.add('mv-needs-click');
-        if (hint && msg) hint.textContent = msg;
+        setHintState(state || 'idle');
       }
       function fail() {
         if (settled) return;
@@ -88,7 +128,10 @@ if mv_enable
         if (fb) fb.style.display = 'flex';
       }
       function loadScript(i) {
-        if (i >= jsList.length) { needClick('3D 模型加载失败，点击重试'); return; }
+        // R-092：重试时不重复注入已注入过的源（module 重复执行会 customElements.define 冲突）。
+        while (i < jsList.length && injected[jsList[i]]) i++;
+        if (i >= jsList.length) { needClick('retry'); return; }
+        injected[jsList[i]] = true;
         var s = document.createElement('script');
         s.type = 'module';
         s.async = true;
@@ -99,10 +142,11 @@ if mv_enable
       function arm() {
         if (started) return;
         started = true;
+        setHintState('loading');
         if (el.loaded) { ready(); return; }
         el.addEventListener('load', ready);
         el.addEventListener('error', function () {
-          if (!settled) needClick('3D 模型加载失败，点击重试');
+          if (!settled) needClick('retry');
         });
         loadScript(0);
         poll = setInterval(function () {
@@ -112,23 +156,35 @@ if mv_enable
         timer = setTimeout(function () {
           if (settled) return;
           if (el.loaded) { ready(); return; }
-          needClick('点击加载 3D 模型');
+          needClick('idle');
         }, timeout);
       }
 
       if (slow || reduce) {
-        needClick('点击加载 3D 模型（已为你省流，可点击加载）');
+        // 省流/弱网/reduced-motion：首屏只出图标入口（视觉同 idle，语义记为 slow）。
+        needClick('slow');
       } else if (mode === 'click' && !optin) {
-        // 默认不自动下载 1 MiB viewer：首屏只保留封面，用户点击后再加载（可记住选择）
-        needClick('点击加载 3D 模型');
+        // 默认不自动下载 1 MiB viewer：首屏只保留封面 + 图标入口，用户点击后再加载（可记住选择）
+        needClick('idle');
       } else {
         arm();
       }
-      if (cover) {
-        cover.addEventListener('click', function () {
-          if (settled) return;
-          if (started) return;
-          try { localStorage.setItem('mv-optin', '1'); } catch (err) { /* ignore */ }
+      function optIn() {
+        if (settled || started) return;
+        try { localStorage.setItem('mv-optin', '1'); } catch (err) { /* ignore */ }
+        arm();
+      }
+      if (cover) cover.addEventListener('click', optIn);
+      // button 原生 Enter/Space 也会触发 click，键盘可达。
+      if (hint) hint.addEventListener('click', optIn);
+      if (hintRetry) {
+        hintRetry.addEventListener('click', function () {
+          if (!settled) return;
+          settled = false;
+          started = false;
+          if (fb) fb.style.display = 'none';
+          if (cover) cover.style.display = '';
+          needClick('loading');
           arm();
         });
       }
