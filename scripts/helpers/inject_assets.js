@@ -31,33 +31,69 @@
  * R-212（round-041）：渲染期兜底分支（failLoud）由 throw 改为 process.exit(-1) ——
  *   hexo 8.1.2 吞掉 route 渲染期异常（仅 throw ⇒ BUILD_RC=0 且 public 仍产出），
  *   兜底必须与 before_generate 同样是「真失败」；测试见同文件第 ⑰ 组。
+ * R-213（round-042）：注入**落地**复核 —— 从「配置/渲染期」前移到「产物字节」。
+ *   - 生成期记录每个 (条目, 页面) 实际输出的字节（observe 的 rendered / blocks），
+ *     core.expectedInjections() 推导「该页该槽位应当出现哪些字节」。
+ *   - after_generate 与退出阶段各复核一次：读 hexo.public_dir 下的页面文件，
+ *     文件不存在（ENOENT）/ 读取异常 / 文件内容为空 / 期望块为空 / 文件里找不到该块
+ *     ⇒ 每页 logger.error "注入缺失：<path> slot=<slot>" + 汇总一行后 process.exit(-1)。
+ *   - 门禁：public_dir 不存在（hexo clean 后的干净构建，此阶段尚未写盘）⇒ 跳过不崩；
+ *     退出阶段只在真在生成产物的进程里复核（hexo server / 其它 console 的 public_dir
+ *     可能是陈旧产物，且其观测来自被服务的请求 ⇒ 会误报），程序化调用（hexo.env.cmd === ''）仍复核。
+ *   - **已知盲区（Lead round-042 登记为 round-043 残余）**：expectedInjections 只覆盖「本轮渲染中
+ *     出现过观测」的页面；route 在 layout/helper 之前就渲染失败（例：hexo 打印
+ *     ERROR Render HTML failed 但继续）⇒ 无观测 ⇒ 本机制不捕获，需 route 级检测
+ *     （hexo.route.list() vs public_dir 实际文件集），不在 R-213 范围内。
+ *     测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑱ 组（18a–18j）。
  */
 
 'use strict'
 
 const fs = require('fs')
+const path = require('path')
 const logger = (require('hexo-log').default || require('hexo-log').logger)()
 const core = require('../lib/inject_assets_core')
 
 const PREFIX = '[inject_assets] '
 
-// 生成期页面观测：条目 index → { index, name, slot, pages, hits: Map(pageKey → ids) }
+// R-213 复核保真：注入片段里的 __ROOT__ 占位符由主题 scripts/filters/root_placeholder.js
+// 在 after_render:html 阶段展开为 this.config.root（规则：split/join，root 缺省 '/'）。
+// 渲染期观测到的是**展开前**的原始字节（实测：font_subset_css 的 href=__ROOT__img/... ⇒
+// 产物为 /blog-cn/img/...），直接与产物比对会把 224 个页面全部误判为「注入缺失」。
+// 故此处用与过滤器完全相同的规则展开后再登记期望块。
+const ROOT_TOKEN = '__ROOT__'
+
+function expandRootToken (str) {
+  if (typeof str !== 'string' || str.indexOf(ROOT_TOKEN) === -1) return str
+  const cfg = (typeof hexo !== 'undefined' && hexo.config) || {}
+  const root = (typeof cfg.root === 'string' && cfg.root.length > 0) ? cfg.root : '/'
+  return str.split(ROOT_TOKEN).join(root)
+}
+
+// 生成期页面观测：条目 index → { index, name, slot, enabled, pages, hits: Map(pageKey → ids),
+//                                     blocks: Map(pageKey → 该条在该页实际输出的字节) }
 const audit = new Map()
 
-function observe (index, item, page, ids) {
+function observe (index, item, page, ids, rendered) {
   let rec = audit.get(index)
   if (!rec) {
     rec = {
       index: index,
       name: item && item.name,
       slot: item && item.slot,
+      enabled: item && item.enabled,
       pages: item && item.pages,
-      hits: new Map()
+      hits: new Map(),
+      blocks: new Map()
     }
     audit.set(index, rec)
   }
   const key = (page && typeof page.path === 'string' && page.path !== '') ? page.path : '(unknown)'
   if (!rec.hits.has(key)) rec.hits.set(key, ids)
+  // R-213：同一页可能被渲染多次（route.get 惰性渲染无缓存），只保留首个非空字节，
+  // 避免把期望块翻倍导致误判；真被抑制（全部为空）时保持 ''，由复核判为缺失。
+  const bytes = (typeof rendered === 'string') ? rendered : ''
+  if (!rec.blocks.has(key) || (rec.blocks.get(key) === '' && bytes !== '')) rec.blocks.set(key, bytes)
 }
 
 function failLoud (errors) {
@@ -84,8 +120,11 @@ hexo.extend.helper.register('inject_assets', function (slot) {
     const res = core.validateItem(hit.item, hit.index)
     if (res.errors.length) failLoud(res.errors)
     const matched = core.matchPages(hit.item.pages, ids)
-    observe(hit.index, hit.item, page, matched ? ids : [])
-    if (matched) out.push(core.renderAsset(hit.item))
+    // R-213：同一份字节先记观测、再决定是否输出 —— 观测与产物都取自同一次 renderAsset()，
+    // 因此「被抑制的输出」（观测非空、产物缺块）与「被抑制的注入」（观测为空）都能被发现。
+    const rendered = core.renderAsset(hit.item)
+    observe(hit.index, hit.item, page, matched ? ids : [], matched ? rendered : '')
+    if (matched) out.push(rendered)
   })
   return out.join('')
 })
@@ -137,6 +176,85 @@ function themeAssets () {
 
 let disabledReported = false
 
+// R-213：把 audit（Map）转成 core 侧观测结构（含 enabled 与每页实际字节）
+function observationsOf () {
+  const observations = []
+  audit.forEach(function (rec) {
+    observations.push({
+      index: rec.index,
+      name: rec.name,
+      slot: rec.slot,
+      enabled: rec.enabled,
+      pages: rec.pages,
+      hits: Array.from(rec.hits.entries()).map(function (pair) {
+        return { pageKey: pair[0], ids: pair[1] }
+      }),
+      blocks: Array.from(rec.blocks.entries()).map(function (pair) {
+        return { pageKey: pair[0], rendered: expandRootToken(pair[1]) }
+      })
+    })
+  })
+  return observations
+}
+
+// flush 会清空 audit，故复核用累计快照（同一条目同一页在 core.expectedInjections 里按下标去重）
+let lastObservations = []
+
+function snapshotObservations () {
+  if (audit.size > 0) lastObservations = lastObservations.concat(observationsOf())
+  return lastObservations
+}
+
+// R-213：产物复核。write(msg) 负责落盘（退出阶段用 fs.writeSync 同步写）。
+// 只复核一次：失败路径会先经 hexo 'exit' 再经 process 'exit'（process.exit(-1) 之后仍会跑
+// process 退出钩子），否则同一批缺失会被打印两遍。
+let verifiedOnce = false
+
+function verifyInjections (write) {
+  if (verifiedOnce) return
+  const publicDir = (typeof hexo !== 'undefined' && typeof hexo.public_dir === 'string') ? hexo.public_dir : ''
+  if (publicDir === '') return
+  let hasPublic = false
+  try { hasPublic = fs.existsSync(publicDir) } catch (err) { hasPublic = false }
+  if (!hasPublic) return // 干净构建在 after_generate 阶段还没写盘：跳过不崩
+  const expected = core.expectedInjections(snapshotObservations())
+  // 还没产生任何观测（after_generate 早于渲染）⇒ 不置位，留给退出阶段复核
+  if (expected.length === 0) return
+  verifiedOnce = true
+  // 产物路径映射（实测坑）：观测用的 page.path 与 hexo 路由写盘路径并不总是同一个字符串 ——
+  // 文章页 page.path = 'posts/<id>/'（目录形态），而 hexo 写的是 public/posts/<id>/index.html；
+  // 直接 join 会命中目录（EISDIR）而误报整站缺失。故按「原样 → <path>/index.html」依次尝试。
+  const missing = core.missingInjections(expected, function (rel) {
+    const clean = rel.replace(/^\/+/, '')
+    const candidates = [clean]
+    if (/\/$/.test(clean)) candidates.push(clean + 'index.html')
+    else if (!/\.[A-Za-z0-9]+$/.test(clean)) candidates.push(clean + '/index.html')
+    for (let i = 0; i < candidates.length; i++) {
+      try {
+        return fs.readFileSync(path.join(publicDir, candidates[i]), 'utf8')
+      } catch (err) { /* 继续尝试下一个候选；全部失败才按缺失处理 */ }
+    }
+    return null // ENOENT / EISDIR / 权限 / 读取异常一律按缺失处理（Lead round-042 要求 ①）
+  })
+  if (missing.length === 0) return
+  missing.forEach(function (m) {
+    write(PREFIX + '注入缺失：' + m.path + ' slot=' + m.slot)
+  })
+  const sample = missing.slice(0, 5).map(function (m) { return m.path + ' slot=' + m.slot }).join('；')
+  write(PREFIX + '注入缺失汇总：共 ' + missing.length + ' 处（清单前 ' + Math.min(5, missing.length) + ' 条：' + sample + '），终止构建（R-213）')
+  process.exit(-1)
+}
+
+// R-213：退出阶段只在「真在写产物的 console」里复核 —— hexo server / 其它 console 的
+// public_dir 可能是上一次构建的陈旧产物，且其渲染观测来自被服务的请求 ⇒ 会误报。
+// 程序化调用（hexo.env.cmd === ''）与 hexo generate / hexo g 仍复核。
+function isGenerateConsole () {
+  const env = (typeof hexo !== 'undefined' && hexo.env) || {}
+  const cmd = (typeof env.cmd === 'string') ? env.cmd : ''
+  if (cmd === '') return true
+  return /^(g|generate)$/.test(cmd)
+}
+
 function flushAudit (write) {
   const messages = []
   // R-203：显式停用条目点名 —— 只在真有 enabled:false 条目时输出，且整个进程只输出一次（幂等，
@@ -146,18 +264,7 @@ function flushAudit (write) {
     core.disabledEntries(themeAssets()).forEach(function (w) { messages.push(PREFIX + w) })
   }
   if (audit.size > 0) {
-    const observations = []
-    audit.forEach(function (rec) {
-      observations.push({
-        index: rec.index,
-        name: rec.name,
-        slot: rec.slot,
-        pages: rec.pages,
-        hits: Array.from(rec.hits.entries()).map(function (pair) {
-          return { pageKey: pair[0], ids: pair[1] }
-        })
-      })
-    })
+    const observations = snapshotObservations()
     core.neverMatchedEntries(observations).forEach(function (w) { messages.push(PREFIX + w) })
     core.redundantEntries(observations).forEach(function (w) { messages.push(PREFIX + w) })
     unrenderedEntries(observations).forEach(function (w) { messages.push(PREFIX + w) })
@@ -168,14 +275,25 @@ function flushAudit (write) {
 
 hexo.extend.filter.register('after_generate', function () {
   flushAudit(function (msg) { logger.warn(msg) })
+  // R-213：after_generate 阶段通常 public_dir 尚不存在（干净构建）；但在增量/复跑场景
+  // （public_dir 已存在、某页产物缺失）这里就能当场点名并终止。
+  verifyInjections(function (msg) { logger.error(msg) })
 })
 
-// 兜底：退出阶段只能用同步写，保证告警一定落到 stderr（与 hexo-log 的 WARN 同流）。
+// 兜底：退出阶段只能用同步写，保证告警/错误一定落到 stderr（与 hexo-log 的 WARN/ERROR 同流）。
 function flushAtExit () {
   flushAudit(function (msg) {
     try {
       fs.writeSync(process.stderr.fd, 'WARN  ' + msg + '\n')
-    } catch (e) { /* stdout 不可写时忽略，绝不影响退出码 */ }
+    } catch (e) { /* stderr 不可写时忽略，绝不影响退出码 */ }
+  })
+  if (!isGenerateConsole()) return
+  // R-213：写盘发生在 after_generate 之后（console/generate.js 的 writeFile），
+  // 故真正的落地复核在退出阶段；这里能读到刚写出的产物。
+  verifyInjections(function (msg) {
+    try {
+      fs.writeSync(process.stderr.fd, 'ERROR ' + msg + '\n')
+    } catch (e) { /* stderr 不可写时忽略，进程仍以非 0 退出 */ }
   })
 }
 

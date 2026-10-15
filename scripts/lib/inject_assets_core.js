@@ -29,6 +29,18 @@
  *     非法 pages（非数组、元素非字符串 / 空串）⇒ ERROR + 终止构建（process.exit(-1)），渲染期再 failLoud。
  *   - 互补关系：core 保证「即使没有前置校验也不会误注入」，helper 保证「配置写错就当场失败」。
  *     两层契约的测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑯ 组（16a–16e）。
+ *
+ * R-213（round-042）：注入**落地**复核（从「配置/渲染期」前移到「产物字节」）：
+ *   - expectedInjections(observations)：由生成期观测推导「应有注入」清单 [{path, slot, rendered}]，
+ *     rendered = 该页该 slot 命中条目的实际注入字节按条目下标拼接（与 helper 一次输出的整块一致）。
+ *   - missingInjections(expected, readFileFn)：readFileFn(path) 返回字符串或 null（读不到）；文件不存在
+ *     （ENOENT）/ 读取异常 / 文件内容为空 / 期望块为空 / 文件里找不到该块字节 ⇒ 记缺失 [{path, slot}]。
+ *     测试见同文件第 ⑱ 组（18a–18j）。
+ *   - **已知盲区（Lead round-042 登记为 round-043 残余，本模块不扩范围）**：expectedInjections() 只覆盖
+ *     「本轮渲染中出现过观测」的页面；若某 route 在 layout/helper 之前就渲染失败、或根本没产出观测
+ *     （例：hexo 对 posts/<id>/index.html 打印 ERROR Render HTML failed 但构建继续），该页面不会进入
+ *     expected ⇒ 本机制捕获不到。此类缺口需由 route 级检测覆盖（hexo 路由表与实际 public_dir
+ *     文件集对比），不在 R-213 范围内。
  */
 
 'use strict'
@@ -185,12 +197,21 @@ function validateAssets (assets) {
 function normalizeObservations (observations) {
   return (Array.isArray(observations) ? observations : []).map(function (o) {
     const src = (o && typeof o === 'object') ? o : {}
+    // R-213：额外保留 enabled（停用条目不算「应有注入」）与 blocks（该条在每个页面上实际输出的字节）
     return {
       index: src.index,
       name: src.name,
       slot: src.slot,
+      enabled: src.enabled,
       pages: Array.isArray(src.pages) ? src.pages : [],
-      hits: Array.isArray(src.hits) ? src.hits : []
+      hits: Array.isArray(src.hits) ? src.hits : [],
+      blocks: Array.isArray(src.blocks) ? src.blocks.map(function (b) {
+        const s = (b && typeof b === 'object') ? b : {}
+        return {
+          pageKey: (s.pageKey === undefined || s.pageKey === null) ? '' : String(s.pageKey),
+          rendered: (typeof s.rendered === 'string') ? s.rendered : ''
+        }
+      }) : []
     }
   })
 }
@@ -259,6 +280,83 @@ function disabledEntries (assets) {
   return out
 }
 
+// R-213：由生成期观测推导「应有注入」清单。
+// 观测结构（helper observe()）：
+//   { index, name, slot, enabled, pages:[白名单条目], hits:[{pageKey, ids:[该页身份]}], blocks:[{pageKey, rendered}] }
+// 「应有注入」= 某条目在某页命中（hits.ids 非空，即该页身份落进白名单 / 该条无白名单=全站）
+// 且该条未被 enabled:false 停用 ⇒ 该页该 slot 应当出现该条实际输出的字节。
+// 同一 (path, slot) 的多个条目按 index 升序拼接（与 helper 一次输出的整块字节一致）。
+// 盲区见文件头 R-213 段：只有「本轮渲染中出现过观测」的页面才会进入清单。
+function expectedInjections (observations) {
+  const buckets = {}   // key: path + '\u0000' + slot → [{ index, rendered }]
+  const order = []
+  normalizeObservations(observations).forEach(function (o) {
+    if (o.enabled === false) return
+    const slot = (typeof o.slot === 'string' && o.slot !== '') ? o.slot : ''
+    if (slot === '') return
+    const idx = (typeof o.index === 'number' && isFinite(o.index)) ? o.index : Number.MAX_SAFE_INTEGER
+    o.hits.forEach(function (h) {
+      if (!h || !Array.isArray(h.ids) || h.ids.length === 0) return
+      const path = (h.pageKey === undefined || h.pageKey === null) ? '' : String(h.pageKey)
+      if (path === '' || path === '(unknown)') return
+      let rendered = ''
+      o.blocks.some(function (blk) {
+        if (blk.pageKey !== path) return false
+        rendered = blk.rendered
+        return true
+      })
+      const key = path + '\u0000' + slot
+      if (!buckets[key]) { buckets[key] = []; order.push(key) }
+      // 同一条目（index）在同一页只算一次：helper 的观测快照可能跨多次 flush 累积
+      if (buckets[key].some(function (it) { return it.index === idx })) return
+      buckets[key].push({ index: idx, rendered: rendered })
+    })
+  })
+  return order.map(function (key) {
+    const parts = key.split('\u0000')
+    const items = buckets[key].slice().sort(function (x, y) { return x.index - y.index })
+    return {
+      path: parts[0],
+      slot: parts[1],
+      rendered: items.map(function (it) { return it.rendered }).join('')
+    }
+  })
+}
+
+// R-213：产物复核。readFileFn(path) 必须返回文件字符串或 null（读不到）。
+// 缺失判定（Lead round-042 补充要求 ① —— 读不到一律算缺失，绝不跳过）：
+//   file-missing —— 返回值非字符串（ENOENT / 读取异常 / 未提供读取器）
+//   file-empty   —— 文件内容为空串
+//   block-empty  —— 期望块本身为空（渲染被抑制，例：M13 让 renderAsset 返回 ''）
+//   block-absent —— 文件里找不到期望的注入字节
+// 返回去重后的 [{ path, slot }]（路径为空 / 非字符串的期望项跳过）。
+function missingInjections (expected, readFileFn) {
+  const out = []
+  const seen = {}
+  const read = (typeof readFileFn === 'function') ? readFileFn : function () { return null }
+  if (!Array.isArray(expected)) return out
+  expected.forEach(function (e) {
+    if (!e || typeof e !== 'object') return
+    const filePath = (typeof e.path === 'string') ? e.path : ''
+    const slot = (typeof e.slot === 'string') ? e.slot : ''
+    if (filePath === '') return
+    const want = (typeof e.rendered === 'string') ? e.rendered : ''
+    let content = null
+    try { content = read(filePath) } catch (err) { content = null }
+    let bad = false
+    if (typeof content !== 'string') bad = true              // 文件不存在（ENOENT）/ 读取异常
+    else if (content === '') bad = true                      // 文件内容为空
+    else if (want === '') bad = true                         // 期望块为空（渲染被抑制）
+    else if (content.indexOf(want) === -1) bad = true        // 产物里找不到该注入块
+    if (!bad) return
+    const key = filePath + '\u0000' + slot
+    if (seen[key]) return
+    seen[key] = true
+    out.push({ path: filePath, slot: slot })
+  })
+  return out
+}
+
 module.exports = {
   KNOWN_SLOTS: KNOWN_SLOTS,
   ALLOWED_KEYS: ALLOWED_KEYS,
@@ -269,6 +367,8 @@ module.exports = {
   selectAssets: selectAssets,
   validateItem: validateItem,
   validateAssets: validateAssets,
+  expectedInjections: expectedInjections,
+  missingInjections: missingInjections,
   neverMatchedEntries: neverMatchedEntries,
   disabledEntries: disabledEntries,
   redundantEntries: redundantEntries

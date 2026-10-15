@@ -1059,6 +1059,11 @@ pages:
       - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/fcircle-beta.js
       - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/friends.js
 
+# R-161 S5：页面 → 视图模板派发表（front-matter `view:` 键驱动 layout/page.pug）。
+# R-197（round-042）契约：本表每个键都必须恰好被某个源页的 front-matter `view:` 使用，
+# 且派发的模板只被本表引用；死键连同被弃模板一并删除（flink / categories 两键已删，
+# 对应 includes/page/flink.pug、includes/page/categories.pug 同时删除）。
+# 注意：error_img.flink（本文件上方）是头像加载失败的兜底图（card_author.pug:4），与视图键无关，保留。
 page_views:
   # R-161 S5：页面 → 视图模板派发表（front-matter `view:` 键驱动 layout/page.pug）
   friends: pages/friends.pug
@@ -1071,8 +1076,6 @@ page_views:
   archive: pages/archive.pug
   weibo: pages/weibo.pug
   tags: includes/page/tags.pug
-  flink: includes/page/flink.pug
-  categories: includes/page/categories.pug
   default_page: includes/page/default-page.pug
 
 # R-059 阶段 1：首页 3D 模型（model-viewer；dev2 首页改造只读本块）
