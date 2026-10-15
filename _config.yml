@@ -939,12 +939,20 @@ inject:
   head:
     - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js"></script>
     - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/f12_printer.js"></script>
-    - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js"></script>
     - <script type="text/javascript" src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/ali/font_1789453_ouhjvm9rdyn.js"></script>
     # R-059 阶段 1.2（task-105）：自托管字体子集，站点根为 /blog-cn（见根 _config.yml url），
     # 故此处使用带前缀的站内路径（与本题内 29 处 /blog-cn/* 硬编码一致）；原 COS 副本 CSS 不再引用。
     - <link href="/blog-cn/img/cdn/css/font/font.css" rel="stylesheet">
   bottom:
+
+  # R-128b（round-030）：echarts 不再全站注入（原先 223 个页面各下载约 1 MB），
+  # 改为只在真正调用 echarts.init 的图表页按需注入（见 layout/pages/profile.pug、layout/pages/archive.pug）。
+  #   echarts_src           = 两处按页注入复用的同一 URL（与旧 inject.head 那行完全一致）
+  #   echarts_on_chart_pages= true（默认）只在 profile / services / categories 三个图表页注入；
+  #                            false = 完全不再注入（此时须自行在站点层提供 echarts，
+  #                            例如把 echarts_src 这一行加回上面的 head 列表）
+  echarts_src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js
+  echarts_on_chart_pages: true
   
 profile:
   # profile 页是否复用首页（/home/，type: blog）的 full_page 展示（3D 封面 + 点击加载 3D 模型）
