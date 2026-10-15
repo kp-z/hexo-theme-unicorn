@@ -1,31 +1,19 @@
+# R-246（goal round 18 / S12）主题配置解耦：本文件只保留主题默认值，站点私有值一律外移到站点仓库根的
+# _config.hexo-theme-unicorn.yml（Hexo 8 原生第二主题配置通道）。机制（仓库内 node_modules 实测）：
+#   node_modules/hexo/dist/hexo/load_theme_config.js 读取 <base_dir>/_config.<theme>.yml → ctx.config.theme_config；
+#   node_modules/hexo/dist/hexo/index.js:69-75 mergeCtxThemeConfig 在 _generate() 之前执行
+#   ctx.theme.config = deepMerge(ctx.theme.config, ctx.config.theme_config)（hexo-util deepMerge）⇒ 站点值覆盖主题默认。
+# 已外移的键：logo / menu / footer_text / footer_copyright{,_address} / footer_icp{,_address} / carousel_contents /
+#   gitter.room / google_adsense.client / profile 的文案与身份字段（author_info, declaration, buttons, personility,
+#   personility_title, habitica_info, social.*）/ pages.weibo_title / pages.travel_js。
+# 主题端这些键一律保留为同类型空默认（标量 空串、映射 空映射、列表 空列表）——键名全部保留，
+# 否则 theme-audit 的 unused_keys / unknown_keys 会变。
 # Main menu navigation (導航目錄) 中文
 # --------------------------------------
 # 导航栏logo设置
-logo: 
-  img: /img/kp-logo.png
-  title: ZKPEACE
+logo: {}
 
-menu:
-  文稿: 
-    博客: / || fas fa-home 
-    微博: /message/ || fas fa-blog 
-    豆瓣: https://www.douban.com/people/twilight0518/?_i=8618308mcFzDjO || fas fa-bookmark
-    归档: /categories/ || fas fa-archive
-  影音:
-    相册: /gallery/ || fas fa-camera
-    足迹: /travel/ || fas fa-map-marked
-    东西: /things/ || fas fa-gift
-    频道: /channel/ || fas fa-seedling
-  作者:
-    简介: /profile/ || fas fa-user
-    项目: /projects/ || fas fa-project-diagram
-    服务: /services/ || fas fa-layer-group
-    商店: /store/ || fas fa-store
-  空间:
-    维基: https://blackwhale.notion.site/f90b2f3ed8af4dea985085052c775aa0 || fas fa-brain
-    速查: https://zkpeace.com/wiki/ || fas fa-lightbulb 
-    论坛: https://www.zhihu.com/club/1365658701693595648 || fas fa-user-friends
-    友链: /friends/ || fas fa-link
+menu: {}
 
 # Hide the child menu items in mobile sidebar
 hide_sidebar_menu_child: false
@@ -33,70 +21,17 @@ hide_sidebar_menu_child: false
 # Footer文本设置
 # --------------------------------------
 # footer text setting
-footer_text:
-  footer_text_1:
-      导航:
-        博客: /
-        相册: /gallery/
-        项目: /projects/
-        时间轴:  /archives/
-        统计: /categories/
-      笔记:
-        维基: https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401
-        速查: https://zkpeace.com/wiki/
-  footer_text_2:
-    标签:
-      技术杂谈: /tags/技术/
-      HEXO相关: /tags/hexo/
-      生活随想: /tags/生活/
-      旅行记录: /tags/旅行/
-    社区:
-      SLAM: /home/
-      Blender: /gallery/
-      Github: https://github.com/kp-z 
-  footer_text_3:
-    友链: 
-      莫比乌斯: https://onojyun.com/
-      风陵渡: https://xajh.org/
-      狡猫三窝: https://slykiten.com/
-      MYW: https://immyw.com/
-      Liam: https://www.ccyh.xyz/
-      唐曲: https://qutang.dev/
-      FKUN: https://blog.fkun.tech/
-      友链申请: /posts/59487/
-      更多友链: /friends/
-  footer_text_4:
-    关于本站:
-      RSS订阅: /rss2.xml
-      本站主题: https://github.com/kp-z/hexo-theme-unicorn
-      版权声明: /copyright/
-      支持赞助: /sponsorship/
-    收录:
-      十年之约: https://www.foreverblog.cn/
-      开往: https://travellings.link
-      虫洞: https://www.foreverblog.cn/go.html
+footer_text: {}
 
-footer_copyright: Copyright © 2021 Kuangpu Zhang.
-footer_copyright_address: /copyright/
-footer_icp: 鲁ICP备20008114号-1
-footer_icp_address: http://www.beian.miit.gov.cn/state/outPortal/loginPortal.action
+footer_copyright: ''
+footer_copyright_address: ''
+footer_icp: ''
+footer_icp_address: ''
 
 
 # 首页Carousel内容
 # --------------------------------------
-carousel_contents:
-  page_1:
-    title: 01 - Info
-    subtitle: 你好啊！我是<a class="info-link" href="/profile">Kp</a>，自动驾驶仿真算法工程师，喜欢<a class="info-link" href="/gallery">摄影</a> <a class="info-link" href="/travel">旅行</a>&<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术</a>.
-  page_2:
-    title: 02 - Job
-    subtitle: 欢迎大佬们查看我的<a class="info-link" href="/profile/">简历</a>和<a class="info-link" href="/projects/">项目</a>，有机会一起合作。
-  page_3:
-    title: 03 - SNS
-    subtitle: 欢迎加入我的 <a href="/img/cdn/qrcode/wechatcode.jpeg"><i class="fab fa-weixin"></i></a> <a  href="https://t.me/kpzhang"><i class="fab fa-telegram-plane"></i></a> 交流群，关注我的<a class="info-link" href="/profile/">社交账号</a>，查阅我的<a class="info-link" href="https://www.notion.so/wikiwhale/3633a659e2a1478eaf6c8904c86de401">技术笔记</a>.
-  page_4:
-    title: 04 - More
-    subtitle: 本网站正在建设中，欢迎<a class="info-link" href="/message/">反馈</a>错误. 如果本站内容帮助到了你，求<a class="info-link" href="/sponsorship/">赞赏</a>.
+carousel_contents: {}
 
 # Code Blocks (代碼相關)
 # --------------------------------------
@@ -476,7 +411,7 @@ daovoice:
 # https://gitter.im/
 gitter:
   enable: false
-  room: Zkpeace/community
+  room: ''
 
 # crisp
 # https://crisp.chat/en/
@@ -528,7 +463,7 @@ google_adsense:
   enable: false
   auto_ads: true
   js: https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js
-  client: pub-8135851536673895
+  client: ''
   enable_page_level_ads: true
 
 # Insert ads manually (手動插入廣告)
@@ -952,7 +887,8 @@ inject:
   assets:
     # R-242（goal round 16）：本块 src 统一改 __ROOT__ 占位符（由 scripts/filters/root_placeholder.js 展开），
     # 文件自托管于主题 source/img/cdn/js/（除 f12_printer.js 有意改为按站点根拼接外，其余与 COS 原件逐字节一致）。
-    # 主题内 COS 绝对地址仅余 pages.travel_js 一处（R-243：travel.js 内嵌 Mapbox 令牌，禁止入库）。
+    # R-246（goal round 18）：主题内已无 COS 绝对地址 —— 原 pages.travel_js 已外移到站点层
+    # _config.hexo-theme-unicorn.yml（R-243：travel.js 内嵌 Mapbox 令牌，禁止入库）。
     # head 槽：顺序 = 输出顺序，与原 inject.head 四条完全一致
     - name: jquery
       slot: head
@@ -985,12 +921,8 @@ inject:
   
 profile:
   avatar: /img/cdn/avatar/20210718003707.webp
-  author_info:
-    line1: Hello&#xFF0C;I&apos;m kp
-    line2: Autonomous Driving Simulation Engineer
-    line3: <i class="fas fa-code"></i> &nbsp working
-  declaration:
-    <a class="main-title">FIND ME, HIRE ME</a><br/><br/><a class="description">the services i can provide now </a><br/><br/><a class="main-content">WEB DEVELOPING &amp; DESIGNING</a><br/><br/><a class="description">my dream is go to mars and to be a</a><br/><br/><a class="main-content">FULL STACK ENGINEER</a><br/><br/><a class="description">the subjects i really like are</a><br/><br/><a class="main-content">ROBOTIC AR/MR LoT DESIGN</a><br/><br/>
+  author_info: {}
+  declaration: ''
   interests:
     - /img/cdn/img/3dIcon/objects/cube%20a.png
     - /img/cdn/img/3dIcon/objects/red%20book%202.png
@@ -998,19 +930,10 @@ profile:
     - /img/cdn/img/3dIcon/objects/cam%201.png
     - /img/cdn/img/3dIcon/objects/gamepad.png
     - /img/cdn/img/3dIcon/objects/Weight%20Color.png
-  buttons:
-    - name: Resume
-      img: /img/cdn/img/3dIcon/icon_download.png
-      link: /img/cdn/files/%E5%BC%A0%E5%8C%A1%E6%B5%A6%28%E4%B8%AD%E8%8B%B1%29.pdf
-    - name: WeChat
-      img: /img/cdn/img/3dIcon/icon_wechat.png
-      link: /img/cdn/qrcode/wechatcode.jpeg
-    - name: Project
-      img: /img/cdn/img/3dIcon/icon_works.png
-      link: /projects/
-    - name: Email
-      img: /img/cdn/img/3dIcon/icon_mail.png
-      link: mailto:z.kp@outlook.com
+  # R-246：buttons[].img 等取值已外移到站点层 _config.hexo-theme-unicorn.yml；该文件引用的主题资源
+  # （icon_download / icon_wechat / icon_works / icon_mail / wechatcode.jpeg）经 theme-audit 的
+  # 「站点根 _config.*.yml 引用通道」（R-247）计入引用 blob，不会被误判为死镜像。
+  buttons: []
   decoration:
     plant_1: /img/cdn/img/3dIcon/objects/Plant%201.png
     plant_2: /img/cdn/img/Plant2.png
@@ -1018,19 +941,13 @@ profile:
     cloud: /img/cdn/img/3dIcon/objects/Cloud.png
   video_white: /img/cdn/videos/white.mp4
   video_black: /img/cdn/videos/black.mp4
-  personility: https://www.16personalities.com/ch/intj-%E4%BA%BA%E6%A0%BC
-  personility_title: INTJ
+  personility: ''
+  personility_title: ''
   desktop_img: /img/cdn/img/3dIcon/objects/Desktop.png
-  social:
-    github: https://github.com/kp-z
-    px: https://500px.com.cn/kpeace?rs=56ebd9df04f709a187951df0191876718
-    instagram: https://www.instagram.com/zkpjy/
-    telegram: https://t.me/kpzhang
-    youtube: https://t.me/kpzhang
-    bilibili: https://space.bilibili.com/109909977
+  social: {}
 
   habitica: https://habitica.com/
-  habitica_info: 2022 Habitica
+  habitica_info: ''
   scripts:
     - /js/json/sun.js   # 已本地化（原 COS 版本内容为技能数据，现为项目图）
     - /js/json/radar.js   # 已本地化（原 COS 版本与主题本地副本逐字节一致：3694 B / sha256 5cb28177…）
@@ -1041,31 +958,29 @@ profile:
     
 
 pages:
-  # R-172（S2 残余）：以下四项原为 COS 绝对地址，已本地化进主题镜像目录并改根相对路径
-  # （模板经 url_for() 消费 ⇒ 换 root 自动跟随）。镜像与 COS 原件逐字节一致：
-  #   speaker a.png sha256 f78cd93f6f9c7e10…、weibo.css sha256 b73748d50b5aefd8…、
-  #   home_page_mask.png sha256 bd8060f6528d0772…、sketchfab-viewer-1.12.0.js sha256 4a9aa723d75826d4…
-  # R-242（goal round 16）：carousel / mapbox / mapbox_language / friends.scripts 同样本地化
-  # （镜像在 theme/source/img/cdn/js/）。**travel_js 为例外**，原因见下方 R-243 注释。
+  # （镜像在 theme/source/img/cdn/js/）。R-246（goal round 18）：原 travel_js 例外已结束 —— 该键
+  # 外移到站点层 _config.hexo-theme-unicorn.yml（R-243：其内嵌 Mapbox 令牌不得入公开主题仓库）。
   weibo_head_img: /img/cdn/img/3dIcon/objects/speaker%20a.png
   weibo_css: /img/cdn/css/weibo.css
-  weibo_title: HOLY SHITTTT .
+  weibo_title: ''
   sketchfab: /js/vendor/sketchfab/sketchfab-viewer-1.12.0.js
   sketchfab_cover_img: /img/cdn/img/carousel/home_page_mask.png
   carousel: /img/cdn/js/carousel.js
   sponsor_css: /img/cdn/css/sponsor.css
-  # R-243（goal round 16 登记的残余）：travel.js 内嵌 Mapbox 访问令牌（pk.eyJ1Ijoia3BlYWNl…），
-  # GitHub push protection 判定为「Mapbox Secret Access Token」并拒绝入库（GH013）
-  # ⇒ 遵循「不把令牌推入公开主题仓库」，本文件**不做本地化**，继续引用 COS。
+  # R-243（goal round 16 登记的残余）：travel.js 内嵌 Mapbox 访问令牌，GitHub push protection
+  # 判定为「Mapbox Secret Access Token」并拒绝入库（GH013）。R-246（goal round 18）据此把 travel_js
+  # 的取值外移到站点层 _config.hexo-theme-unicorn.yml（站点私有配置，不进公开主题仓库），主题端留空默认。
   # 处置候选：① 令牌改由站点侧配置注入；② 随 R-233（可切换到高德 API）一并解决。
-  travel_js: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/travel.js
+  travel_js: ''
   mapbox: /img/cdn/js/mapbox/mapbox-gl.js
   mapbox_language: /img/cdn/js/mapbox/mapbox-gl-language.js
   mapbox_css: /img/cdn/css/mapbox-gl.css
   
 
   friends:
-    wromhole: https://www.foreverblog.cn/go.html
+    # R-246（goal round 18）：外链属站点私有值，取值外移到站点层 _config.hexo-theme-unicorn.yml
+    # （pages.friends.wromhole），主题端留同类型空默认；合并后等价（自证脚本逐键比对）。
+    wromhole: ''
     wromhole_title: WROMHOLE
     css: /img/cdn/css/fcircle-beta.css
     scripts:
