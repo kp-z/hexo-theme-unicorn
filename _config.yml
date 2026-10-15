@@ -935,8 +935,8 @@ css_prefix: true
 # Inject
 # Insert the code to head (before '</head>' tag) and the bottom (before '</body>' tag)
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
-# R-162 S6（round-038）：原 inject.head / inject.bottom / inject.echarts_src /
-# inject.echarts_on_chart_pages 四个散落键合并为单一声明式表 inject.assets，
+# R-162 S6（round-038）：原 inject 下 4 个散落键（head 片段 / bottom 片段 / echarts 源码地址 /
+# echarts 图表页白名单）合并为单一声明式表 inject.assets，
 # 由 scripts/helpers/inject_assets.js 的 inject_assets(slot) 按槽位读取。每项字段：
 #   name     = 可读标识（仅用于阅读/排障）
 #   slot     = head | bottom | charts（模板按槽位取用）
@@ -946,6 +946,8 @@ css_prefix: true
 #   pages    = 页面白名单，缺省 = 全站；页面身份 = page.path 去掉前导斜杠与 /index.html，
 #              或 page.view / page.type 命中
 #   enabled  = false 时跳过（缺省启用）
+# R-200 / R-201（round-039）：未知键（如把 pages 写成 page）与未知 slot 会在 before_generate 阶段
+# fail-loud 终止构建，不再静默忽略；after_generate 会告警「从未命中」与「被其它条目覆盖」的白名单条目。
 inject:
   assets:
     # head 槽：顺序 = 输出顺序，与原 inject.head 四条完全一致
@@ -968,13 +970,15 @@ inject:
     # 只在真正调用 echarts.init 的图表页按需注入（layout/pages/profile.pug 覆盖 profile/services，
     # layout/pages/archive.pug 覆盖 categories）。删掉本项即完全不再注入
     # （此时须自行在站点层提供 echarts，例如把上面的 src 形式条目加回 head 槽）。
+    # R-201（round-039）：不再单列 services —— 站点 source/services/index.md:2 是 `view: profile`，
+    # 白名单按 page.view 命中 profile，服务页由 profile 条目覆盖（单列反而会被 after_generate
+    # 冗余审计判为「已被 profile 覆盖」并告警）。
     - name: echarts
       slot: charts
       src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js
       pages:
         - categories
         - profile
-        - services
   
 profile:
   avatar: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/avatar/20210718003707.webp

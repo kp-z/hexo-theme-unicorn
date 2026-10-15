@@ -1,61 +1,151 @@
 /**
- * R-162 S6（round-038）：第三方注入统一 —— 声明式注入表读取器
+ * R-162 S6（round-038）建立，R-200 / R-201（round-039）硬化：
+ * 第三方注入统一 —— 声明式注入表读取器（hexo 运行时适配层）
  *
- * 数据源：主题 _config.yml 的 `inject.assets`（YAML 列表），每项字段：
- *   name     —— 可读标识（仅用于阅读/排障）
- *   slot     —— 'head' | 'bottom' | 'charts'（模板按槽位取用）
- *   html     —— 原样注入的 HTML 串（与 src / href 三选一）
- *   src      —— 生成 <script type="text/javascript" src="..."></script>
- *   href+rel —— 生成 <link href="..." rel="...">（rel 缺省 stylesheet）
- *   pages    —— 页面白名单，缺省 = 全站。页面身份 = page.path 去掉前导斜杠与
- *               /index.html 后的串，或 page.view / page.type 命中
- *   enabled  —— false 时跳过（缺省启用）
+ * 数据源：主题 _config.yml 的 `inject.assets`（YAML 列表），字段见 scripts/lib/inject_assets_core.js。
  *
- * 模板用法：
+ * 模板用法（4 处）：
  *   layout/includes/head.pug             !=inject_assets('head')
  *   layout/includes/additional-js.pug    !=inject_assets('bottom')
  *   layout/pages/profile.pug             !=inject_assets('charts')
  *   layout/pages/archive.pug             !=inject_assets('charts')
  *
  * 语义与旧版 inject.head / inject.bottom / inject.echarts_* 逐字节等价：
- * head 槽顺序 = 表内顺序；charts 槽只命中 categories / profile / services 三页。
+ * head 槽顺序 = 表内顺序；charts 槽只命中 charts 模板所在页（categories / profile / services）。
+ *
+ * R-200（校验硬化）：纯逻辑在 scripts/lib/inject_assets_core.js。
+ *   - before_generate：全表 validateAssets()，每条 error 落 logger.error，任一 error ⇒ process.exit(-1)
+ *     （先例：scripts/events/init.js 的 fail-loud；杜绝 pages → page 之类笔误被静默忽略而退化为全站注入）。
+ *   - 渲染期：对当前条目再做 validateItem()，失败 logger.error 后 throw —— 绝不静默输出空串。
+ * R-201（覆盖审计）：汇总本次生成的 (条目 ⇒ 页面) 观测，
+ *   - warning 点名「从未命中的白名单条目」与「被其它条目覆盖的冗余条目」。
+ *   - 时机：hexo 8.1.2 的 after_generate 早于文件写盘（页面在 console/generate.js
+ *     的 writeFile() 里经 route.get() 惰性渲染），故 flush 同时挂 after_generate、
+ *     hexo 'exit'、process 'exit' 三处；audit 非空才输出，输出后 clear，不重复告警。
  */
 
 'use strict'
 
-// 当前页面的身份集合：page.path 去掉前导斜杠与 /index.html 后的路径串 + page.view + page.type
-function pageIds (page) {
-  const ids = []
-  if (!page) return ids
-  const p = typeof page.path === 'string' ? page.path : ''
-  ids.push(p.replace(/^\/+/, '').replace(/\/?index\.html$/, ''))
-  if (page.view) ids.push(String(page.view))
-  if (page.type) ids.push(String(page.type))
-  return ids.filter(function (id) { return id !== '' })
+const fs = require('fs')
+const logger = (require('hexo-log').default || require('hexo-log').logger)()
+const core = require('../lib/inject_assets_core')
+
+const PREFIX = '[inject_assets] '
+
+// 生成期页面观测：条目 index → { index, name, slot, pages, hits: Map(pageKey → ids) }
+const audit = new Map()
+
+function observe (index, item, page, ids) {
+  let rec = audit.get(index)
+  if (!rec) {
+    rec = {
+      index: index,
+      name: item && item.name,
+      slot: item && item.slot,
+      pages: item && item.pages,
+      hits: new Map()
+    }
+    audit.set(index, rec)
+  }
+  const key = (page && typeof page.path === 'string' && page.path !== '') ? page.path : '(unknown)'
+  if (!rec.hits.has(key)) rec.hits.set(key, ids)
 }
 
-function matchPages (pages, ids) {
-  if (!Array.isArray(pages) || pages.length === 0) return true
-  return pages.some(function (p) { return ids.indexOf(String(p)) !== -1 })
-}
-
-function renderAsset (item) {
-  if (typeof item.html === 'string') return item.html
-  if (typeof item.src === 'string') {
-    return '<script type="text/javascript" src="' + item.src + '"></script>'
-  }
-  if (typeof item.href === 'string') {
-    return '<link href="' + item.href + '" rel="' + (item.rel || 'stylesheet') + '">'
-  }
-  return ''
+function failLoud (errors) {
+  errors.forEach(function (e) { logger.error(PREFIX + e) })
+  throw new Error(PREFIX + '条目校验失败：拒绝静默输出（R-200）')
 }
 
 hexo.extend.helper.register('inject_assets', function (slot) {
   const inject = (this.theme && this.theme.inject) || {}
   const assets = Array.isArray(inject.assets) ? inject.assets : []
   if (!slot || assets.length === 0) return ''
-  const ids = pageIds(this.page)
-  return assets.filter(function (item) {
-    return item && item.slot === slot && item.enabled !== false && matchPages(item.pages, ids)
-  }).map(renderAsset).join('')
+  const page = this.page
+  const ids = core.pageIds(page)
+  const out = []
+  // 观测范围 = 该槽位所有未 enabled:false 的条目（含白名单未命中者）：
+  // 未命中的候选也必须登记，覆盖审计才能点名「从未生效」的条目（audit 完整性）。
+  assets.forEach(function (item, index) {
+    if (!item || typeof item !== 'object' || item.slot !== slot || item.enabled === false) return
+    const res = core.validateItem(item, index)
+    if (res.errors.length) failLoud(res.errors)
+    const matched = core.matchPages(item.pages, ids)
+    observe(index, item, page, matched ? ids : [])
+    if (matched) out.push(core.renderAsset(item))
+  })
+  return out.join('')
 })
+
+// R-200：生成前全表校验（每条 error 落日志；任一 error 终止构建）
+hexo.extend.filter.register('before_generate', function () {
+  const themeConfig = hexo.theme.config || {}
+  const inject = themeConfig.inject || {}
+  const res = core.validateAssets(inject.assets)
+  res.warnings.forEach(function (w) { logger.warn(PREFIX + w) })
+  if (res.errors.length) {
+    res.errors.forEach(function (e) { logger.error(PREFIX + e) })
+    logger.error(PREFIX + 'inject.assets 校验失败：共 ' + res.errors.length + ' 条 error，终止构建（R-200）')
+    process.exit(-1)
+  }
+})
+
+// R-201：覆盖审计（从未命中 + 冗余白名单条目）
+//
+// 时序事实（hexo 8.1.2）：_generate() 先 execFilter('after_generate')，之后
+// plugins/console/generate.js 才用 route.get(path) 惰性渲染并写盘 ⇒ 触发
+// after_generate 时本进程可能尚未渲染任何页面（audit 为空，告警会漏报）。
+// 因此 audit 非空才 flush，并在 after_generate / hexo 'exit' / process 'exit'
+// 三处各挂一次；flush 后 clear，多次触发不会重复告警。
+// 表内带白名单、但本次生成连槽位都没被渲染过的条目（例如 pages 写错、槽位未被模板调用）
+function unrenderedEntries (observations) {
+  const themeConfig = (typeof hexo !== 'undefined' && hexo.theme && hexo.theme.config) || {}
+  const assets = (themeConfig.inject || {}).assets
+  if (!Array.isArray(assets) || observations.length === 0) return []
+  const seen = {}
+  observations.forEach(function (o) { seen[String(o.index)] = true })
+  const out = []
+  assets.forEach(function (item, i) {
+    if (seen[String(i)]) return
+    if (!item || typeof item !== 'object') return
+    if (!Array.isArray(item.pages) || item.pages.length === 0) return
+    out.push('inject.assets[' + i + ']' + ((typeof item.name === 'string' && item.name !== '') ? ' "' + item.name + '"' : '') +
+      '（slot: ' + item.slot + '）本次生成未被任何页面渲染该槽位 ⇒ 从未命中（检查槽位是否被模板调用）')
+  })
+  return out
+}
+
+function flushAudit (write) {
+  if (audit.size === 0) return
+  const observations = []
+  audit.forEach(function (rec) {
+    observations.push({
+      index: rec.index,
+      name: rec.name,
+      slot: rec.slot,
+      pages: rec.pages,
+      hits: Array.from(rec.hits.entries()).map(function (pair) {
+        return { pageKey: pair[0], ids: pair[1] }
+      })
+    })
+  })
+  core.neverMatchedEntries(observations).forEach(function (w) { write(PREFIX + w) })
+  core.redundantEntries(observations).forEach(function (w) { write(PREFIX + w) })
+  unrenderedEntries(observations).forEach(function (w) { write(PREFIX + w) })
+  audit.clear()
+}
+
+hexo.extend.filter.register('after_generate', function () {
+  flushAudit(function (msg) { logger.warn(msg) })
+})
+
+// 兜底：退出阶段只能用同步写，保证告警一定落到 stdout（build.sh 的日志）。
+function flushAtExit () {
+  flushAudit(function (msg) {
+    try {
+      fs.writeSync(process.stderr.fd, 'WARN  ' + msg + '\n')
+    } catch (e) { /* stdout 不可写时忽略，绝不影响退出码 */ }
+  })
+}
+
+if (typeof hexo.on === 'function') hexo.on('exit', flushAtExit)
+process.on('exit', flushAtExit)
