@@ -30,15 +30,15 @@ div
     !=partial('includes/loading/loading-js', {}, {cache: true})
 
   .js-pjax
-    if needLoadCountJs
+    if page_count_js_needed()
       !=partial('includes/third-party/card-post-count/index', {}, {cache: true})
     
-    if loadSubJs
+    if page_subtitle_js_needed()
       include ./third-party/subtitle.pug
 
     include ./third-party/math/index.pug
 
-    if commentsJsLoad
+    if page_comments_enabled()
       include ./third-party/comments/js.pug
 
   !=partial('includes/third-party/prismjs', {}, {cache: true})

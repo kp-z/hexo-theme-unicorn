@@ -2,7 +2,7 @@ extends includes/layout.pug
 
 block content
   #post
-    if top_img === false
+    if page_top_img() === false
       include includes/header/post-info.pug
 
     article#article-container.post-content!=page.content
@@ -28,6 +28,5 @@ block content
       != related_posts(page,site.posts)
 
     if page.comments !== false && theme.comments && theme.comments.use
-      - var commentsJsLoad = true
       !=partial('includes/third-party/comments/index', {}, {cache: true})
       

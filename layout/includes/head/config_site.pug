@@ -4,8 +4,6 @@
   else if (page.highlight_shrink === true || page.highlight_shrink === false) isHighlightShrink = page.highlight_shrink
   else isHighlightShrink = theme.highlight_shrink
 
-  var pageToc = page.toc === true || page.toc === false ? page.toc : theme.toc.enable
-  var showToc = is_post() && theme.aside.enable && pageToc && (toc(page.content) !== '' || page.encrypt == true )
 
   let titleVal = pageTitle.replace(/'/ig,"\\'")
 
@@ -20,6 +18,6 @@ script#config-diff.
     isPost: !{is_post()},
     isHome: !{is_home()},
     isHighlightShrink: !{isHighlightShrink},
-    isToc: !{showToc},
+    isToc: !{page_toc_enabled()},
     postUpdate: '!{postUpdate}'
   }
