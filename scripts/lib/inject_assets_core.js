@@ -42,8 +42,13 @@ function pageIds (page) {
   return ids.filter(function (id) { return id !== '' })
 }
 
+// R-204（fail-closed）：pages 缺省（undefined/null）或空列表 = 全站；**非数组不再静默 true** ——
+// 形态错误由 validateItem() 报 error，这里返回 false，杜绝「形态写错 ⇒ 悄悄全站注入」。
+// core 可能被单独调用（无 helper 前置校验），故此实现必须自洽。
 function matchPages (pages, ids) {
-  if (!Array.isArray(pages) || pages.length === 0) return true
+  if (pages === undefined || pages === null) return true
+  if (!Array.isArray(pages)) return false
+  if (pages.length === 0) return true
   return pages.some(function (p) { return ids.indexOf(String(p)) !== -1 })
 }
 
@@ -58,19 +63,25 @@ function renderAsset (item) {
   return ''
 }
 
-// 按槽位选条目：slot 命中 + enabled 未显式关闭 + pages 白名单命中
-// 返回 [{ index, item }]，index 供告警与观测定位（inject.assets[i]）
-function selectAssets (assets, slot, ids) {
+// R-205：候选条目 = slot 命中 且 enabled 未显式关闭（**唯一**的槽位/停用过滤实现，不含白名单判定）。
+// 返回 [{ index, item }]，index 供告警与观测定位（inject.assets[i]）。
+function candidateAssets (assets, slot) {
   const out = []
   if (!Array.isArray(assets) || !slot) return out
   assets.forEach(function (item, index) {
     if (item === null || typeof item !== 'object' || Array.isArray(item)) return
     if (item.slot !== slot) return
     if (item.enabled === false) return
-    if (!matchPages(item.pages, ids)) return
     out.push({ index: index, item: item })
   })
   return out
+}
+
+// 按槽位选条目：候选 ∩ pages 白名单命中（helper 的渲染集与审计候选集都由此派生，避免重复实现）
+function selectAssets (assets, slot, ids) {
+  return candidateAssets(assets, slot).filter(function (hit) {
+    return matchPages(hit.item.pages, ids)
+  })
 }
 
 function typeName (value) {
@@ -226,15 +237,30 @@ function redundantEntries (observations) {
   return out
 }
 
+// R-203：显式停用（enabled === false）的条目点名 —— 停用不等于「从未命中」，
+// 但也不能完全沉默：构建期必须能看见「这条为什么不注入」。
+function disabledEntries (assets) {
+  const out = []
+  if (!Array.isArray(assets)) return out
+  assets.forEach(function (item, i) {
+    if (item === null || typeof item !== 'object' || Array.isArray(item)) return
+    if (item.enabled !== false) return
+    out.push(itemLabel(item, i) + '（slot: ' + item.slot + '）enabled: false ⇒ 该条已显式停用，本次生成不注入任何页面')
+  })
+  return out
+}
+
 module.exports = {
   KNOWN_SLOTS: KNOWN_SLOTS,
   ALLOWED_KEYS: ALLOWED_KEYS,
   pageIds: pageIds,
   matchPages: matchPages,
   renderAsset: renderAsset,
+  candidateAssets: candidateAssets,
   selectAssets: selectAssets,
   validateItem: validateItem,
   validateAssets: validateAssets,
   neverMatchedEntries: neverMatchedEntries,
+  disabledEntries: disabledEntries,
   redundantEntries: redundantEntries
 }
