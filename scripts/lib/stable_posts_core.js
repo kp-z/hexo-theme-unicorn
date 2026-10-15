@@ -64,8 +64,51 @@ function stableSortPosts (posts, order, key) {
   return arr
 }
 
+/**
+ * R-222（round-044）：确定性 tag / term 排序 —— 与 stable_posts 同族（纯函数，不依赖 hexo 全局）。
+ *
+ * 背景（Lead round-044 独立复测 + dev3 实测）：hexo 8.1.2 的 Post.tags getter 是
+ * Tag.find({_id: {$in: ids}})（deps/node_modules/hexo/dist/models/post.js:55-61），返回的 Query
+ * 顺序随 Tag 集合（db）扫描顺序 ⇒ **同一份主题代码的两棵独立构建树，同一页面的 tag 序列也可能不同**
+ * （tester 5 棵基线树实测 projects/index.html 出现 2 种 <a class="tag"> 序列：
+ * b4d1780fe7ed7a39 vs a4e959fc2fa76807）。故所有 tag 列表渲染统一走本模块：按 name 升序 +
+ * path 字典序 tiebreak，结果与输入顺序无关。
+ *
+ * 排序键：name（undefined / null / 非字符串一律按空串处理）→ path 字典序。
+ */
+function compareByName (a, b) {
+  const na = (a && a.name !== undefined && a.name !== null) ? String(a.name) : ''
+  const nb = (b && b.name !== undefined && b.name !== null) ? String(b.name) : ''
+  if (na !== nb) return na < nb ? -1 : 1
+  const pa = (a && a.path !== undefined && a.path !== null) ? String(a.path) : ''
+  const pb = (b && b.path !== undefined && b.path !== null) ? String(b.path) : ''
+  if (pa === pb) return 0
+  return pa < pb ? -1 : 1
+}
+
+/**
+ * 稳定排序 tag / term 列表，返回**普通数组**（不是 warehouse Query/Collection）。
+ * 接受：hexo Query（有 toArray()）、带 .data 数组的 Query（模板里 article.tags.data 的形态）、
+ * 普通数组；其余（undefined / null / 数字 / 字符串）一律返回空数组。
+ * 调用方必须用数组方法（.forEach / .slice / .map / pug 的 each ... in），**不能**调 Query 的 .each()。
+ * @param {object|Array} terms hexo Query（.toArray() 或 .data）或数组
+ * @returns {Array} 去引用后的普通数组（升序）
+ */
+function stableTerms (terms) {
+  let arr
+  if (terms && typeof terms.toArray === 'function') arr = terms.toArray()
+  else if (terms && Array.isArray(terms.data)) arr = terms.data.slice()
+  else if (Array.isArray(terms)) arr = terms.slice()
+  else arr = []
+  arr = arr.slice()
+  arr.sort(compareByName)
+  return arr
+}
+
 module.exports = {
   comparePosts: comparePosts,
   primaryTime: primaryTime,
-  stableSortPosts: stableSortPosts
+  stableSortPosts: stableSortPosts,
+  compareByName: compareByName,
+  stableTerms: stableTerms
 }

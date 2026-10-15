@@ -11,12 +11,18 @@
 
 'use strict'
 
-const { stableSortPosts } = require('../lib/stable_posts_core')
+const { stableSortPosts, stableTerms } = require('../lib/stable_posts_core')
 
 if (typeof hexo !== 'undefined' && hexo.extend && hexo.extend.helper) {
   hexo.extend.helper.register('stable_posts', function (posts, order, key) {
     return stableSortPosts(posts, order, key)
   })
+  // R-222（round-044）：tag / term 列表的确定性排序（name 升序 + path 字典序 tiebreak）。
+  // 用法（模板内）：stable_terms(article.tags) -> **普通数组**（顺序与输入无关）；
+  // round-042 教训：不要对返回的数组调 hexo Query 的 .each()；用 .forEach / .map 或 pug 的 each。
+  hexo.extend.helper.register('stable_terms', function (terms) {
+    return stableTerms(terms)
+  })
 }
 
-module.exports = { stableSortPosts: stableSortPosts }
+module.exports = { stableSortPosts: stableSortPosts, stableTerms: stableTerms }

@@ -48,9 +48,11 @@ mixin postUI(posts)
             span.article-meta.tags
               span.article-meta__separator |
               i.fas.fa-tag
-              each item, index in article.tags.data
+              //- R-222（round-044）：稳定 tag 顺序；分隔符判断必须跟随排序后的数组
+              - let tagList = stable_terms(article.tags)
+              each item, index in tagList
                 a(href=url_for(item.path)).article-meta__tags #[=item.name]
-                if (index < article.tags.data.length - 1)
+                if (index < tagList.length - 1)
                   span.article-meta__link #[='•']
           
           mixin countBlockInIndex
