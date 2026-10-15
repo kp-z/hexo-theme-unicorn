@@ -12,7 +12,9 @@
         #sortable.sjs-default
             if site.data.things 
                 each thing in site.data.things
-                    - var link = thing.link || url_for('/things/');
+                    - var rawLink = thing.link || '/things/';
+                    - var hashAt = rawLink.indexOf('#');
+                    - var link = hashAt > 0 ? url_for(rawLink.slice(0, hashAt)) + rawLink.slice(hashAt) : url_for(rawLink);
                     .sortable-card(data-type=thing.type)
                         img.card__picture(src=thing.image alt=thing.title)
                         .card-infos

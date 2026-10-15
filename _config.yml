@@ -1005,10 +1005,10 @@ profile:
   habitica_info: 2022 Habitica
   scripts:
     - /js/json/sun.js   # 已本地化（原 COS 版本内容为技能数据，现为项目图）
-    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/radar.js
+    - /js/json/radar.js   # 已本地化（原 COS 版本与主题本地副本逐字节一致：3694 B / sha256 5cb28177…）
     - /js/gantt.js   # 已本地化（原 COS 版本数据结构错误、时间显示不准）
-    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/json/fitness.js
-    - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/visitorMap.js
+    - /js/json/fitness.js   # 已本地化（13137 B；与 COS 原版唯一差异 = :60 的调试 console.log，本版为启用态，保留本地版本）
+    - /js/visitorMap.js   # 已本地化：原 COS 版是 revolvermaps 注入脚本、含境外域，故落站点层 source/js/visitorMap.js（234 B / sha256 859984d1…），避免主题引入境外域
     - /js/githubcalendar.js   # 已本地化（原 COS 版本依赖已失效的 Vercel API）
     
 
