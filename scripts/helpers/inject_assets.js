@@ -34,17 +34,39 @@
  * R-213（round-042）：注入**落地**复核 —— 从「配置/渲染期」前移到「产物字节」。
  *   - 生成期记录每个 (条目, 页面) 实际输出的字节（observe 的 rendered / blocks），
  *     core.expectedInjections() 推导「该页该槽位应当出现哪些字节」。
- *   - after_generate 与退出阶段各复核一次：读 hexo.public_dir 下的页面文件，
- *     文件不存在（ENOENT）/ 读取异常 / 文件内容为空 / 期望块为空 / 文件里找不到该块
- *     ⇒ 每页 logger.error "注入缺失：<path> slot=<slot>" + 汇总一行后 process.exit(-1)。
- *   - 门禁：public_dir 不存在（hexo clean 后的干净构建，此阶段尚未写盘）⇒ 跳过不崩；
- *     退出阶段只在真在生成产物的进程里复核（hexo server / 其它 console 的 public_dir
- *     可能是陈旧产物，且其观测来自被服务的请求 ⇒ 会误报），程序化调用（hexo.env.cmd === ''）仍复核。
+ *   - **挂钩位置（round-042 阻断修复）**：权威复核在**写盘之后**的退出阶段（hexo 'exit' +
+ *     process 'exit'）执行 —— 读 hexo.public_dir 下的页面文件，文件不存在（ENOENT）/ 读取异常 /
+ *     文件内容为空 / 期望块为空 / 文件里找不到该块 ⇒ 每页 logger.error
+ *     "注入缺失：<path> slot=<slot>" + 汇总一行后 process.exit(-1)。
+ *   - **为什么不在 after_generate 复核**（hexo 8.1.2 时序，Lead round-042 亲查源码定位）：
+ *     node_modules/hexo/dist/hexo/index.js:415-431 的 _generate() = before_generate →
+ *     _routerRefresh(_runGenerators()) → after_generate；而写盘 writeFile()
+ *     （node_modules/hexo/dist/plugins/console/generate.js:52）在 firstGenerate() 内、
+ *     **即 after_generate 之后**；firstGenerate() 只在 public_dir ENOENT 时 mkdirs
+ *     （generate.js:121-140），否则不清理旧产物。⇒ 若本轮生成**之前** public_dir 已存在
+ *     （增量 / 复跑 / 常驻 server 场景），after_generate 时读到的是**上一次构建的陈旧产物**，
+ *     拿它比对本次渲染字节会把「新增页面（文件还没写）/ 注入内容变更 / route 渲染失败」
+ *     误判为缺失，并在写盘前 process.exit(-1) 中止构建（假阳性）。
+ *     故：模块加载时记录 publicExistedAtLoad（= 本轮生成之前 public_dir 是否存在），
+ *     after_generate 只在「加载时 public_dir 不存在」时调用复核（干净首跑，语义不变）；
+ *     增量构建的复核由退出阶段在写盘后完成。
+ *   - 增量构建的字节等价性（**实测结论：不等价**）：generate.js:74-80 的
+ *     "skip generating if hash is unchanged" 比的是**本轮渲染流**的 SHA-1 与 db Cache 中
+ *     public/<path> 的 hash —— 相同就不重写文件。但本仓 build.sh 在 hexo 之后还要跑 gulp
+ *     （gulpfile.js:43-55 的 htmlclean + html-minifier-terser），它会把已落盘的
+ *     `<script type="text/javascript" src="…">` 压缩成 `<script src="…">`。
+ *     ⇒ 被跳过的文件盘上字节 ≠ 本轮渲染字节（实测：完整构建后新增一页再 hexo generate，
+ *     83/224 页因 type 属性被删而误报缺失）。故 core.missingInjections 的比对会抹平这类
+ *     压缩器等价改写（core.normalizeCompareBytes）；资产 URL / 标签本身仍须逐字存在。
+ *   - 退出阶段的 cmd 门禁：只在真在生成产物的进程里复核（hexo server / 其它 console 的
+ *     public_dir 可能是陈旧产物，且其观测来自被服务的请求 ⇒ 会误报），
+ *     程序化调用（hexo.env.cmd === ''）仍复核。
  *   - **已知盲区（Lead round-042 登记为 round-043 残余）**：expectedInjections 只覆盖「本轮渲染中
  *     出现过观测」的页面；route 在 layout/helper 之前就渲染失败（例：hexo 打印
  *     ERROR Render HTML failed 但继续）⇒ 无观测 ⇒ 本机制不捕获，需 route 级检测
  *     （hexo.route.list() vs public_dir 实际文件集），不在 R-213 范围内。
- *     测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑱ 组（18a–18j）。
+ *     测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑱ 组（18a–18m）与第 ⑲ 组（19a–19e，
+ *     after_generate 陈旧产物假阳性回归）。
  */
 
 'use strict'
@@ -216,7 +238,9 @@ function verifyInjections (write) {
   if (publicDir === '') return
   let hasPublic = false
   try { hasPublic = fs.existsSync(publicDir) } catch (err) { hasPublic = false }
-  if (!hasPublic) return // 干净构建在 after_generate 阶段还没写盘：跳过不崩
+  // 退出阶段不额外加存在性门禁（写盘已由 firstGenerate() 完成）；这里只是兜底：
+  // public_dir 缺失 ⇒ 无产物可比 ⇒ 跳过不崩（干净首跑、被清理过的树等）。
+  if (!hasPublic) return
   const expected = core.expectedInjections(snapshotObservations())
   // 还没产生任何观测（after_generate 早于渲染）⇒ 不置位，留给退出阶段复核
   if (expected.length === 0) return
@@ -273,10 +297,23 @@ function flushAudit (write) {
   messages.forEach(write)
 }
 
+// R-213（round-042 阻断修复）：**本轮生成之前** public_dir 是否已存在。hexo 8.1.2 的写盘
+// （console/generate.js 的 writeFile）发生在 after_generate 之后，且 firstGenerate() 不清理
+// 已存在的 public_dir ⇒ 加载时已存在就意味着 after_generate 阶段读到的都是上一轮的陈旧产物，
+// 不能用于比对本次渲染字节（否则增量构建会假阳性并中止在写盘前）。判据在模块加载时求值一次。
+const publicExistedAtLoad = (function () {
+  try {
+    return typeof hexo !== 'undefined' && typeof hexo.public_dir === 'string' && hexo.public_dir !== '' && fs.existsSync(hexo.public_dir)
+  } catch (err) {
+    return false
+  }
+})()
+
 hexo.extend.filter.register('after_generate', function () {
   flushAudit(function (msg) { logger.warn(msg) })
-  // R-213：after_generate 阶段通常 public_dir 尚不存在（干净构建）；但在增量/复跑场景
-  // （public_dir 已存在、某页产物缺失）这里就能当场点名并终止。
+  // R-213：after_generate 早于写盘，只在「加载时 public_dir 不存在」的干净首跑里调用
+  // （此时 public_dir 仍不存在，复核自然跳过、不崩）；增量构建留到退出阶段在写盘后复核。
+  if (publicExistedAtLoad) return
   verifyInjections(function (msg) { logger.error(msg) })
 })
 
@@ -289,7 +326,9 @@ function flushAtExit () {
   })
   if (!isGenerateConsole()) return
   // R-213：写盘发生在 after_generate 之后（console/generate.js 的 writeFile），
-  // 故真正的落地复核在退出阶段；这里能读到刚写出的产物。
+  // 故真正的落地复核在退出阶段；这里能读到刚写出的产物。注意增量构建中被跳过的文件
+  // （generate.js:74-80 hash 相同 / generate.js:33-45 route 未修改）盘上字节 **不等于** 本轮
+  // 渲染字节（build.sh 的 gulp 压缩改写过它们），故 core.missingInjections 会先做归一化比对。
   verifyInjections(function (msg) {
     try {
       fs.writeSync(process.stderr.fd, 'ERROR ' + msg + '\n')

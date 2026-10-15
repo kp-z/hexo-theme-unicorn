@@ -35,7 +35,11 @@
  *     rendered = 该页该 slot 命中条目的实际注入字节按条目下标拼接（与 helper 一次输出的整块一致）。
  *   - missingInjections(expected, readFileFn)：readFileFn(path) 返回字符串或 null（读不到）；文件不存在
  *     （ENOENT）/ 读取异常 / 文件内容为空 / 期望块为空 / 文件里找不到该块字节 ⇒ 记缺失 [{path, slot}]。
- *     测试见同文件第 ⑱ 组（18a–18j）。
+ *   - **接线时序**：本模块只做纯函数推导；实际复核由 helper 在**写盘之后**的退出阶段执行。
+ *     hexo 8.1.2 的 _generate()（hexo/dist/hexo/index.js:415-431）在 after_generate 就返回，
+ *     写盘在 console/generate.js 的 firstGenerate() 内（:52）⇒ after_generate 时若 public_dir
+ *     已存在，读到的是上一轮陈旧产物，用它比对本次渲染字节会产生假阳性并把构建中止在写盘前。
+ *     测试见同文件第 ⑱ 组（18a–18m）与第 ⑲ 组（19a–19e）。
  *   - **已知盲区（Lead round-042 登记为 round-043 残余，本模块不扩范围）**：expectedInjections() 只覆盖
  *     「本轮渲染中出现过观测」的页面；若某 route 在 layout/helper 之前就渲染失败、或根本没产出观测
  *     （例：hexo 对 posts/<id>/index.html 打印 ERROR Render HTML failed 但构建继续），该页面不会进入
@@ -330,6 +334,29 @@ function expectedInjections (observations) {
 //   block-empty  —— 期望块本身为空（渲染被抑制，例：M13 让 renderAsset 返回 ''）
 //   block-absent —— 文件里找不到期望的注入字节
 // 返回去重后的 [{ path, slot }]（路径为空 / 非字符串的期望项跳过）。
+//
+// 为什么比对前要归一化（round-042 阻断修复实测得的第二个缺陷）：
+//   站点流水线 build.sh 在 hexo 写盘之后还要跑 gulp（gulpfile.js:43-55）：htmlclean() +
+//   html-minifier-terser（removeScriptTypeAttributes / removeStyleLinkTypeAttributes /
+//   collapseWhitespace）。它把已落盘的 `<script type="text/javascript" src="…">` 改写成
+//   `<script src="…">`；而 hexo 的增量写盘有 "Skip generating if hash is unchanged"
+//   （hexo/dist/plugins/console/generate.js:74-80），hash 与 db Cache 相同就**不重写**该文件
+//   ⇒ 盘上留着压缩后的字节。于是「跳过重写 ⇒ 盘上字节 == 本次渲染字节」这个前提在本仓
+//   不成立（实测：完整构建后新增一页再 hexo generate，83/224 页会因 type 被删而误报缺失）。
+//   归一化只抹平 html-minifier 会做的等价改写（script 的 type="text/javascript"、
+//   style/link 的 type="text/css"、连续空白折叠），**资产 URL / 标签本身仍必须逐字存在**，
+//   故「块真的没落盘」依旧会被判缺失（M13、清空文件、删文件等负例不变）。
+function normalizeCompareBytes (str) {
+  return String(str)
+    .replace(/\s+type=(?:"text\/javascript"|'text\/javascript'|text\/javascript)(?=\s|>)/gi, '')
+    .replace(/\s+type=(?:"text\/css"|'text\/css'|text\/css)(?=\s|>)/gi, '')
+    // 注入块在产物里可能被换行/缩进隔开（期望串是各块直接拼接），故先抹平「标签之间」的空白，
+    // 再折叠标签内空白 —— 块之间若夹着别的内容，仍不会被判为命中。
+    .replace(/>\s+</g, '><')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 function missingInjections (expected, readFileFn) {
   const out = []
   const seen = {}
@@ -347,7 +374,9 @@ function missingInjections (expected, readFileFn) {
     if (typeof content !== 'string') bad = true              // 文件不存在（ENOENT）/ 读取异常
     else if (content === '') bad = true                      // 文件内容为空
     else if (want === '') bad = true                         // 期望块为空（渲染被抑制）
-    else if (content.indexOf(want) === -1) bad = true        // 产物里找不到该注入块
+    // 先逐字比对；不中再用「压缩器等价改写」归一化比对（见上方说明），资产 URL 仍须逐字存在。
+    else if (content.indexOf(want) === -1 &&
+             normalizeCompareBytes(content).indexOf(normalizeCompareBytes(want)) === -1) bad = true
     if (!bad) return
     const key = filePath + '\u0000' + slot
     if (seen[key]) return
@@ -369,6 +398,7 @@ module.exports = {
   validateAssets: validateAssets,
   expectedInjections: expectedInjections,
   missingInjections: missingInjections,
+  normalizeCompareBytes: normalizeCompareBytes,
   neverMatchedEntries: neverMatchedEntries,
   disabledEntries: disabledEntries,
   redundantEntries: redundantEntries
