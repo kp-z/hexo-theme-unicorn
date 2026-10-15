@@ -29,7 +29,8 @@ html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside
         - var footerBg = theme.footer_bg
         if (footerBg)
           if (footerBg === true)
-            - var footer_bg = bg_img
+            //- bg_img 由 include ./header/index.pug 定义；页面无头图时为 undefined，这里显式兜底为空串
+            - var footer_bg = bg_img || ''
           else
             - var footer_bg = theme.footer_bg.indexOf('/') !== -1 ? `background-image: url('${url_for(footerBg)}')` : `background: ${footerBg}`
         else

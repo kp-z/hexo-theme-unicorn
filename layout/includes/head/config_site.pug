@@ -8,6 +8,10 @@
   var showToc = is_post() && theme.aside.enable && pageToc && (toc(page.content) !== '' || page.encrypt == true )
 
   let titleVal = pageTitle.replace(/'/ig,"\\'")
+
+  // R-250：仅在 page.updated 有值时输出构建期日期；非文章页为 undefined ⇒ 输出空串，
+  // 避免 full_date(undefined) 取墙上时钟导致每轮约 126 个文件变化（消费端仅 isPost 页使用本值）。
+  var postUpdate = page.updated ? full_date(page.updated) : ''
 -
 
 script#config-diff.
@@ -17,5 +21,5 @@ script#config-diff.
     isHome: !{is_home()},
     isHighlightShrink: !{isHighlightShrink},
     isToc: !{showToc},
-    postUpdate: '!{full_date(page.updated)}'
+    postUpdate: '!{postUpdate}'
   }

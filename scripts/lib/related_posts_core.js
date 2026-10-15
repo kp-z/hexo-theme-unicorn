@@ -1,7 +1,7 @@
 /**
  * Butterfly / R-223（round-19 S13）
  * related_posts 纯 core：选篇语义与主题原 helper 完全一致，
- * 唯一新增是**全序 tie-break**（weight desc → path asc → title asc），消除对入参顺序的依赖。
+ * 唯一新增是**全序 tie-break**（weight desc → source asc → path asc），消除对入参顺序的依赖。
  * 不原地修改入参（allPosts/currentPost 只读）。
  */
 
@@ -41,7 +41,6 @@ function isTagRelated (tagName, tags) {
   return result
 }
 
-/* 全序：weight desc → path asc → title asc（与 scripts/lib/stable_posts_core.js 同风格）。 */
 /* 全序：weight desc → source asc → path asc（R-223 返工口径：sourceTie 与 base 可见差异最小且完全确定）。 */
 function compareStr (x, y) { return x < y ? -1 : (x > y ? 1 : 0) }
 function compareRelated (a, b) {

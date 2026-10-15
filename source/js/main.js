@@ -791,6 +791,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const addPostOutdateNotice = function () {
     const data = GLOBAL_CONFIG.noticeOutdate
+    if (!data || !GLOBAL_CONFIG_SITE.postUpdate) return // R-250：非文章页 postUpdate 为空串 ⇒ 直接早退
     const diffDay = btf.diffDate(GLOBAL_CONFIG_SITE.postUpdate)
     if (diffDay >= data.limitDay) {
       const ele = document.createElement('div')
