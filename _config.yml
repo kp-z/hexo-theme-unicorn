@@ -1038,11 +1038,15 @@ profile:
     
 
 pages:
-  weibo_head_img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/speaker%20a.png
-  weibo_css: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/css/weibo.css
+  # R-172（S2 残余）：以下四项原为 COS 绝对地址，已本地化进主题镜像目录并改根相对路径
+  # （模板经 url_for() 消费 ⇒ 换 root 自动跟随）。镜像与 COS 原件逐字节一致：
+  #   speaker a.png sha256 f78cd93f6f9c7e10…、weibo.css sha256 b73748d50b5aefd8…、
+  #   home_page_mask.png sha256 bd8060f6528d0772…、sketchfab-viewer-1.12.0.js sha256 4a9aa723d75826d4…
+  weibo_head_img: /img/cdn/img/3dIcon/objects/speaker%20a.png
+  weibo_css: /img/cdn/css/weibo.css
   weibo_title: HOLY SHITTTT .
-  sketchfab: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/sketchfab/sketchfab-viewer-1.12.0.js
-  sketchfab_cover_img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/carousel/home_page_mask.png
+  sketchfab: /js/vendor/sketchfab/sketchfab-viewer-1.12.0.js
+  sketchfab_cover_img: /img/cdn/img/carousel/home_page_mask.png
   carousel: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/carousel.js
   sponsor_css: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/css/sponsor.css
   travel_js: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/travel.js
@@ -1079,7 +1083,8 @@ page_views:
   default_page: includes/page/default-page.pug
 
 # R-059 阶段 1：首页 3D 模型（model-viewer；dev2 首页改造只读本块）
-# enable 为总开关；viewer_js 为站内自托管路径（不依赖境外网）；poster 沿用原 sketchfab_cover_img 的 COS 地址。
+# enable 为总开关；viewer_js 为站内自托管路径（不依赖境外网）；poster 原为 sketchfab_cover_img 的
+# COS 地址，R-172 起本地化（根相对路径，模板经 url_for() 展开）。
 model_viewer:
   enable: true
   src: /models/home.glb
@@ -1094,7 +1099,7 @@ model_viewer:
   # auto：直连（saveData=false 且非 2g/3g、无 reduced-motion）时自动加载 3D
   mode: click
   # R-075：封面由模板用 CSS background-image 渲染（不参与主题懒加载），加载期/弱网期都以它兜底
-  poster: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/carousel/home_page_mask.png
+  poster: /img/cdn/img/carousel/home_page_mask.png
 
 # CDN
 # Don't modify the following settings unless you know how they work
