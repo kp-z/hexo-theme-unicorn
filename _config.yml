@@ -991,7 +991,6 @@ profile:
   video_black: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/videos/black.mp4
   personility: https://www.16personalities.com/ch/intj-%E4%BA%BA%E6%A0%BC
   personility_title: INTJ
-  desktop:
   desktop_img: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/3dIcon/objects/Desktop.png
   social:
     github: https://github.com/kp-z
@@ -1056,7 +1055,6 @@ model_viewer:
 # Don't modify the following settings unless you know how they work
 # 非必要請不要修改
 CDN:
-  cdn_header: https://blog-1253324855.cos.ap-shanghai.myqcloud.com
   # main
   main_css: /css/index.css
   jquery: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js   # COS 已有副本（jQuery v3.6.0，curl 实测 200）
