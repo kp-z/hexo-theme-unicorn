@@ -102,7 +102,8 @@ window.addEventListener('load', () => {
             // '<hr>' +
             stats +
             '<span class="algolia-logo pull-right">' +
-            '  <img src="https://blog-1253324855.cos.ap-shanghai.myqcloud.com/img/algolia.svg" alt="Algolia" />' +
+            // R-242（goal round 16）：logo 改根相对自托管镜像（原 COS 绝对地址已弃用）
+            '  <img src="' + (GLOBAL_CONFIG.root || '/') + 'img/cdn/img/algolia.svg" alt="Algolia" />' +
             '</span>'
           )
         }

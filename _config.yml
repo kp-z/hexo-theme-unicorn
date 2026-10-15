@@ -950,16 +950,19 @@ css_prefix: true
 # fail-loud 终止构建，不再静默忽略；after_generate 会告警「从未命中」与「被其它条目覆盖」的白名单条目。
 inject:
   assets:
+    # R-242（goal round 16）：本块 src 统一改 __ROOT__ 占位符（由 scripts/filters/root_placeholder.js 展开），
+    # 文件自托管于主题 source/img/cdn/js/（除 f12_printer.js 有意改为按站点根拼接外，其余与 COS 原件逐字节一致）。
+    # 主题内 COS 绝对地址仅余 pages.travel_js 一处（R-243：travel.js 内嵌 Mapbox 令牌，禁止入库）。
     # head 槽：顺序 = 输出顺序，与原 inject.head 四条完全一致
     - name: jquery
       slot: head
-      src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js
+      src: __ROOT__img/cdn/js/jquery/jquery.min.js
     - name: f12_printer
       slot: head
-      src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/f12_printer.js
+      src: __ROOT__img/cdn/js/f12_printer.js
     - name: ali_font
       slot: head
-      src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/ali/font_1789453_ouhjvm9rdyn.js
+      src: __ROOT__img/cdn/js/ali/font_1789453_ouhjvm9rdyn.js
     # R-059 阶段 1.2（task-105）：自托管字体子集；R-157 S1b（task-249）：改用 __ROOT__ 占位符，
     # 由主题 scripts/filters/root_placeholder.js 按站点 config.root 展开，站点换 root 自动跟随；原 COS 副本 CSS 不再引用。
     - name: font_subset_css
@@ -975,7 +978,7 @@ inject:
     # 冗余审计判为「已被 profile 覆盖」并告警）。
     - name: echarts
       slot: charts
-      src: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/echarts.min.js
+      src: __ROOT__img/cdn/js/third-part/echarts.min.js
       pages:
         - categories
         - profile
@@ -1042,16 +1045,22 @@ pages:
   # （模板经 url_for() 消费 ⇒ 换 root 自动跟随）。镜像与 COS 原件逐字节一致：
   #   speaker a.png sha256 f78cd93f6f9c7e10…、weibo.css sha256 b73748d50b5aefd8…、
   #   home_page_mask.png sha256 bd8060f6528d0772…、sketchfab-viewer-1.12.0.js sha256 4a9aa723d75826d4…
+  # R-242（goal round 16）：carousel / mapbox / mapbox_language / friends.scripts 同样本地化
+  # （镜像在 theme/source/img/cdn/js/）。**travel_js 为例外**，原因见下方 R-243 注释。
   weibo_head_img: /img/cdn/img/3dIcon/objects/speaker%20a.png
   weibo_css: /img/cdn/css/weibo.css
   weibo_title: HOLY SHITTTT .
   sketchfab: /js/vendor/sketchfab/sketchfab-viewer-1.12.0.js
   sketchfab_cover_img: /img/cdn/img/carousel/home_page_mask.png
-  carousel: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/carousel.js
+  carousel: /img/cdn/js/carousel.js
   sponsor_css: /img/cdn/css/sponsor.css
+  # R-243（goal round 16 登记的残余）：travel.js 内嵌 Mapbox 访问令牌（pk.eyJ1Ijoia3BlYWNl…），
+  # GitHub push protection 判定为「Mapbox Secret Access Token」并拒绝入库（GH013）
+  # ⇒ 遵循「不把令牌推入公开主题仓库」，本文件**不做本地化**，继续引用 COS。
+  # 处置候选：① 令牌改由站点侧配置注入；② 随 R-233（可切换到高德 API）一并解决。
   travel_js: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/travel.js
-  mapbox: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/mapbox/mapbox-gl.js
-  mapbox_language: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/mapbox/mapbox-gl-language.js
+  mapbox: /img/cdn/js/mapbox/mapbox-gl.js
+  mapbox_language: /img/cdn/js/mapbox/mapbox-gl-language.js
   mapbox_css: /img/cdn/css/mapbox-gl.css
   
 
@@ -1060,8 +1069,8 @@ pages:
     wromhole_title: WROMHOLE
     css: /img/cdn/css/fcircle-beta.css
     scripts:
-      - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/fcircle-beta.js
-      - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/friends.js
+      - /img/cdn/js/fcircle-beta.js
+      - /img/cdn/js/friends.js
 
 # R-161 S5：页面 → 视图模板派发表（front-matter `view:` 键驱动 layout/page.pug）。
 # R-197（round-042）契约：本表每个键都必须恰好被某个源页的 front-matter `view:` 使用，
@@ -1089,10 +1098,9 @@ model_viewer:
   enable: true
   src: /models/home.glb
   viewer_js: /js/vendor/model-viewer/model-viewer.min.js
-  # R-075：可选的国内镜像回退链（按顺序试，任一成功即停）。该 1 MiB 包走 GitHub Pages 源在国内实测 ≈39 s。
-  # 待用户把文件上传到既有上海 COS 桶后取消注释即可生效（无需改模板）：
-  # viewer_js_fallbacks:
-  #   - https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/vendor/model-viewer/model-viewer.min.js
+  # R-075 曾预留「国内镜像回退链」（viewer_js_fallbacks）。R-242（goal round 16）删除：原 COS 对象
+  # /js/vendor/model-viewer/model-viewer.min.js 实测 HTTP 404（从未上传），且该键会把 COS 绝对地址留在主题里。
+  # 若日后确需回退，请自托管文件并在站点层覆盖为 /img/cdn/js/... 根相对路径。
   # 1 MiB viewer 的等待上限；超时只切到「点击加载」，不放弃下载，绝不整片空白
   timeout_ms: 8000
   # click（默认）：首屏只出封面，点击后才下载 3D（国内 1 MiB 走 GitHub Pages 源实测 ≈39 s，不自动加载）
@@ -1107,7 +1115,7 @@ model_viewer:
 CDN:
   # main
   main_css: /css/index.css
-  jquery: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/jquery/jquery.min.js   # COS 已有副本（jQuery v3.6.0，curl 实测 200）
+  jquery: /img/cdn/js/jquery/jquery.min.js   # R-242：与 inject.assets 的 jquery 同一份自托管文件（jQuery v3.6.0）
   main: /js/main.js
   utils: /js/utils.js
 
@@ -1121,7 +1129,7 @@ CDN:
   meting_js: https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js
 
   # pjax
-  pjax: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/pjax/pjax.min.js
+  pjax: /img/cdn/js/pjax/pjax.min.js
 
   # comments
   gitalk: https://registry.npmmirror.com/gitalk/1.8.0/files/dist/gitalk.min.js
@@ -1161,7 +1169,7 @@ CDN:
   canvas_fluttering_ribbon: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/canvas-fluttering-ribbon.min.js
   canvas_nest: https://registry.npmmirror.com/butterfly-extsrc/1.0.3/files/dist/canvas-nest.min.js
 
-  lazyload: https://blog-1253324855.cos.ap-shanghai.myqcloud.com/js/third-part/lazyload.iife.min.js
+  lazyload: /img/cdn/js/third-part/lazyload.iife.min.js
   # instantpage: https://cdn.bootcdn.net/ajax/libs/instant.page/5.1.0/instantpage.min.js
   instantpage: https://cdn.bootcdn.net/ajax/libs/instant.page/5.1.0/instantpage.min.js   # bytecdntp 已 404 → bootcdn（实测 200）
   typed: https://registry.npmmirror.com/typed.js/2.0.12/files/lib/typed.min.js
