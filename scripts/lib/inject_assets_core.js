@@ -45,6 +45,19 @@
  *     （例：hexo 对 posts/<id>/index.html 打印 ERROR Render HTML failed 但构建继续），该页面不会进入
  *     expected ⇒ 本机制捕获不到。此类缺口需由 route 级检测覆盖（hexo 路由表与实际 public_dir
  *     文件集对比），不在 R-213 范围内。
+ *
+ * R-219（round-044）：**文档级**产物核对 —— 补 R-214 的第二类盲区（route 被静默丢弃 / 从未注册）。
+ *   - R-214 只遍历路由表（hexo route.list()）：route 不在路由表里、盘上也没有产物时，R-213 没有观测、
+ *     R-214 没有 route ⇒ 全链条静默（构建 RC=0 且打印「完成」）。
+ *   - docOutputPath(docPath)：文档 path → 产物相对路径（规则见函数上方注释；本仓
+ *     posts 52（trailingSlash）/ tags 74（trailingSlash）/ categories 20（trailingSlash）/
+ *     pages 35（hasExt，含 skip_render 的 js/*.js、*.json）实测全覆盖）。
+ *   - missingDocOutputs(entries, routeSet, statFn)：entries = [{path, kind}]；产物路径命中
+ *     routeSet 的条目跳过（该 route 已由 R-214 核对，避免同一缺失报两遍）；**只判存在性与
+ *     size > 0，不做内容比较**（增量 generate 时盘上字节可能来自上一轮：gulp 后处理 + hexo
+ *     "Skip generating if hash is unchanged"，node_modules/hexo/dist/plugins/console/generate.js:74-80）。
+ *   - **接线时序**：与 R-214 相同 —— 纯函数在本模块，实际核对由 helper 在写盘之后的退出阶段执行。
+ *     测试见 tools/qa/tests/inject-assets.test.mjs 第 ㉔ 组（24a–24h）。
  */
 
 'use strict'
@@ -416,7 +429,64 @@ function missingRouteOutputs (routes, statFn) {
   return out
 }
 
+// R-219（round-044）：文档 path → 产物相对路径。
+//   '' / 非字符串            ⇒ null（跳过，不当缺失处理）
+//   以 '/' 结尾（目录形态）  ⇒ + 'index.html'（本仓 posts / tags / categories 全是此形态）
+//   含扩展名 /.[^/]+$/      ⇒ 原样（本仓 pages 全是此形态：about/index.html、以及 skip_render
+//                              的静态资源 js/gantt.js、js/json/github-calendar.json 等 —— 它们
+//                              也被 hexo 当 page 收进 locals，靠本分支不误报）
+//   其余（无扩展名、非目录） ⇒ + '/index.html'（本仓未出现，防御保留）
+// 前导 '/' 统一剥掉，便于与路由表（hexo route.list()）的形态对齐。
+function docOutputPath (docPath) {
+  if (typeof docPath !== 'string') return null
+  const clean = docPath.replace(/^\/+/, '')
+  if (clean === '') return null
+  if (/\/$/.test(clean)) return clean + 'index.html'
+  if (/\.[^/]+$/.test(clean)) return clean
+  return clean + '/index.html'
+}
+
+function routeLookupKeys (routeSet) {
+  const keys = []
+  const push = function (v) {
+    if (typeof v !== 'string') return
+    const c = v.replace(/^\/+/, '')
+    if (c !== '') keys.push(c)
+  }
+  // 数组与 Set 都有 forEach；其余形态按「无路由信息」处理（调用方负责传对）
+  if (routeSet && typeof routeSet.forEach === 'function') routeSet.forEach(push)
+  return keys
+}
+
+// R-219：文档产物核对。判据见文件头 R-219 段：命中 routeSet ⇒ 跳过（R-214 负责）；
+// statFn 抛异常 / 返回非对象 / size 非数字 / size === 0 ⇒ 缺失。返回按 path 去重 + 字典序的
+// [{ path, kind }]，其中 path = docOutputPath() 归一化后的**产物相对路径**（便于直接点名）。
+function missingDocOutputs (entries, routeSet, statFn) {
+  const out = []
+  const seen = {}
+  if (!Array.isArray(entries)) return out
+  const routes = routeLookupKeys(routeSet)
+  const stat = (typeof statFn === 'function') ? statFn : function () { return null }
+  entries.forEach(function (e) {
+    if (!e || typeof e !== 'object') return
+    const rel = docOutputPath(e.path)
+    if (rel === null) return
+    if (routes.indexOf(rel) !== -1) return // 该 route 已在 hexo 路由表里 ⇒ 交给 R-214 核对
+    if (seen[rel]) return
+    let st = null
+    try { st = stat(rel) } catch (err) { st = null }
+    const bad = !st || typeof st.size !== 'number' || st.size === 0
+    if (!bad) return
+    seen[rel] = true
+    out.push({ path: rel, kind: (typeof e.kind === 'string') ? e.kind : '' })
+  })
+  out.sort(function (a, b) { return a.path < b.path ? -1 : (a.path > b.path ? 1 : 0) })
+  return out
+}
+
 module.exports = {
+  docOutputPath: docOutputPath,
+  missingDocOutputs: missingDocOutputs,
   KNOWN_SLOTS: KNOWN_SLOTS,
   ALLOWED_KEYS: ALLOWED_KEYS,
   pageIds: pageIds,

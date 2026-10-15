@@ -77,8 +77,21 @@
  * R-215（round-043）：flushAudit 的覆盖审计（从未命中 / 冗余 / 未渲染 + 停用点名）只在
  *   isGenerateConsole() 时输出 —— 局部观测（hexo server 重载只渲染了被请求的少数页）不作判据
  *   （实测：server 重载会打 1 行「echarts 从未命中」WARN，属误报）。
+ * R-219（round-044）：**文档级**产物核对（补 R-214 剩下的盲区）。
+ *   - R-214 只核对 hexo.route.list() 里存在的 route：route 被静默丢弃 / 从未注册时
+ *     （路由表没有、盘上也没有）全链条静默 —— R-213 无观测、R-214 无 route，构建 RC=0。
+ *   - 退出阶段（flushAtExit 中 verifyRouteOutputs 之后）调用 verifyDocOutputs：从
+ *     hexo.locals 的 posts / pages / tags / categories 文档集合推导应有产物
+ *     （core.docOutputPath），与 hexo.route.list() + 实际文件对账。
+ *   - 判据（与 R-214 一致）：命中 route 表的**跳过**（那由 R-214 归口，同一缺失不报两遍）；
+ *     statSync 抛异常 / 无 stat / size === 0 ⇒ 缺失。**只判存在性与 size > 0，不比对字节**
+ *     （增量 generate 时盘上字节可能来自上一轮：gulp 后处理 + hexo 增量跳过，见 R-213 段）。
+ *   - 门禁与 R-214 完全一致：write === false 或 !isGenerateConsole() ⇒ 整段跳过（hexo server /
+ *     watch 的 public_dir 是陈旧产物、局部渲染 ⇒ 会误报）；public_dir 不存在 ⇒ 跳过不崩；
+ *     docVerifiedOnce 去重（hexo 'exit' + process 'exit' 只打一次）。
+ *   - 缺失时逐条点名「文档产物缺失：<产物路径>（来源 <kind>）」+ 汇总一行后 process.exit(-1)。
  *   测试见 tools/qa/tests/inject-assets.test.mjs 第 ⑱–⑳ 组、第 ㉑ 组（R-214）、第 ㉒ 组（R-215）、
- *   第 ㉓ 组（R-216 稳定排序，纯函数在 scripts/lib/stable_posts_core.js）。
+ *   第 ㉓ 组（R-216 稳定排序，纯函数在 scripts/lib/stable_posts_core.js）、第 ㉔ 组（R-219）。
  */
 
 'use strict'
@@ -318,6 +331,58 @@ function verifyRouteOutputs (write) {
   process.exit(-1)
 }
 
+// R-219（round-044）：文档级产物核对 —— 补 R-214 的剩余盲区（route 被静默丢弃 / 从未注册：
+// 路由表里没有它、盘上也没有产物 ⇒ R-213 无观测、R-214 无 route，全链条静默，构建 RC=0）。
+// 数据来源：hexo.locals 的 posts / pages / tags / categories 文档集合（每个 doc.path 经
+// core.docOutputPath 归一化成产物相对路径）；与 hexo.route.list() + 实际文件对账。
+// 判据与 R-214 同源：产物路径已在路由表里的条目**跳过**（那条由 R-214 归口，同一缺失不报两遍）；
+// statSync 抛异常 / 无 stat / size === 0 ⇒ 缺失；**只判存在性与 size > 0，不比对字节**
+// （增量 generate 时盘上字节可能来自上一轮：gulp 后处理 + hexo 增量跳过，理由见文件头 R-213 段）。
+// 门禁与 R-214 完全一致：write === false 或 !isGenerateConsole() ⇒ 整段跳过（hexo server / watch
+// 的 public_dir 是陈旧产物且只渲染被请求的少数页 ⇒ 会误报）；public_dir 不存在 ⇒ 跳过不崩。
+const DOC_KINDS = ['posts', 'pages', 'tags', 'categories']
+let docVerifiedOnce = false
+
+function docEntries () {
+  const out = []
+  if (typeof hexo === 'undefined' || !hexo.locals || typeof hexo.locals.get !== 'function') return out
+  DOC_KINDS.forEach(function (kind) {
+    try {
+      const col = hexo.locals.get(kind)
+      if (!col || typeof col.toArray !== 'function') return
+      col.toArray().forEach(function (doc) {
+        if (!doc || typeof doc.path !== 'string' || doc.path === '') return
+        out.push({ path: doc.path, kind: kind })
+      })
+    } catch (err) { /* 取不到该集合 ⇒ 跳过该 kind；绝不因 locals 异常而崩或误报 */ }
+  })
+  return out
+}
+
+function verifyDocOutputs (write) {
+  if (docVerifiedOnce) return
+  if (write === false) return
+  if (!isGenerateConsole()) return
+  const publicDir = (typeof hexo !== 'undefined' && typeof hexo.public_dir === 'string') ? hexo.public_dir : ''
+  if (publicDir === '') return
+  let hasPublic = false
+  try { hasPublic = fs.existsSync(publicDir) } catch (err) { hasPublic = false }
+  if (!hasPublic) return
+  const entries = docEntries()
+  if (entries.length === 0) return
+  let routes = []
+  try { routes = (hexo.route && typeof hexo.route.list === 'function') ? hexo.route.list() : [] } catch (err) { routes = [] }
+  docVerifiedOnce = true // 先置位：process.exit(-1) 之后 process 'exit' 会再进来一次
+  const missing = core.missingDocOutputs(entries, routes, function (rel) {
+    try { return fs.statSync(path.join(publicDir, rel)) } catch (err) { return null }
+  })
+  if (missing.length === 0) return
+  missing.forEach(function (m) { write(PREFIX + '文档产物缺失：' + m.path + '（来源 ' + m.kind + '）') })
+  const sample = missing.slice(0, 5).map(function (m) { return m.path + '（' + m.kind + '）' }).join('；')
+  write(PREFIX + '文档产物缺失汇总：共 ' + missing.length + ' 个（清单前 ' + Math.min(5, missing.length) + ' 条：' + sample + '），终止构建（R-219）')
+  process.exit(-1)
+}
+
 function flushAudit (write) {
   // R-215（round-043）：覆盖审计只在真在生成产物的进程里输出。hexo server / watch 下
   // after_generate 的观测来自「被服务的少数页」（局部观测），拿它判定「从未命中 / 冗余 /
@@ -384,6 +449,12 @@ function flushAtExit () {
   // R-214：route 级对账（补「渲染失败 ⇒ 无观测」的盲区）。R-213 已经点名过的页面这里可能再点一次
   // （注入缺失 + 路由产物缺失），两条信息视角不同，保留。
   verifyRouteOutputs(function (msg) {
+    try {
+      fs.writeSync(process.stderr.fd, 'ERROR ' + msg + '\n')
+    } catch (e) { /* stderr 不可写时忽略，进程仍以非 0 退出 */ }
+  })
+  // R-219：文档级对账（补「route 被静默丢弃 / 从未注册 ⇒ 路由表里没有、盘上也没有」的盲区）。
+  verifyDocOutputs(function (msg) {
     try {
       fs.writeSync(process.stderr.fd, 'ERROR ' + msg + '\n')
     } catch (e) { /* stderr 不可写时忽略，进程仍以非 0 退出 */ }

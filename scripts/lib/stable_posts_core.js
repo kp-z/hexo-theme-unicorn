@@ -14,12 +14,23 @@
 'use strict'
 
 /**
- * 比较两篇文章。dir === 1 时 date 升序，否则降序（与 hexo sort 的 order 语义一致：-1 降序）。
+ * 排序主键取值。key === 'updated' ⇒ 用 doc.updated，其余（含缺省 undefined）⇒ doc.date
+ * —— 与主题原有的 `site.posts.sort('date'|'updated', -1)` 语义对齐（R-221 round-044）。
+ */
+function primaryTime (doc, key) {
+  const field = (key === 'updated') ? 'updated' : 'date'
+  const v = doc && doc[field]
+  return v ? new Date(v).valueOf() : 0
+}
+
+/**
+ * 比较两篇文章。dir === 1 时主键升序，否则降序（与 hexo sort 的 order 语义一致：-1 降序）。
+ * key 为主键字段：'updated' ⇒ updated，其余 ⇒ date（缺省 date，保持 R-216 既有行为逐字节不变）。
  * 并列时一律用字典序键，保证与输入顺序无关的确定性。
  */
-function comparePosts (a, b, dir) {
-  const da = a && a.date ? new Date(a.date).valueOf() : 0
-  const db = b && b.date ? new Date(b.date).valueOf() : 0
+function comparePosts (a, b, dir, key) {
+  const da = primaryTime(a, key)
+  const db = primaryTime(b, key)
   if (da !== db) return dir === 1 ? da - db : db - da
   const ka = String((a && (a.abbrlink || a.slug || a.path)) || '')
   const kb = String((b && (b.abbrlink || b.slug || b.path)) || '')
@@ -39,19 +50,22 @@ function comparePosts (a, b, dir) {
  * 并产出 0 字节页面）。
  * @param {object|Array} posts hexo Collection（有 toArray()）或数组
  * @param {number|string} order 1 / 'asc' 升序；其余（含 -1、undefined）降序
+ * @param {string} [key] 排序主键：'updated' ⇒ updated；缺省 / 其它 ⇒ date（R-221 round-044 新增，
+ *        两参调用行为与 R-216 完全一致，既有 6 处调用点不受影响）
  */
-function stableSortPosts (posts, order) {
+function stableSortPosts (posts, order, key) {
   const dir = (order === 1 || order === 'asc' || order === '1') ? 1 : -1
   let arr
   if (posts && typeof posts.toArray === 'function') arr = posts.toArray()
   else if (Array.isArray(posts)) arr = posts.slice()
   else arr = []
   arr = arr.slice()
-  arr.sort(function (a, b) { return comparePosts(a, b, dir) })
+  arr.sort(function (a, b) { return comparePosts(a, b, dir, key) })
   return arr
 }
 
 module.exports = {
   comparePosts: comparePosts,
+  primaryTime: primaryTime,
   stableSortPosts: stableSortPosts
 }

@@ -3,6 +3,12 @@
     img(src=url_for(article.top_img) alt=title onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'`)
 .project-info
     .tags
+        //- R-222（round-044，零行为注释）：tags 迭代顺序由 hexo 的 Tag 集合决定，不保证是 front-matter 数组顺序。
+        //-   hexo 8.1.2 models/post.js 的 Post.tags getter = Tag.find({_id: {$in: ids}})，顺序随 Tag 集合（db）扫描顺序。
+        //-   实测：cur 与 probe 是同一份主题代码的两棵独立构建树，/projects/index.html 的「◉ <tag>」序列 md5 仍不同
+        //-   （ros / 机器人 次序翻转：14418716e8c4f2ed ↔ 3fc965bf57bba204），而顺序不敏感的多重集四树全同
+        //-   （SEQ_SORTED_MD5=5b735d6f3b037db7、CARD_SORTED_MD5=7d203e3c2dae4e6c）⇒ 既有抖动，与本轮改动无关。
+        //-   本轮保持现状（行为零变更），已作为残余上报 Lead；若需确定性可在模板侧对 article.tags 稳定排序。
         - article.tags.each(function (tag) {
             a.tag(href=url_for(tag.path) style='background:#e90ff' title=tag.name)
                 | ◉ !{tag.name} &nbsp;

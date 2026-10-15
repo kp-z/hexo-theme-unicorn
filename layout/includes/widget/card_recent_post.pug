@@ -6,7 +6,10 @@ if theme.aside.card_recent_post.enable
     .aside-list
       - let postLimit = theme.aside.card_recent_post.limit === 0 ? site.posts.length : theme.aside.card_recent_post.limit || 5
       - let sort = theme.aside.card_recent_post.sort === 'updated' ? 'updated' : 'date'
-      - site.posts.sort(sort, -1).limit(postLimit).each(function(article){
+      //- R-221（round-044）：并列 date/updated 的遍历改走稳定排序（scripts/lib/stable_posts_core.js）：
+      //-   hexo Collection.sort() 对并列项不保证顺序（随 DB 装载顺序摇奖）。第三个参数是主键字段，
+      //-   非 'updated' 时按 date；返回普通数组，故必须用 forEach（.each() 是 Collection 方法，round-042 血泪）。
+      - stable_posts(site.posts, -1, sort).slice(0, postLimit).forEach(function(article){
         - let link = article.link || article.path
         - let title = article.title || _p('no_title')
         - let no_cover = article.cover === false || !theme.cover.aside_enable ? 'no-cover' : ''
