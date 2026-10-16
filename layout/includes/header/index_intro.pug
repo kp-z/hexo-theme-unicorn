@@ -25,11 +25,16 @@ if mv_enable
     data-timeout=String(mv_timeout)
     data-mode=mv_mode
   )
+    //- 2026-10-16 用户选 B：/models/home.glb 换成真实 CC0 模型（RobotExpressive，CC0 1.0，
+    //-   3,237 tris，14 段内置动画）。首段动画是 Dance ⇒ 显式指定 Idle + autoplay，
+    //-   避免首页一加载就跳舞。（pug 注释不能写在属性列表括号内，只能放在标签之前。）
     model-viewer#home-model(
       src=url_for(mv_src)
       alt="首页 3D 模型"
       camera-controls
       auto-rotate
+      autoplay
+      animation-name="Idle"
       reveal="auto"
       shadow-intensity="1"
       environment-image="neutral"

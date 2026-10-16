@@ -32,17 +32,69 @@ function showSlides(n) {
 
 ////////////////////////////////////////////////////////////////////////////////   
 
-var h = window.innerHeight * 1.2;
-document.getElementById('sketchfab-model').style.height = h + 'px';
-// console.log(h);
+/* R-263：本脚本在首页两种 3D 模式下都会被加载（Sketchfab 回退模式 / model-viewer 模式）。
+   model-viewer 模式（theme.model_viewer.enable = true）里没有 #sketchfab-model，也没有
+   Sketchfab 全局对象，旧实现在文件顶层直接给 #sketchfab-model 设高度并 new Sketchfab()，
+   会抛 TypeError / ReferenceError 并中断整个文件 ⇒ 下面 #site-name / #show-index-info 的点击
+   切换（隐藏轮播 / 显示索引信息）永不绑定。现在 3D 初始化先做存在性判定、UI 交互与 3D 解耦；
+   又因 #site-name 等元素在本 <script> 标签之后才出现，绑定统一等 DOMContentLoaded 之后再执行。 */
+var togglesBound = false;
+
+function bindIndexToggles() {
+    if (togglesBound) {
+        return;
+    }
+    var showIndexInfo = document.getElementById('show-index-info');
+    var siteName = document.getElementById("site-name");
+    var pinedPages = document.getElementById("pined-pages");
+    var carousel = document.getElementById("carousel");
+    if (!showIndexInfo || !siteName || !pinedPages || !carousel) {
+        return;
+    }
+    togglesBound = true;
+
+    siteName.addEventListener('click', function () {
+        siteName.style.display = "none";
+        pinedPages.style.display = "none";
+        carousel.style.display = "none";
+        showIndexInfo.style.display = "block";
+    });
+
+    showIndexInfo.addEventListener('click', function () {
+        siteName.style.display = "block";
+        pinedPages.style.display = "block";
+        carousel.style.display = "block";
+        showIndexInfo.style.display = "none";
+    });
+}
+
+function onDomReady(fn) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fn);
+    } else {
+        fn();
+    }
+}
 
 var iframe = document.getElementById('sketchfab-model');
+var h = window.innerHeight * 1.2;
+if (iframe) {
+    iframe.style.height = h + 'px';
+}
+// console.log(h);
+
 var uid = '25e0e77ab56140be9fa6cb65cb4de96f';
 // var uid = '93174ca7b0bb4f2d8ddf00021854f2cb';
 var client = null;
 
 // By default, the latest version of the viewer API will be used.
-var client = new Sketchfab(iframe);
+var client = (typeof Sketchfab === 'function') ? new Sketchfab(iframe) : null;
+
+if (!client) {
+    // model-viewer 模式 / Sketchfab viewer 脚本不可用：没有 viewer 可初始化，只保留纯 UI 交互（R-263）。
+    client = { init: function () {} };
+    onDomReady(bindIndexToggles);
+}
 
 // Alternatively, you can request a specific version.
 // var client = new Sketchfab( '1.10.1', iframe );
@@ -53,11 +105,6 @@ client.init(uid, {
     // autostart: 0,
     annotation_tooltip_visible: 0,
     success: function onSuccess(api) {
-        var showIndexInfo = document.getElementById('show-index-info');
-        var siteName = document.getElementById("site-name");
-        var pinedPages = document.getElementById("pined-pages");
-        var carousel = document.getElementById("carousel");
-
         // #site-name
         // console.log('Success');
         api.load();
@@ -73,30 +120,7 @@ client.init(uid, {
                 api.setCameraLookAt([-0.07100943658257979, -2.838193770610532, 273.2725839414465], [-0.14979741551783443, 1.2632613866959885, 12.139146858457272])
             }
         });
-        document.getElementById('site-name').addEventListener('click', function () {
-            siteName.style.display = "none";
-            pinedPages.style.display = "none";
-            carousel.style.display = "none";
-            showIndexInfo.style.display = "block";
-            // api.setUserInteraction(true, function(err) {
-            //     if (!err) {
-            //         // window.console.log('User interaction enabled');
-            //     }
-            // });
-            
-        });
-
-        document.getElementById('show-index-info').addEventListener('click', function () {
-            siteName.style.display = "block";
-            pinedPages.style.display = "block";
-            carousel.style.display = "block";
-            showIndexInfo.style.display = "none";
-            // api.setUserInteraction(false, function(err) {
-            //     if (!err) {
-            //         // window.console.log('User interaction disabled');
-            //     }
-            // });
-        });
+        onDomReady(bindIndexToggles);
 
         api.start();
 
