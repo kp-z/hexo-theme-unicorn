@@ -14,8 +14,8 @@ const tocMemo = new WeakMap()
 
 function flags (ctx, extra) {
   const f = {
-    page: ctx.page,
-    theme: ctx.theme,
+    page: ctx.page || {},
+    theme: ctx.theme || {},
     isPost: !!(ctx.is_post && ctx.is_post()),
     isPage: !!(ctx.is_page && ctx.is_page()),
     isTag: !!(ctx.is_tag && ctx.is_tag()),
@@ -51,7 +51,11 @@ if (typeof hexo !== 'undefined' && hexo.extend && hexo.extend.helper) {
     return core.pageHeaderBg(flags(this))
   })
   hexo.extend.helper.register('page_toc_enabled', function () {
-    return core.tocEnabled(flags(this, { tocHtml: tocHtmlOf(this) }))
+    const f = flags(this)
+    f.tocHtml = tocHtmlOf(this)
+    // R-258：空 ctx 健壮性 —— theme.toc / theme.aside 缺省时返回 falsy，不抛（core 保持不动）
+    if (!f.theme.toc || !f.theme.aside) return false
+    return core.tocEnabled(f)
   })
   hexo.extend.helper.register('page_comments_enabled', function () {
     return core.commentsEnabled(flags(this))
