@@ -915,6 +915,9 @@ inject:
     - name: echarts
       slot: charts
       src: __ROOT__img/cdn/js/third-part/echarts.min.js
+      # R-277：pjax 进 profile/services 时 #body-wrap 被替换 ⇒ 脚本必须带 data-pjax 重建执行，
+      # 否则 sun/gantt/radar/fitness 报 "echarts is not defined"。
+      pjax: true
       pages:
         - categories
         - profile

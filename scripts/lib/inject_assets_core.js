@@ -67,7 +67,8 @@
 const KNOWN_SLOTS = ['head', 'bottom', 'charts']
 
 // 条目允许的键（其余键一律报错，避免 pages → page 这类笔误被静默忽略并退化为全站注入）
-const ALLOWED_KEYS = ['name', 'slot', 'html', 'src', 'href', 'rel', 'pages', 'enabled']
+// R-277：pjax 布尔字段（只对 src 形式有意义）⇒ 产物带 data-pjax，由主题 pjax.pug 重建执行。
+const ALLOWED_KEYS = ['name', 'slot', 'html', 'src', 'href', 'rel', 'pages', 'enabled', 'pjax']
 
 // 当前页面的身份集合：page.path 去掉前导斜杠与 /index.html 后的路径串 + page.view + page.type
 function pageIds (page) {
@@ -93,7 +94,8 @@ function matchPages (pages, ids) {
 function renderAsset (item) {
   if (typeof item.html === 'string') return item.html
   if (typeof item.src === 'string') {
-    return '<script type="text/javascript" src="' + item.src + '"></script>'
+    return '<script type="text/javascript" src="' + item.src + '"' +
+      (item.pjax === true ? ' data-pjax' : '') + '></script>'
   }
   if (typeof item.href === 'string') {
     return '<link href="' + item.href + '" rel="' + (item.rel || 'stylesheet') + '">'
@@ -187,6 +189,11 @@ function validateItem (item, index) {
   }
   if (item.enabled !== undefined && item.enabled !== null && typeof item.enabled !== 'boolean') {
     errors.push(label + ': enabled 必须是布尔值（true/false），当前为 ' + typeName(item.enabled))
+  }
+  if (item.pjax !== undefined && item.pjax !== null && typeof item.pjax !== 'boolean') {
+    errors.push(label + ': pjax 必须是布尔值（true/false），当前为 ' + typeName(item.pjax))
+  } else if (item.pjax === true && !hasSrc) {
+    errors.push(label + ': pjax: true 只对 src 形式有意义（html 内联 / href 样式表无法由 pjax.pug 重建）')
   }
   if (item.name === undefined || item.name === null || item.name === '') {
     warnings.push(label + ': 建议补 name（告警与排障定位用）')
@@ -363,6 +370,9 @@ function normalizeCompareBytes (str) {
   return String(str)
     .replace(/\s+type=(?:"text\/javascript"|'text\/javascript'|text\/javascript)(?=\s|>)/gi, '')
     .replace(/\s+type=(?:"text\/css"|'text\/css'|text\/css)(?=\s|>)/gi, '')
+    // R-277：cheerio 重序列化会把裸属性写成 data-pjax=""（posts-chart.js 只对 categories 页重排），
+    // 二者 DOM 语义等价 ⇒ 比对前统一成裸属性，避免把「写法差异」误判成注入缺失。
+    .replace(/\s+data-pjax=(""|'')/g, ' data-pjax')
     // 注入块在产物里可能被换行/缩进隔开（期望串是各块直接拼接），故先抹平「标签之间」的空白，
     // 再折叠标签内空白 —— 块之间若夹着别的内容，仍不会被判为命中。
     .replace(/>\s+</g, '><')

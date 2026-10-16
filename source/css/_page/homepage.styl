@@ -1,12 +1,6 @@
 #recent-posts
   & > .recent-post-item:not(:first-child)
     margin-top: 1rem
-  & > .recent-post-item:first-child
-    height: 20em
-    .recent-post-info
-      .content
-        -webkit-line-clamp: 6
-
   & > .recent-post-item
     display: flex
     flex-direction: row
@@ -138,6 +132,14 @@
         @extend .limit-more-line
         margin-top: .3rem
         -webkit-line-clamp: 3
+
+  //- R-278：加高卡片跟随置顶（post-ui.pug 的 .recent-post-item--pinned），不再固定第一篇。
+  //- 必须排在 & > .recent-post-item（height: 13em）之后：两者特异度相同（1 id + 1 class），靠源码顺序取胜。
+  & > .recent-post-item--pinned
+    height: 20em
+    .recent-post-info
+      .content
+        -webkit-line-clamp: 6
 
 +maxWidth768()
   #recent-posts

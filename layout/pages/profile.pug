@@ -128,5 +128,7 @@
 //- 且必须先于下方 profile.scripts 里的 sun/gantt/radar/fitness（它们会调用 echarts.init）。
 //- R-162 S6（round-038）：改由 inject.assets 表中 slot: charts 的条目派发（pages: profile/services）。
 !=inject_assets('charts')
+//- R-277（2026-10-16）：pjax 站内跳转只替换 #body-wrap，页面级 <script> 不会重新执行 ⇒
+//- 访客地图（visitorMap.js）留空白。带 data-pjax 的脚本由 pjax.pug 在 pjax:complete 后重建执行。
 for i in theme.profile.scripts
-  script(src=url_for(i))
+  script(src=url_for(i) data-pjax='')

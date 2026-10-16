@@ -1,6 +1,7 @@
 mixin postUI(posts)
   each article , index in page.posts.data
-    .recent-post-item
+    //- R-278（2026-10-16）：加高卡片只给置顶文章（sticky/top），不再无条件加高第一篇。
+    .recent-post-item(class=(is_home() && (article.sticky > 0 || article.top)) ? 'recent-post-item--pinned' : '')
       - let link = article.link || article.path
       - let title = article.title || _p('no_title')
       - let leftOrRight = index%2 == 0 ? 'left_radius' : 'right_radius'

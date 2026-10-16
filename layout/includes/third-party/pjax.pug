@@ -58,6 +58,9 @@ script.
       const newScript = document.createElement('script')
       const content = item.text || item.textContent || item.innerHTML || ""
       Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      // R-277：动态插入的 classic <script> 默认 async ⇒ 依赖顺序不保证（echarts 可能晚于 sun/gantt/radar/fitness）。
+      // 原元素未显式 async 时锁定 false，恢复「按 DOM 顺序执行」。
+      if (!item.hasAttribute('async')) newScript.async = false
       newScript.appendChild(document.createTextNode(content))
       item.parentNode.replaceChild(newScript, item)
     })
