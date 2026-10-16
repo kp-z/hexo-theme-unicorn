@@ -154,10 +154,13 @@ if mv_enable
         failed = true;
         stopTimers();
         wrap.classList.remove('mv-needs-click');
+        wrap.classList.add('mv-failed');
         if (cover) cover.style.display = 'none';
         if (fb) fb.style.display = 'flex';
-        // R-276：model-viewer 真正加载失败 ⇒ 自动回退到 Sketchfab 备用视图（无则维持原重试入口）
-        enableSfBackup();
+        // R-276：model-viewer 真正加载失败 ⇒ 自动回退到备用 Sketchfab 视图。
+        //   备用视图实现放在**下面独立的 script body**（window.alMvSfEnable 钩子），
+        //   本 body 只保留自己的 createElement('script') + type='module'（R-080 同 body 判定）。
+        if (window.alMvSfEnable) window.alMvSfEnable();
       }
       function loadScript(i) {
         // R-092：重试时不重复注入已注入过的源（module 重复执行会 customElements.define 冲突）。
@@ -214,21 +217,34 @@ if mv_enable
           if (!settled) return;
           settled = false;
           started = false;
+          wrap.classList.remove('mv-failed');
           if (fb) fb.style.display = 'none';
           if (cover) cover.style.display = '';
           needClick('loading');
           arm();
         });
       }
-      // R-276（2026-10-16 用户指示）：备用 Sketchfab 视图 —— 右下角隐蔽按钮切换；
-      // model-viewer 真正加载失败时自动回退。SDK 路径与模型 UID 来自 data-*，
-      // 脚本按需注入 ⇒ 首屏零境外请求，iframe 在切换前也没有 src。
+      window.addEventListener('error', function (e) {
+        if (!started || settled) return;
+        if (e && e.target && e.target.id === 'home-model') fail();
+      }, true);
+    })();
+  //- R-276（2026-10-16 用户指示）：备用 Sketchfab 视图 —— 右下角隐蔽按钮切换，加载失败自动回退。
+  //-   刻意放在**独立 script body**：加载器 body 必须只含自己的 createElement('script') + type='module'
+  //-   （R-080「同一 body」判定与 check-site 的 D10 变异都依赖这一点），classic SDK 注入不能混进去。
+  //-   iframe 无 src、SDK 按需注入 ⇒ 首屏零境外请求；失败状态经 #model_viewer_wrapper 的 .mv-failed 传递。
+  script.
+    (function () {
+      var wrap = document.getElementById('model_viewer_wrapper');
       var sfToggle = document.getElementById('model_viewer_sf_toggle');
       var sfBackup = document.getElementById('model_viewer_sf_backup');
+      var cover = document.getElementById('model_viewer_loading_cover');
+      var fb = document.getElementById('model_viewer_fallback');
+      if (!wrap || !sfToggle || !sfBackup) return;
       var sfOn = false, sfSdkLoaded = false;
       function loadSfSdk(done) {
         if (sfSdkLoaded || typeof window.Sketchfab === 'function') { sfSdkLoaded = true; done(); return; }
-        var url = sfToggle ? sfToggle.getAttribute('data-sf-js') : '';
+        var url = sfToggle.getAttribute('data-sf-js');
         if (!url) { done(); return; }
         var s = document.createElement('script');
         s.async = true;
@@ -238,7 +254,7 @@ if mv_enable
         document.head.appendChild(s);
       }
       function enableSfBackup() {
-        if (!sfToggle || !sfBackup || sfOn) return;
+        if (sfOn) return;
         sfOn = true;
         sfBackup.hidden = false;
         wrap.classList.add('mv-sf-on');
@@ -259,28 +275,24 @@ if mv_enable
         if (!sfOn) return;
         sfOn = false;
         wrap.classList.remove('mv-sf-on');
-        if (sfBackup) sfBackup.hidden = true;
-        // 回到 model-viewer：只有「真失败过」才继续给重试入口；加载成功的 ready 态直接恢复 3D，
-        // 未开始（idle/needs-click）恢复封面 —— 否则切换回来后会被失败浮层永久盖住。
-        if (failed) {
+        sfBackup.hidden = true;
+        // 回到 model-viewer：失败过（.mv-failed）继续给重试入口；已 ready 直接回到 3D；否则恢复封面。
+        if (wrap.classList.contains('mv-failed')) {
           if (fb) fb.style.display = 'flex';
           if (cover) cover.style.display = 'none';
-        } else if (settled) {
+        } else if (wrap.classList.contains('mv-ready')) {
           if (fb) fb.style.display = 'none';
           if (cover) cover.style.display = 'none';
         } else if (cover) {
           cover.style.display = '';
         }
       }
-      if (sfToggle) {
-        sfToggle.addEventListener('click', function () {
-          if (sfOn) { disableSfBackup(); } else { enableSfBackup(); }
-        });
-      }
-      window.addEventListener('error', function (e) {
-        if (!started || settled) return;
-        if (e && e.target && e.target.id === 'home-model') fail();
-      }, true);
+      sfToggle.addEventListener('click', function () {
+        if (sfOn) { disableSfBackup(); } else { enableSfBackup(); }
+      });
+      // 加载器的 fail() 通过该钩子触发自动回退（脚本顺序保证它在任何失败之前已定义）。
+      window.alMvSfEnable = enableSfBackup;
+      window.alMvSfDisable = disableSfBackup;
     })();
 else
   //- 配置关闭（theme.model_viewer.enable=false）时回退原始 Sketchfab iframe
