@@ -51,16 +51,11 @@ function pageTopImg (o) {
  */
 function pageHeaderBg (o) {
   const opts = o || {}
-  const page = opts.page || {}
   const theme = opts.theme || {}
   const urlFor = (opts && typeof opts.urlFor === 'function') ? opts.urlFor : function (p) { return p }
-  // 404 特例（产物中性补正）：404.pug:1-2 会先把共享 var top_img/bg_img 覆写成 error_404 背景，再 include
-  // header/index.pug；旧 header 因 page.top_img === false 走 else 分支、**不重算 bg_img**，于是把这个
-  // 背景原样带进隐藏 header。新实现改为在此显式复刻该语义（pageTopImg 对 404 仍返回 false，class 不变）。
-  if (page.type === '404') {
-    const bg = (theme.error_404 && theme.error_404.background) ? theme.error_404.background : theme.default_top_img
-    return "background-image: url('" + urlFor(bg) + "')"
-  }
+  // R-256（goal round 23 / S17）：**不再有任何 404 特例** —— 404 页与普通页同走标准分支
+  // （pageTopImg 对 404 仍返回 false ⇒ 本函数返回 ''，隐藏 header 不输出 style 属性）。
+  // 404 可见元素的背景由 layout/includes/404.pug 自己的局部 var（error_top_img / error_bg）负责。
   const topImg = pageTopImg(opts)
   if (!topImg || topImg === false) return ''
   return topImg.indexOf('/') !== -1 ? "background-image: url('" + urlFor(topImg) + "')" : 'background: ' + topImg
