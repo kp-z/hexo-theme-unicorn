@@ -17,6 +17,13 @@
 //- mode: click（默认）= 首屏只出封面，点击后才下载 3D；auto = 直连下自动加载
 - var mv_mode = mv.mode || 'click'
 - var mv_cover_style = mv_poster ? ("background-image:url('" + url_for(mv_poster) + "')") : null
+//- R-276（2026-10-16 用户指示）：保留原 else 分支的 Sketchfab iframe 作为「加载失败备用视图」——
+//-   默认完全隐藏（无 src ⇒ 首屏零境外请求），由右下角隐蔽小按钮手动切换；
+//-   model-viewer 真正加载失败（fail()）时自动回退到它；iframe 本体不删除。
+- var mv_sf_fallback = (mv.sketchfab_fallback === undefined) ? true : mv.sketchfab_fallback
+- var mv_sf_js = mv.sketchfab_js || ((theme.pages && theme.pages.sketchfab) || '')
+- var mv_sf_uid = mv.sketchfab_uid || '25e0e77ab56140be9fa6cb65cb4de96f'
+- var mv_sf_on = !!(mv_sf_fallback && mv_sf_js)
 
 if mv_enable
   .model-viewer-wrapper#model_viewer_wrapper(
@@ -68,6 +75,23 @@ if mv_enable
       )
         svg.mv-ico.mv-ico-retry(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
           path(d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z")
+    //- R-276：备用 Sketchfab 视图（hidden + display:none 双保险）。
+    //-   刻意不带 model-viewer-hint class ⇒ 不参与 R-225 的主入口契约检查；
+    //-   iframe 不带 src ⇒ 切换前不产生任何 sketchfab.com 请求。
+    if mv_sf_on
+      .model-viewer-sf-backup#model_viewer_sf_backup(hidden)
+        iframe#sketchfab-model(frameborder="0" sandbox="allow-scripts allow-same-origin" allow="autoplay; fullscreen; xr-spatial-tracking")
+        #sketchfab_loading_cover
+          .mv-cover(style=mv_cover_style role="img" aria-label="备用 3D 视图封面")
+      button.model-viewer-sf-toggle#model_viewer_sf_toggle(
+        type="button"
+        data-sf-js=url_for(mv_sf_js)
+        data-sf-uid=mv_sf_uid
+        aria-label="切换到备用 3D 视图"
+        title="切换到备用 3D 视图"
+      )
+        svg(viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false")
+          path(d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3zm0 2.3 5.5 3.1L12 11.5 6.5 8.4 12 5.3zM6 10.1l5 2.8v5.5l-5-2.8v-5.5zm7 8.3v-5.5l5-2.8v5.5l-5 2.8z")
   script.
     (function () {
       var wrap = document.getElementById('model_viewer_wrapper');
@@ -87,7 +111,7 @@ if mv_enable
       var mode = wrap.getAttribute('data-mode') || 'click';
       var optin = false;
       try { optin = localStorage.getItem('mv-optin') === '1'; } catch (err) { optin = false; }
-      var started = false, settled = false, timer = null, poll = null;
+      var started = false, settled = false, failed = false, timer = null, poll = null;
       var injected = {};
       // R-092：入口没有可见文案，状态只写 data-state；无障碍文案同步到 aria-label/title。
       var HINT_LABEL = {
@@ -127,10 +151,13 @@ if mv_enable
       function fail() {
         if (settled) return;
         settled = true;
+        failed = true;
         stopTimers();
         wrap.classList.remove('mv-needs-click');
         if (cover) cover.style.display = 'none';
         if (fb) fb.style.display = 'flex';
+        // R-276：model-viewer 真正加载失败 ⇒ 自动回退到 Sketchfab 备用视图（无则维持原重试入口）
+        enableSfBackup();
       }
       function loadScript(i) {
         // R-092：重试时不重复注入已注入过的源（module 重复执行会 customElements.define 冲突）。
@@ -191,6 +218,63 @@ if mv_enable
           if (cover) cover.style.display = '';
           needClick('loading');
           arm();
+        });
+      }
+      // R-276（2026-10-16 用户指示）：备用 Sketchfab 视图 —— 右下角隐蔽按钮切换；
+      // model-viewer 真正加载失败时自动回退。SDK 路径与模型 UID 来自 data-*，
+      // 脚本按需注入 ⇒ 首屏零境外请求，iframe 在切换前也没有 src。
+      var sfToggle = document.getElementById('model_viewer_sf_toggle');
+      var sfBackup = document.getElementById('model_viewer_sf_backup');
+      var sfOn = false, sfSdkLoaded = false;
+      function loadSfSdk(done) {
+        if (sfSdkLoaded || typeof window.Sketchfab === 'function') { sfSdkLoaded = true; done(); return; }
+        var url = sfToggle ? sfToggle.getAttribute('data-sf-js') : '';
+        if (!url) { done(); return; }
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = url;
+        s.onload = function () { sfSdkLoaded = true; done(); };
+        s.onerror = function () { done(); };
+        document.head.appendChild(s);
+      }
+      function enableSfBackup() {
+        if (!sfToggle || !sfBackup || sfOn) return;
+        sfOn = true;
+        sfBackup.hidden = false;
+        wrap.classList.add('mv-sf-on');
+        loadSfSdk(function () {
+          if (typeof window.alEnableSketchfabBackup === 'function') { window.alEnableSketchfabBackup(); return; }
+          // 兜底：carousel.js 尚未就绪时用最小接线（只启动 viewer，不做相机预设）
+          var frame = document.getElementById('sketchfab-model');
+          if (!frame || typeof window.Sketchfab !== 'function') return;
+          frame.style.height = (window.innerHeight * 1.2) + 'px';
+          var api = new window.Sketchfab(frame);
+          api.init(sfToggle.getAttribute('data-sf-uid'), {
+            success: function (viewer) { viewer.start(); },
+            error: function () { /* 备用视图也失败：保留封面 */ }
+          });
+        });
+      }
+      function disableSfBackup() {
+        if (!sfOn) return;
+        sfOn = false;
+        wrap.classList.remove('mv-sf-on');
+        if (sfBackup) sfBackup.hidden = true;
+        // 回到 model-viewer：只有「真失败过」才继续给重试入口；加载成功的 ready 态直接恢复 3D，
+        // 未开始（idle/needs-click）恢复封面 —— 否则切换回来后会被失败浮层永久盖住。
+        if (failed) {
+          if (fb) fb.style.display = 'flex';
+          if (cover) cover.style.display = 'none';
+        } else if (settled) {
+          if (fb) fb.style.display = 'none';
+          if (cover) cover.style.display = 'none';
+        } else if (cover) {
+          cover.style.display = '';
+        }
+      }
+      if (sfToggle) {
+        sfToggle.addEventListener('click', function () {
+          if (sfOn) { disableSfBackup(); } else { enableSfBackup(); }
         });
       }
       window.addEventListener('error', function (e) {

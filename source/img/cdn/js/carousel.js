@@ -99,7 +99,8 @@ if (!client) {
 // Alternatively, you can request a specific version.
 // var client = new Sketchfab( '1.10.1', iframe );
 
-client.init(uid, {
+function startSketchfab(instance) {
+    instance.init(uid, {
     // transparent: 1,
     preload: 1,
     // autostart: 0,
@@ -170,8 +171,20 @@ client.init(uid, {
         // });
 
 
-    },
-    error: function onError(callback) {
-        console.log(this.error);
-    }
-});
+        },
+        error: function onError(callback) {
+            console.log(this.error);
+        }
+    });
+}
+startSketchfab(client);
+
+// R-276（2026-10-16 用户指示）：首页 3D 备用视图（Sketchfab iframe）按需启用 ——
+// 由首页隐蔽开关 / model-viewer 加载失败自动回退调用（调用方负责先注入 viewer 脚本）。
+window.alEnableSketchfabBackup = function () {
+    var frame = document.getElementById('sketchfab-model');
+    if (!frame || typeof Sketchfab !== 'function') return false;
+    frame.style.height = (window.innerHeight * 1.2) + 'px';
+    startSketchfab(new Sketchfab(frame));
+    return true;
+};

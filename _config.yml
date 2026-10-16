@@ -1023,6 +1023,13 @@ model_viewer:
   mode: click
   # R-075：封面由模板用 CSS background-image 渲染（不参与主题懒加载），加载期/弱网期都以它兜底
   poster: /img/cdn/img/carousel/home_page_mask.png
+  # R-276（2026-10-16 用户指示）：保留 Sketchfab iframe 作为「3D 加载失败的备用视图」——
+  #   默认隐藏（无 src ⇒ 首屏零境外请求），由右下角隐蔽小按钮手动切换；model-viewer 真正加载失败时自动回退。
+  #   sketchfab_js 必须站内自托管（脚本按需注入），sketchfab_uid 为备用视图使用的 Sketchfab 模型 id。
+  #   关掉 sketchfab_fallback 即回到「只有 model-viewer + 重试入口」的旧行为。
+  sketchfab_fallback: true
+  sketchfab_js: /js/vendor/sketchfab/sketchfab-viewer-1.12.0.js
+  sketchfab_uid: 25e0e77ab56140be9fa6cb65cb4de96f
 
 # CDN
 # Don't modify the following settings unless you know how they work
