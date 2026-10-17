@@ -37,38 +37,90 @@ model-viewer
   justify-content: center
   pointer-events: none
 
-//- R-092（round-045 用户报障#1）：3D 入口图标化 —— 48×48 触控目标、按钮内只有内联 SVG，
-//-   没有任何可见文案；状态由 [data-state] 切换图标（idle/slow → 立方体，loading → 圆环，retry → 重试箭头）。
+//- R-288（2026-10-17 用户「首页的 3D 按钮都集中在下方的按钮，可以切换不同的模型」）：
+//-   底部「3D 控制坞」——把加载入口（图标按钮）与模型切换 pill 收成一行、居中悬浮。
 //-   z-index: 3 必须压过 #carousel .site-info：后者 fixed 定位且 DOM 在 wrapper 之后（z-index auto），
 //-   修复前它把入口整个吞掉，Lead 用 CDP elementFromPoint(中心) 实测到 DIV#.site-info。
-.model-viewer-hint
-  display: none
+.mv-dock
   position: absolute
   left: 50%
-  bottom: 32px
+  bottom: 24px
   z-index: 3
   transform: translateX(-50%)
-  width: 48px
-  height: 48px
-  min-width: 48px
-  min-height: 48px
+  display: flex
+  align-items: center
+  gap: 8px
+  max-width: calc(100% - 24px)
+  padding: 6px 8px
+  border: 1px solid rgba(255, 255, 255, .16)
+  border-radius: 999px
+  background-color: rgba(16, 17, 22, .55)
+  -webkit-backdrop-filter: blur(8px)
+  backdrop-filter: blur(8px)
+  box-shadow: 0 4px 18px rgba(0, 0, 0, .28)
+  +maxWidth600()
+    //- 移动端：抬到 .site-info 文案块（实测高约 257px，占底部 ~30%）之上，且避开右侧 #carousel-indictors
+    bottom: 42%
+    gap: 6px
+    padding: 5px 6px
+
+//- 模型 pill：本地 GLB / 备用 Sketchfab 视图共用；按下态（aria-pressed="true"）= 当前展示的模型。
+.mv-model-btn
+  display: flex
+  align-items: center
+  justify-content: center
+  height: 32px
+  padding: 0 12px
+  border: 0
+  border-radius: 999px
+  background-color: transparent
+  color: rgba(255, 255, 255, .74)
+  font-size: 12px
+  line-height: 1
+  letter-spacing: .02em
+  white-space: nowrap
+  cursor: pointer
+  transition: background-color .2s ease, color .2s ease
+  -webkit-tap-highlight-color: transparent
+  &:hover
+    color: #fff
+    background-color: rgba(255, 255, 255, .14)
+  &:focus-visible
+    outline: 2px solid #fff
+    outline-offset: 2px
+  &[aria-pressed="true"]
+    color: #15161a
+    background-color: rgba(255, 255, 255, .92)
+
+//- R-092（round-045 用户报障#1）：3D 入口图标化 —— 按钮内只有内联 SVG，没有任何可见中英文文案；
+//-   状态只在 data-state 上表达（idle|slow|loading|retry|ready），无障碍文案放在 aria-label/title。
+//-   R-288：位置由控制坞决定（position: static），尺寸收到 38×38，配色随坞。
+.model-viewer-hint
+  display: none
+  position: static
+  transform: none
+  width: 38px
+  height: 38px
+  min-width: 38px
+  min-height: 38px
   padding: 0
   border: 0
   border-radius: 999px
-  background-color: rgba(0, 0, 0, .55)
+  background-color: rgba(255, 255, 255, .12)
   color: #fff
   cursor: pointer
   align-items: center
   justify-content: center
   -webkit-tap-highlight-color: transparent
-  box-shadow: 0 2px 10px rgba(0, 0, 0, .25)
+  &:hover
+    background-color: rgba(255, 255, 255, .2)
   &:focus-visible
     outline: 2px solid #fff
     outline-offset: 2px
   svg
     display: none
-    width: 26px
-    height: 26px
+    width: 22px
+    height: 22px
     fill: currentColor
   &[data-state=idle] svg.mv-ico-idle,
   &[data-state=slow] svg.mv-ico-idle
@@ -78,9 +130,6 @@ model-viewer
     animation: mv-ico-spin 1s linear infinite
   &[data-state=retry] svg.mv-ico-retry
     display: block
-  +maxWidth600()
-    //- 移动端：抬到 .site-info 文案块（实测高约 257px，占底部 ~30%）之上，且避开右侧 #carousel-indictors
-    bottom: 42%
 
 @keyframes mv-ico-spin
   to
@@ -153,43 +202,6 @@ model-viewer
   .model-viewer-fallback
     display: none
 
-.model-viewer-sf-toggle
-  display: none
-  position: absolute
-  right: 18px
-  bottom: 18px
-  z-index: 4
-  width: 28px
-  height: 28px
-  min-width: 28px
-  min-height: 28px
-  padding: 0
-  border: 0
-  border-radius: 999px
-  background-color: rgba(0, 0, 0, .28)
-  color: #fff
-  opacity: .35
-  cursor: pointer
-  align-items: center
-  justify-content: center
-  transition: opacity .25s ease, background-color .25s ease
-  &:hover,
-  &:focus-visible
-    opacity: .9
-    background-color: rgba(0, 0, 0, .55)
-  &:focus-visible
-    outline: 2px solid #fff
-    outline-offset: 2px
-  svg
-    display: block
-    width: 14px
-    height: 14px
-    fill: currentColor
-  +maxWidth600()
-    right: 12px
-    bottom: 42%
-
-#model_viewer_wrapper.mv-ready .model-viewer-sf-toggle,
-#model_viewer_wrapper.mv-needs-click .model-viewer-sf-toggle,
-#model_viewer_wrapper.mv-sf-on .model-viewer-sf-toggle
-  display: flex
+//- R-288：备用视图按钮现在是控制坞里的模型 pill —— 尺寸/配色/按下态全部由 .mv-model-btn 提供，
+//-   因此不再有 absolute 定位与 28×28 低透明度小按钮；id/class/data-sf-js/data-sf-uid 契约保持不变
+//-   （check-site R-276 依赖），#model_viewer_wrapper.mv-sf-on 的隐藏规则也保持不变。

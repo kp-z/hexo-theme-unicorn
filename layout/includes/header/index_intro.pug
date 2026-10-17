@@ -24,6 +24,14 @@
 - var mv_sf_js = mv.sketchfab_js || ((theme.pages && theme.pages.sketchfab) || '')
 - var mv_sf_uid = mv.sketchfab_uid || '25e0e77ab56140be9fa6cb65cb4de96f'
 - var mv_sf_on = !!(mv_sf_fallback && mv_sf_js)
+//- R-288（2026-10-17 用户：「首页的 3D 按钮都集中在下方的按钮，可以切换不同的模型」）：
+//-   底部「3D 控制坞」把入口与模型切换集中成一排 pill；模型清单由 theme.model_viewer.models 驱动。
+//-   缺省 = 当前 home.glb 一项（本地 GLB）+ 备用 Sketchfab 视图一项（kind: sketchfab）。
+//-   新增本地 GLB 模型只加配置项（src 相对站点根，animation 缺省 Idle），无需改模板/脚本。
+- var mv_models = (mv.models && mv.models.length) ? mv.models : [{ label: '机器人', src: mv_src, animation: 'Idle' }]
+- var mv_glb_models = mv_models.filter(function (m) { return !m.kind || m.kind === 'glb' })
+- var mv_sf_models = mv_models.filter(function (m) { return m.kind === 'sketchfab' })
+- var mv_sf_label = (mv_sf_models[0] && mv_sf_models[0].label) || '原创模型'
 
 if mv_enable
   .model-viewer-wrapper#model_viewer_wrapper(
@@ -48,22 +56,46 @@ if mv_enable
       poster=(mv_poster ? url_for(mv_poster) : null)
     )
     #model_viewer_loading_cover.mv-cover(style=mv_cover_style role="img" aria-label="首页 3D 模型封面")
-    //- R-092（round-045 用户报障#1）：3D 入口图标化 —— 按钮内只有内联 SVG，没有任何可见中英文文案；
-    //-   状态只在 data-state 上表达（idle|slow|loading|retry|ready），无障碍文案放在 aria-label/title。
-    //-   入口必须是最上层命中目标：.model-viewer-hint 有 z-index:3，且 #carousel .site-info 改 pointer-events:none
+    //- R-288（2026-10-17 用户）：入口与模型切换全部收进底部「3D 控制坞」.mv-dock：
+    //-   ① 加载入口 #model_viewer_hint（原 R-092 契约保持不变：图标按钮、无可见文案、data-state 表达状态）；
+    //-   ② 本地 GLB 模型 pill（配置 model_viewer.models 里非 sketchfab 项，默认第一项）；
+    //-   ③ 备用 Sketchfab 视图 pill（复用 R-276 的 #model_viewer_sf_toggle，保留其 id/class/data-* 契约）。
+    //-   入口必须是最上层命中目标：.mv-dock 有 z-index:3，且 #carousel .site-info 改 pointer-events:none
     //-   （_revision/carousel.styl），否则 fixed 定位的 .site-info 会吞掉点击（Lead CDP 实测）。
-    button.model-viewer-hint#model_viewer_hint(
-      type="button"
-      data-state="idle"
-      aria-label="加载 3D 场景"
-      title="加载 3D 场景"
-    )
-      svg.mv-ico.mv-ico-idle(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
-        path(d="M12 2 3 7v10l9 5 9-5V7l-9-5zm0 2.3 6.5 3.6L12 11.5 5.5 7.9l6.5-3.6zM5 9.6l6 3.3v6.5l-6-3.3V9.6zm8 9.8v-6.5l6-3.3v6.5l-6 3.3z")
-      svg.mv-ico.mv-ico-loading(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
-        circle(cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="15 42" stroke-linecap="round")
-      svg.mv-ico.mv-ico-retry(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
-        path(d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z")
+    .mv-dock#model_viewer_dock
+      button.model-viewer-hint#model_viewer_hint(
+        type="button"
+        data-state="idle"
+        aria-label="加载 3D 场景"
+        title="加载 3D 场景"
+      )
+        svg.mv-ico.mv-ico-idle(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
+          path(d="M12 2 3 7v10l9 5 9-5V7l-9-5zm0 2.3 6.5 3.6L12 11.5 5.5 7.9l6.5-3.6zM5 9.6l6 3.3v6.5l-6-3.3V9.6zm8 9.8v-6.5l6-3.3v6.5l-6 3.3z")
+        svg.mv-ico.mv-ico-loading(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
+          circle(cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="15 42" stroke-linecap="round")
+        svg.mv-ico.mv-ico-retry(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
+          path(d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z")
+      each m, mi in mv_glb_models
+        button.mv-model-btn(
+          type="button"
+          data-mv-model=String(mi)
+          data-mv-src=url_for(m.src || mv_src)
+          data-mv-animation=(m.animation || 'Idle')
+          aria-pressed=(mi === 0 ? 'true' : 'false')
+          aria-label=((m.label || '模型') + '（切换 3D 模型）')
+          title=((m.label || '模型') + '（切换 3D 模型）')
+        )= (m.label || '模型')
+      //- R-288：备用 Sketchfab 视图 pill —— 与本地模型 pill 同排，点击在「本地 GLB ↔ 3D 备用视图」间切换；
+      //-   保留 R-276 的 id/class/data-sf-js/data-sf-uid 契约（check-site 依赖），只是位置从右下角挪进控制坞。
+      if mv_sf_on
+        button.model-viewer-sf-toggle.mv-model-btn#model_viewer_sf_toggle(
+          type="button"
+          data-sf-js=url_for(mv_sf_js)
+          data-sf-uid=mv_sf_uid
+          aria-pressed="false"
+          aria-label=("切换到" + mv_sf_label + "（备用 3D 视图）")
+          title=("切换到" + mv_sf_label + "（备用 3D 视图）")
+        )= mv_sf_label
     .model-viewer-fallback#model_viewer_fallback
       if mv_poster
         .mv-cover.mv-cover-fallback(style=mv_cover_style role="img" aria-label="首页 3D 模型封面")
@@ -83,15 +115,7 @@ if mv_enable
         iframe#sketchfab-model(frameborder="0" sandbox="allow-scripts allow-same-origin" allow="autoplay; fullscreen; xr-spatial-tracking")
         #sketchfab_loading_cover
           .mv-cover(style=mv_cover_style role="img" aria-label="备用 3D 视图封面")
-      button.model-viewer-sf-toggle#model_viewer_sf_toggle(
-        type="button"
-        data-sf-js=url_for(mv_sf_js)
-        data-sf-uid=mv_sf_uid
-        aria-label="切换到备用 3D 视图"
-        title="切换到备用 3D 视图"
-      )
-        svg(viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false")
-          path(d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3zm0 2.3 5.5 3.1L12 11.5 6.5 8.4 12 5.3zM6 10.1l5 2.8v5.5l-5-2.8v-5.5zm7 8.3v-5.5l5-2.8v5.5l-5 2.8z")
+
   script.
     (function () {
       var wrap = document.getElementById('model_viewer_wrapper');
@@ -209,6 +233,50 @@ if mv_enable
         try { localStorage.setItem('mv-optin', '1'); } catch (err) { /* ignore */ }
         arm();
       }
+      // R-288：控制坞里的本地模型 pill —— 点 pill 即切模型（优先复用已加载的 viewer，不重复注入脚本）。
+      var modelBtns = [];
+      (function () {
+        var dock = document.getElementById('model_viewer_dock');
+        if (!dock) return;
+        var nodes = dock.querySelectorAll('[data-mv-src]');
+        for (var n = 0; n < nodes.length; n++) modelBtns.push(nodes[n]);
+      })();
+      function markActiveModel(btn) {
+        for (var n = 0; n < modelBtns.length; n++) {
+          modelBtns[n].setAttribute('aria-pressed', modelBtns[n] === btn ? 'true' : 'false');
+        }
+        window.__mvActiveModel = btn || null;
+      }
+      function selectModel(btn) {
+        if (!btn) return;
+        var src = btn.getAttribute('data-mv-src');
+        var anim = btn.getAttribute('data-mv-animation') || '';
+        markActiveModel(btn);
+        // 从备用 Sketchfab 视图切回本地 GLB（disable 会按 .mv-ready/.mv-failed 恢复封面与状态）
+        if (window.alMvSfDisable) window.alMvSfDisable();
+        if (!src) return;
+        var changed = el.getAttribute('src') !== src;
+        if (anim) el.setAttribute('animation-name', anim);
+        if (changed) {
+          el.setAttribute('src', src);
+          // 换模型等同一次全新的加载：复位状态机后重新 arm()，失败态也要能自愈
+          settled = false;
+          started = false;
+          failed = false;
+          wrap.classList.remove('mv-failed');
+          if (fb) fb.style.display = 'none';
+          if (cover) cover.style.display = '';
+        }
+        if (el.loaded) { ready(); return; }
+        optIn();
+        arm();
+      }
+      for (var mb = 0; mb < modelBtns.length; mb++) {
+        (function (btn) {
+          btn.addEventListener('click', function () { selectModel(btn); });
+        })(modelBtns[mb]);
+      }
+
       if (cover) cover.addEventListener('click', optIn);
       // button 原生 Enter/Space 也会触发 click，键盘可达。
       if (hint) hint.addEventListener('click', optIn);
@@ -253,11 +321,23 @@ if mv_enable
         s.onerror = function () { done(); };
         document.head.appendChild(s);
       }
+      // R-288：控制坞状态同步 —— 备用视图 pill 的 aria-pressed 与本地模型 pill 互斥。
+      function markDock(active) {
+        sfToggle.setAttribute('aria-pressed', active === 'sf' ? 'true' : 'false');
+        var dock = document.getElementById('model_viewer_dock');
+        if (!dock) return;
+        var nodes = dock.querySelectorAll('[data-mv-src]');
+        for (var n = 0; n < nodes.length; n++) {
+          var on = (active === 'glb') && (window.__mvActiveModel ? nodes[n] === window.__mvActiveModel : n === 0);
+          nodes[n].setAttribute('aria-pressed', on ? 'true' : 'false');
+        }
+      }
       function enableSfBackup() {
         if (sfOn) return;
         sfOn = true;
         sfBackup.hidden = false;
         wrap.classList.add('mv-sf-on');
+        markDock('sf');
         loadSfSdk(function () {
           if (typeof window.alEnableSketchfabBackup === 'function') { window.alEnableSketchfabBackup(); return; }
           // 兜底：carousel.js 尚未就绪时用最小接线（只启动 viewer，不做相机预设）
@@ -276,6 +356,7 @@ if mv_enable
         sfOn = false;
         wrap.classList.remove('mv-sf-on');
         sfBackup.hidden = true;
+        markDock('glb');
         // 回到 model-viewer：失败过（.mv-failed）继续给重试入口；已 ready 直接回到 3D；否则恢复封面。
         if (wrap.classList.contains('mv-failed')) {
           if (fb) fb.style.display = 'flex';
