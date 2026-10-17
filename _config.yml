@@ -948,6 +948,17 @@ profile:
   personility_title: ''
   desktop_img: /img/cdn/img/3dIcon/objects/Desktop.png
   social: {}
+  # R-281（2026-10-17）：profile / services 页访客地图（#visitorMap）的 provider 配置。
+  # 用户 2026-10-16 选定 MapMyVisitors globe widget（RevolverMaps 已停运 → R-268 FlagCounter 冷备被替换）。
+  # profile.pug 把下列值输出成容器 data-mmv-* 属性；注入 / 同 id 去重 / 看门狗 / 降级在 source/js/visitorMap.js。
+  # mmv_d 是 widget 公共 hash（本就会出现在页面 HTML 里），不是凭据。
+  # enable: false 或 mmv_d 为空 ⇒ 容器留空、不注入、不降级；provider 目前只实现 mapmyvisitors（其它值按关闭处理）。
+  visitor_map:
+    enable: true
+    provider: mapmyvisitors
+    mmv_d: "-HzinxQzFQyE0bT4O481-wGUr2CPATtYQjv5-LykoqY"
+    mmv_script: https://mapmyvisitors.com/globe.js
+    mmv_timeout: 8000
 
   habitica: https://habitica.com/
   habitica_info: ''
@@ -956,7 +967,7 @@ profile:
     - /js/json/radar.js   # 已本地化（原 COS 版本与主题本地副本逐字节一致：3694 B / sha256 5cb28177…）
     - /js/gantt.js   # 已本地化（原 COS 版本数据结构错误、时间显示不准）
     - /js/json/fitness.js   # 已本地化（13137 B；与 COS 原版唯一差异 = :60 的调试 console.log，本版为启用态，保留本地版本）
-    - /js/visitorMap.js   # 已本地化：原 COS 版是 revolvermaps 注入脚本、含境外域，故落站点层 source/js/visitorMap.js（234 B / sha256 859984d1…），避免主题引入境外域
+    - /js/visitorMap.js   # 已本地化：R-281 重写为 MapMyVisitors globe 注入 + 同 id 去重 + 看门狗/降级，落站点层 source/js/visitorMap.js（8023 B / sha256 203e6b75…），避免主题引入境外域
     - /js/githubcalendar.js   # 已本地化（原 COS 版本依赖已失效的 Vercel API）
     
 

@@ -436,15 +436,24 @@ img
         -webkit-filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
         filter: drop-shadow(3px 18px 6px rgba(0,0,0,.3))
     .vistor-map
-        width: 7.5rem
+        // R-281（2026-10-17）：MapMyVisitors globe 按容器宽度渲染（实测 420px 容器 ⇒ .mmvst_outer 420×453.5px），
+        // 旧实现（RevolverMaps / FlagCounter）是固定 7.5rem 宽的一张图。改为 100% 宽 + 1:1.08 占位，
+        // 先占住高度避免 globe 加载完成前后跳变（CLS）；.mmvst_outer 再兜一层 max-width 禁止横向溢出。
+        width: 100%
+        max-width: 100%
         position: relative
         margin: auto
+        aspect-ratio: 1 / 1.08
+        min-height: 7.5rem
 
         // +minWidth2000()
         //     width: 9rem
 
         +maxWidth768()
             width: auto
+
+        .mmvst_outer
+            max-width: 100%
     .interests-box
         width: 100%;
         height: 100%;

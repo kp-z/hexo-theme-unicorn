@@ -67,7 +67,15 @@
     .weight-quarter.left.card-style.frosted-gross
       img.desktop(src=url_for(theme.profile.desktop_img))
     .weight-quarter.card-style.frosted-gross
-      #visitorMap.vistor-map
+      //- R-281（2026-10-17）：访客地图 provider 改为 MapMyVisitors globe widget（用户选定）。
+      //- 沿革：R-234/R-147 RevolverMaps（2024-11 停运）→ R-268 FlagCounter Flag Map（已被替换）。
+      //- 本模板只输出容器 + data 契约；注入 / 同 id 去重 / 看门狗 / 降级全在 source/js/visitorMap.js。
+      //- enable 为 false、provider 不是 mapmyvisitors、或 mmv_d 为空 ⇒ 容器留空（前端不注入、不降级）。
+      - var __vm = theme.profile.visitor_map || {}
+      if __vm.enable && __vm.provider === 'mapmyvisitors' && __vm.mmv_d
+        #visitorMap.vistor-map(data-mmv-d=__vm.mmv_d data-mmv-script=__vm.mmv_script data-mmv-timeout=__vm.mmv_timeout)
+      else
+        #visitorMap.vistor-map
 #record.gallery-group-main
   .dashboard-title
     a LIFE ADVENTURE  
