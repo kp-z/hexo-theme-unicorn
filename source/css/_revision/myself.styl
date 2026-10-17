@@ -442,12 +442,14 @@ img
         // R-288（2026-10-17，用户「地图要和 card 有 padding」）：vendor 的 .mmvst_outer 高度 ≈ 1.0883×宽
         // （width=W，height=3W/20+(W-W*15/200+2)），而卡片 .weight-quarter 内容区只有 170×150
         // ⇒ 旧写法 width:100% 时 outer 168×183，垂直溢出卡片约 32px、左右也没留白。
-        // 注意：本站 html 根字号是 20px（_global/index.styl:33 font-size:20px）⇒ 8.5rem=170px 无效，
-        // 必须用 px：136px ⇒ outer 136×148，落在内容区 170×150 内、四周留白 17/2px，margin 居中。
+        // 注意：本站 html 根字号是 20px（_global/index.styl:33 font-size:20px）⇒ 8.5rem=170px 无效，必须用 px。
+        // R-289（2026-10-18，用户「3D 访客地图离 card 上边界太近」）：R-288 的 136px ⇒ outer 136×148，
+        // 把卡片内容区 170×148 顶满（实测 gapTop 仅 1px、视觉贴住卡片上沿）。缩到 122px：outer 122×133，
+        // 内容区余 15px ⇒ 上 margin 7px / 下 8px，左右各约 24px，四周都有留白。
         width: 100%
-        max-width: 136px
+        max-width: 122px
         position: relative
-        margin: 0 auto
+        margin: 7px auto 8px
         aspect-ratio: 1 / 1
 
         .mmvst_outer
