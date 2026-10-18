@@ -1,0 +1,17 @@
+// R-295（2026-10-18，用户 m13347「侧边栏不同的卡片的 padding 都不一致，有点难看需要优雅」）
+// 侧边栏卡片的内边距 / 左对齐基线统一：
+// ① 内边距：_layout/aside.styl 里首个 .card-widget 的 padding:0 已收窄为只作用于全出血卡
+//    （作者卡 .card-info / 公告卡 .card-announcement），其余内容卡统一 1rem 1.2rem；
+// ② 左基线：无封面（cover.aside_enable=false 或文章无封面）时 .aside-list-item .content
+//    的 10px 左补偿没有意义，会让「最新文章」标题比「标签」首字右移 ⇒ 归零，对齐 24px 内边距；
+// ③ 标签云锚点自带 .2rem 左右内边距，用等量负外边距抵消，使首个标签与标题左基线对齐。
+// 仅影响侧边栏；不改结构 / DOM / 颜色，纯盒模型对齐。
+
+#aside-content
+  .aside-list-item.no-cover
+    .content
+      padding-left: 0
+
+  .card-tag-cloud
+    margin-left: -.2rem
+    margin-right: -.2rem

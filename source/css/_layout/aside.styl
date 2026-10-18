@@ -14,6 +14,13 @@
     margin-top: 0
     padding: 0
 
+    // R-295（2026-10-18，用户 m13347「侧边栏不同的卡片的 padding 都不一致」）：
+    // 首个卡片去掉内边距只对「全出血」卡（作者卡 / 公告卡）成立；
+    // 内容卡（最新文章 / 标签等）必须沿用 .card-widget 的 1rem 1.2rem，
+    // 否则首个卡片会贴边、与下方卡片的内边距不一致。
+    &:not(.card-info):not(.card-announcement)
+      padding: 1rem 1.2rem
+
     +maxWidth900()
       margin-top: 1rem
 
