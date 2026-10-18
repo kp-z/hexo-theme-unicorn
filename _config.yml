@@ -851,14 +851,19 @@ lazyload:
 # PWA
 # See https://github.com/JLHwung/hexo-offline
 # ---------------
+# R-297（round-070）：三个尺寸各用各的资产，不再让 apple-touch-icon / 两个 favicon / mask-icon
+# 共指同一张 152×152 PNG（首屏同 URL 只该请求一次，但尺寸不符会被浏览器按需重取/缩放）。
+#   - apple_touch_icon: 180×180（iOS 主屏，与 pwa.pug 的 sizes="180x180" 一致）
+#   - favicon_32_32 / favicon_16_16: 精确尺寸（桌面标签页按 sizes 选择，避免 152 缩放）
+#   - mask_icon: 删除——mask-icon 只接受单色 SVG，给 PNG 既无效又白付一次请求
+# 资产均由主题 source/img/pwa/icon-512x512.png 缩放生成，16/32/180 合计约 8.7 KB。
 pwa:
   enable: true
   manifest: /manifest.json
   theme_color: "#000"
-  apple_touch_icon: /img/pwa/icon-152x152.png
-  favicon_32_32: /img/pwa/icon-152x152.png
-  favicon_16_16: /img/pwa/icon-152x152.png
-  mask_icon: /img/pwa/icon-152x152.png
+  apple_touch_icon: /img/pwa/icon-180x180.png
+  favicon_32_32: /img/pwa/icon-32x32.png
+  favicon_16_16: /img/pwa/icon-16x16.png
 
 # Open graph meta tags
 # https://developers.facebook.com/docs/sharing/webmasters/

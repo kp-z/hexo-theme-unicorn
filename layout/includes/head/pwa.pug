@@ -7,5 +7,5 @@ if(theme.pwa.favicon_32_32)
   link(rel="icon" type="image/png" sizes="32x32" href=url_for(theme.pwa.favicon_32_32))
 if(theme.pwa.favicon_16_16)
   link(rel="icon" type="image/png" sizes="16x16" href=url_for(theme.pwa.favicon_16_16))
-if(theme.pwa.mask_icon)
-  link(rel="mask-icon" href=url_for(theme.pwa.mask_icon) color="#5bbad5")
+//- R-297（round-070）：mask-icon 只接受单色 SVG，原先指向 152×152 PNG 既无效又白付一次请求；
+//- 已连同 _config.yml 的 pwa.mask_icon 一起删除，首屏图标请求因此从 4 个降为 3 个。
