@@ -455,29 +455,38 @@ img
         .mmvst_outer
             max-width: 100%
 
-        // R-284（2026-10-17）：访客地图配色（用户选定淡黄大陆 + 浅蓝海洋；CSS 原型见 /tmp/mmvproto/fx5.css）。
+        // R-291（2026-10-18，用户「访客地图的配色和样式你需要重新设计下」）：整体从浅色「day earth」
+        // 重做为深色「night earth」——深海蓝球体 + 暖金大陆 + 暖金城市点，与深色玻璃卡片同一套语言。
+        // CSS 原型与截图对比见 /tmp/r291-variants.json、/tmp/r291-card-v1c_gold_final.png（本地 8124 服注入样式实测）。
         // vendor globe.js 把 <style> 注入 body，文档序晚于 head 里的主题 CSS，同特异性会覆盖主题规则，
         // 因此每条覆盖都加 .vistor-map 前缀（本文件里它嵌在 .gallery-group-main 下，编译后实际特异性 0,3,0）
         // 压过 vendor 的 0,1,0，不使用 !important。
         // .mmvst_map 的 background 即海洋（径向渐变，中心偏上更亮）；.mmvst_map_f/.mmvst_map_b 是 vendor 陆地贴图，
-        // hue-rotate(-150deg) 把 vendor 的青蓝陆地 #3dc0ff 旋成淡黄，再 saturate(.55) 降饱和、brightness(1.3) 提亮、
-        // contrast(1.02) 微增对比；.mmvst_ref_top 是地图顶部高光，原不透明度会把陆地洗白，R-284 压到 .15，
-        // R-288（用户「不透明度改成 10%」）再压到 .10。
-        // 城市点同步改为蓝色系，hover 用浅蓝。
+        // vendor 原色是青蓝 #3dc0ff，用 hue-rotate(-161deg) 旋到暖色 + saturate(.42)/brightness(.85) 压成哑光沙金；
+        // vendor 的背面半球用 .clstr_b{opacity:.2} 淡化（同一张 SVG 里），低饱和让背面落成冷灰蓝而不是橄榄绿。
+        // .mmvst_ref_top 是地图顶部高光，压到 .045 避免把深色球体洗灰。
+        // R-291 同时修掉两处 vendor 方形图层：.mmvst_ref_top / .mmvst_inner_shadow 是 122×122 的方形 SVG
+        // （border-radius 0 + overflow visible），深色海洋下会在圆球四角露出方形暗块 ⇒ 都裁成 50% 圆。
         .mmvst_map
-            background: radial-gradient(circle at 50% 40%, #E3F0FB 0%, #BFD9F1 55%, #9FC4E5 100%)
+            background: radial-gradient(circle at 50% 34%, #1b3047 0%, #0f2134 52%, #07121d 100%)
+            // 球体描边 + 冷色环境光 + 落影，让地图像嵌在卡片里的一颗夜地球
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, .08), 0 0 30px rgba(120, 185, 255, .16), 0 10px 26px rgba(0, 0, 0, .5)
         .mmvst_map_f, .mmvst_map_b
-            filter: hue-rotate(-150deg) saturate(.55) brightness(1.3) contrast(1.02)
+            filter: hue-rotate(-161deg) saturate(.42) brightness(.85) contrast(1.05)
+        .mmvst_ref_top, .mmvst_inner_shadow
+            border-radius: 50%
         .mmvst_ref_top
-            opacity: .1
+            opacity: .045
+        .mmvst_inner_shadow
+            box-shadow: inset 0 0 26px 6px rgba(0, 0, 0, .55)
         .clstr_new
-            fill: #4A90D9
+            fill: #FFCF7A
         .clstr_old
-            fill: #2C5F9E
+            fill: #D59A4A
         .mmvstarker
-            stroke: #25507F
+            stroke: #E6B96E
             &:hover
-                fill: #7FB6E8
+                fill: #FFE3A6
     .interests-box
         width: 100%;
         height: 100%;

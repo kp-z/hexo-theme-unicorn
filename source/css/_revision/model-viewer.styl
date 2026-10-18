@@ -95,8 +95,10 @@ model-viewer
 //- R-092（round-045 用户报障#1）：3D 入口图标化 —— 按钮内只有内联 SVG，没有任何可见中英文文案；
 //-   状态只在 data-state 上表达（idle|slow|loading|retry|ready），无障碍文案放在 aria-label/title。
 //-   R-288：位置由控制坞决定（position: static），尺寸收到 38×38，配色随坞。
+//- R-290（2026-10-18 用户 m11298）：控制坞只剩这一个图标入口 —— 必须常驻可见（原来只在
+//-   mv-needs-click 时 display:flex，pill 移除后就再也没有切回备用视图的入口了）。
 .model-viewer-hint
-  display: none
+  display: flex
   position: static
   transform: none
   width: 38px
@@ -123,6 +125,7 @@ model-viewer
     height: 22px
     fill: currentColor
   &[data-state=idle] svg.mv-ico-idle,
+  &[data-state=ready] svg.mv-ico-idle,
   &[data-state=slow] svg.mv-ico-idle
     display: block
   &[data-state=loading] svg.mv-ico-loading
@@ -197,8 +200,10 @@ model-viewer
     display: none
   #model_viewer_loading_cover
     display: none
+  //- R-290：切到备用 iframe 视图后入口必须继续可见（否则无法切回本地模型）；
+  //-   文案由脚本改成「切换回本地 3D 模型」。
   .model-viewer-hint
-    display: none
+    display: flex
   .model-viewer-fallback
     display: none
 

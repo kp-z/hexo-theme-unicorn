@@ -25,13 +25,13 @@
 - var mv_sf_uid = mv.sketchfab_uid || '25e0e77ab56140be9fa6cb65cb4de96f'
 - var mv_sf_on = !!(mv_sf_fallback && mv_sf_js)
 //- R-288（2026-10-17 用户：「首页的 3D 按钮都集中在下方的按钮，可以切换不同的模型」）：
-//-   底部「3D 控制坞」把入口与模型切换集中成一排 pill；模型清单由 theme.model_viewer.models 驱动。
-//-   缺省 = 当前 home.glb 一项（本地 GLB）+ 备用 Sketchfab 视图一项（kind: sketchfab）。
-//-   新增本地 GLB 模型只加配置项（src 相对站点根，animation 缺省 Idle），无需改模板/脚本。
+//-   模型清单仍由 theme.model_viewer.models 驱动；R-290 起可见 UI 只留一个图标按钮，
+//-   本地 GLB 取清单里的第一项（缺省 = home.glb），备用视图仍取 sketchfab 项。
 - var mv_models = (mv.models && mv.models.length) ? mv.models : [{ label: '机器人', src: mv_src, animation: 'Idle' }]
 - var mv_glb_models = mv_models.filter(function (m) { return !m.kind || m.kind === 'glb' })
 - var mv_sf_models = mv_models.filter(function (m) { return m.kind === 'sketchfab' })
 - var mv_sf_label = (mv_sf_models[0] && mv_sf_models[0].label) || '原创模型'
+- var mv_local = mv_glb_models[0] || { src: mv_src, animation: 'Idle' }
 
 if mv_enable
   .model-viewer-wrapper#model_viewer_wrapper(
@@ -44,22 +44,23 @@ if mv_enable
     //-   3,237 tris，14 段内置动画）。首段动画是 Dance ⇒ 显式指定 Idle + autoplay，
     //-   避免首页一加载就跳舞。（pug 注释不能写在属性列表括号内，只能放在标签之前。）
     model-viewer#home-model(
-      src=url_for(mv_src)
+      src=url_for(mv_local.src || mv_src)
       alt="首页 3D 模型"
       camera-controls
       auto-rotate
       autoplay
-      animation-name="Idle"
+      animation-name=(mv_local.animation || 'Idle')
       reveal="auto"
       shadow-intensity="1"
       environment-image="neutral"
       poster=(mv_poster ? url_for(mv_poster) : null)
     )
     #model_viewer_loading_cover.mv-cover(style=mv_cover_style role="img" aria-label="首页 3D 模型封面")
-    //- R-288（2026-10-17 用户）：入口与模型切换全部收进底部「3D 控制坞」.mv-dock：
-    //-   ① 加载入口 #model_viewer_hint（原 R-092 契约保持不变：图标按钮、无可见文案、data-state 表达状态）；
-    //-   ② 本地 GLB 模型 pill（配置 model_viewer.models 里非 sketchfab 项，默认第一项）；
-    //-   ③ 备用 Sketchfab 视图 pill（复用 R-276 的 #model_viewer_sf_toggle，保留其 id/class/data-* 契约）。
+    //- R-290（2026-10-18 用户 m11298：「3d 按钮还是一个按钮，不需要文字，点击第一次是 iframe 第二次是模型就行」）：
+    //-   控制坞只保留一个图标入口 #model_viewer_hint：第 1 次点击切到备用 Sketchfab（iframe）视图，
+    //-   第 2 次点击切回本地 GLB，此后交替。文字 pill（模型名 /「原创模型」）已从可见 UI 移除。
+    //-   #model_viewer_sf_toggle 保留为**隐藏的程序化切换钩子**（R-276 静态契约要求它存在并携带
+    //-   data-sf-js / data-sf-uid；脚本与 check-site 都靠它注入/校验 Sketchfab SDK）。
     //-   入口必须是最上层命中目标：.mv-dock 有 z-index:3，且 #carousel .site-info 改 pointer-events:none
     //-   （_revision/carousel.styl），否则 fixed 定位的 .site-info 会吞掉点击（Lead CDP 实测）。
     .mv-dock#model_viewer_dock
@@ -75,27 +76,17 @@ if mv_enable
           circle(cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="15 42" stroke-linecap="round")
         svg.mv-ico.mv-ico-retry(viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false")
           path(d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z")
-      each m, mi in mv_glb_models
-        button.mv-model-btn(
-          type="button"
-          data-mv-model=String(mi)
-          data-mv-src=url_for(m.src || mv_src)
-          data-mv-animation=(m.animation || 'Idle')
-          aria-pressed=(mi === 0 ? 'true' : 'false')
-          aria-label=((m.label || '模型') + '（切换 3D 模型）')
-          title=((m.label || '模型') + '（切换 3D 模型）')
-        )= (m.label || '模型')
-      //- R-288：备用 Sketchfab 视图 pill —— 与本地模型 pill 同排，点击在「本地 GLB ↔ 3D 备用视图」间切换；
-      //-   保留 R-276 的 id/class/data-sf-js/data-sf-uid 契约（check-site 依赖），只是位置从右下角挪进控制坞。
       if mv_sf_on
-        button.model-viewer-sf-toggle.mv-model-btn#model_viewer_sf_toggle(
+        button.model-viewer-sf-toggle#model_viewer_sf_toggle(
           type="button"
+          hidden
+          tabindex="-1"
+          aria-hidden="true"
           data-sf-js=url_for(mv_sf_js)
           data-sf-uid=mv_sf_uid
+          data-sf-label=mv_sf_label
           aria-pressed="false"
-          aria-label=("切换到" + mv_sf_label + "（备用 3D 视图）")
-          title=("切换到" + mv_sf_label + "（备用 3D 视图）")
-        )= mv_sf_label
+        )
     .model-viewer-fallback#model_viewer_fallback
       if mv_poster
         .mv-cover.mv-cover-fallback(style=mv_cover_style role="img" aria-label="首页 3D 模型封面")
@@ -148,9 +139,15 @@ if mv_enable
       function setHintState(state) {
         if (!hint) return;
         hint.setAttribute('data-state', state);
+        // R-290：正在显示备用 Sketchfab 视图时，入口语义是「切回本地 3D 模型」——
+        //   无障碍文案由下方 sf script 的 markDock() 维护，这里不要覆盖它。
+        if (wrap.classList.contains('mv-sf-on')) return;
         var label = HINT_LABEL[state] || HINT_LABEL.idle;
         hint.setAttribute('aria-label', label);
         hint.setAttribute('title', label);
+        // R-290：模型就绪后入口的**动作**是切到备用视图，无障碍文案改为「查看<备用>」；
+        //   具体文案由 sf script 的 markDock() 生成（sf script 在页面末尾先执行完）。
+        if (state === 'ready' && typeof window.alMvSfHintReady === 'function') window.alMvSfHintReady();
       }
 
       function stopTimers() {
@@ -233,53 +230,29 @@ if mv_enable
         try { localStorage.setItem('mv-optin', '1'); } catch (err) { /* ignore */ }
         arm();
       }
-      // R-288：控制坞里的本地模型 pill —— 点 pill 即切模型（优先复用已加载的 viewer，不重复注入脚本）。
-      var modelBtns = [];
-      (function () {
-        var dock = document.getElementById('model_viewer_dock');
-        if (!dock) return;
-        var nodes = dock.querySelectorAll('[data-mv-src]');
-        for (var n = 0; n < nodes.length; n++) modelBtns.push(nodes[n]);
-      })();
-      function markActiveModel(btn) {
-        for (var n = 0; n < modelBtns.length; n++) {
-          modelBtns[n].setAttribute('aria-pressed', modelBtns[n] === btn ? 'true' : 'false');
+      // R-290（用户 m11298）：控制坞只剩一个图标按钮，点击在「备用 Sketchfab iframe 视图」与
+      //   「本地 GLB 模型」之间交替 —— 第 1 次点击 = iframe，第 2 次点击 = 模型，此后循环。
+      //   切换钩子由下方独立的 sf script body 提供（window.alMvSfEnable / window.alMvSfDisable）；
+      //   若站点关闭了 sketchfab_fallback（无钩子），退化为「点击即加载本地模型」的旧行为。
+      function onHintClick() {
+        var sfToggle = document.getElementById('model_viewer_sf_toggle');
+        var sfReady = !!(sfToggle && window.alMvSfEnable && window.alMvSfDisable);
+        if (sfReady) {
+          if (wrap.classList.contains('mv-sf-on')) {
+            window.alMvSfDisable();
+            // 切回本地模型：已加载过 ⇒ optIn() 提前返回（settled），否则开始加载
+            optIn();
+          } else {
+            window.alMvSfEnable();
+          }
+          return;
         }
-        window.__mvActiveModel = btn || null;
-      }
-      function selectModel(btn) {
-        if (!btn) return;
-        var src = btn.getAttribute('data-mv-src');
-        var anim = btn.getAttribute('data-mv-animation') || '';
-        markActiveModel(btn);
-        // 从备用 Sketchfab 视图切回本地 GLB（disable 会按 .mv-ready/.mv-failed 恢复封面与状态）
-        if (window.alMvSfDisable) window.alMvSfDisable();
-        if (!src) return;
-        var changed = el.getAttribute('src') !== src;
-        if (anim) el.setAttribute('animation-name', anim);
-        if (changed) {
-          el.setAttribute('src', src);
-          // 换模型等同一次全新的加载：复位状态机后重新 arm()，失败态也要能自愈
-          settled = false;
-          started = false;
-          failed = false;
-          wrap.classList.remove('mv-failed');
-          if (fb) fb.style.display = 'none';
-          if (cover) cover.style.display = '';
-        }
-        if (el.loaded) { ready(); return; }
         optIn();
-        arm();
-      }
-      for (var mb = 0; mb < modelBtns.length; mb++) {
-        (function (btn) {
-          btn.addEventListener('click', function () { selectModel(btn); });
-        })(modelBtns[mb]);
       }
 
       if (cover) cover.addEventListener('click', optIn);
       // button 原生 Enter/Space 也会触发 click，键盘可达。
-      if (hint) hint.addEventListener('click', optIn);
+      if (hint) hint.addEventListener('click', onHintClick);
       if (hintRetry) {
         hintRetry.addEventListener('click', function () {
           if (!settled) return;
@@ -308,6 +281,7 @@ if mv_enable
       var sfBackup = document.getElementById('model_viewer_sf_backup');
       var cover = document.getElementById('model_viewer_loading_cover');
       var fb = document.getElementById('model_viewer_fallback');
+      var hint = document.getElementById('model_viewer_hint');
       if (!wrap || !sfToggle || !sfBackup) return;
       var sfOn = false, sfSdkLoaded = false;
       function loadSfSdk(done) {
@@ -321,17 +295,24 @@ if mv_enable
         s.onerror = function () { done(); };
         document.head.appendChild(s);
       }
-      // R-288：控制坞状态同步 —— 备用视图 pill 的 aria-pressed 与本地模型 pill 互斥。
+      // R-290：单按钮状态同步 —— 程序化开关的 aria-pressed 反映当前是否处于 iframe 视图，
+      //   同时把入口 #model_viewer_hint 的无障碍文案切成「下一步会做什么」（图标无可见文字）。
       function markDock(active) {
         sfToggle.setAttribute('aria-pressed', active === 'sf' ? 'true' : 'false');
-        var dock = document.getElementById('model_viewer_dock');
-        if (!dock) return;
-        var nodes = dock.querySelectorAll('[data-mv-src]');
-        for (var n = 0; n < nodes.length; n++) {
-          var on = (active === 'glb') && (window.__mvActiveModel ? nodes[n] === window.__mvActiveModel : n === 0);
-          nodes[n].setAttribute('aria-pressed', on ? 'true' : 'false');
+        if (!hint) return;
+        var label;
+        if (active === 'sf') {
+          label = '切换回本地 3D 模型';
+        } else if (wrap.classList.contains('mv-ready')) {
+          label = '查看' + (sfToggle.getAttribute('data-sf-label') || '备用 3D 视图') + '（备用 3D 视图）';
+        } else {
+          label = '查看备用 3D 视图（iframe）';
         }
+        hint.setAttribute('aria-label', label);
+        hint.setAttribute('title', label);
       }
+      // R-290：本地模型就绪时，由主脚本回调这里刷新入口按钮的动作文案。
+      window.alMvSfHintReady = function () { markDock('glb'); };
       function enableSfBackup() {
         if (sfOn) return;
         sfOn = true;
