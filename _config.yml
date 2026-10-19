@@ -941,6 +941,11 @@ profile:
   # R-246：buttons[].img 等取值已外移到站点层 _config.hexo-theme-unicorn.yml；该文件引用的主题资源
   # （icon_download / icon_wechat / icon_works / icon_mail / wechatcode.jpeg）经 theme-audit 的
   # 「站点根 _config.*.yml 引用通道」（R-247）计入引用 blob，不会被误判为死镜像。
+  # R-298（round-071）：按钮可带 `modal` 字段改走居中弹窗而不是直接跳转：
+  #   modal: image|pdf       弹窗类型（image ⇒ 图片；pdf ⇒ iframe 预览 + 下载按钮）
+  #   modal_title: <str>     弹窗标题（缺省用 name）
+  #   modal_desc: <str>      弹窗副标题/说明（可选）
+  #   modal_download: <str>  下载按钮文案（仅 pdf；缺省「下载」）
   buttons: []
   decoration:
     plant_1: /img/cdn/img/3dIcon/objects/Plant%201.png
@@ -1059,6 +1064,10 @@ CDN:
   jquery: /img/cdn/js/jquery/jquery.min.js   # R-242：与 inject.assets 的 jquery 同一份自托管文件（jQuery v3.6.0）
   main: /js/main.js
   utils: /js/utils.js
+  # R-298（round-071）：profile 页居中弹窗脚本（微信二维码 / 简历预览）。
+  # 由 layout/pages/profile.pug 在页面片段内以 data-pjax 引入（不能走 inject.assets 的 bottom 槽：
+  # bottom 槽在 #body-wrap 之外，pjax 只替换 #body-wrap 并重建片段内的 script[data-pjax] ⇒ 站内跳进 profile 后不生效）。
+  profile_modal: /js/profile-modal.js
 
   # aplayer
   # aplayer_css: https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.css

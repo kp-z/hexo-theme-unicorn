@@ -1,0 +1,228 @@
+// R-298（round-071）：profile 页居中弹窗（微信二维码 / 简历预览）
+// 结构：layout/pages/profile.pug 末尾 #profile-modal（单例骨架）；
+// 行为：source/js/profile-modal.js（document 级事件委托，pjax 下幂等）。
+// 层级：压在 #rightside 配置按钮（z-index 99/100）与导航（90/91）之上，低于加载动画（1000）。
+
+body.profile-modal-open
+  overflow hidden
+
+.profile-modal
+  position fixed
+  inset 0
+  z-index 900
+  display flex
+  align-items center
+  justify-content center
+  padding 24px
+  box-sizing border-box
+
+  &[hidden]
+    display none
+
+  // 打开动画：遮罩淡入 + 卡片轻微上浮；尊重「减少动态效果」偏好。
+  &:not([hidden])
+    animation profile-modal-fade .16s ease-out
+
+  &__backdrop
+    position absolute
+    inset 0
+    background rgba(6, 7, 10, .72)
+    -webkit-backdrop-filter blur(6px)
+    backdrop-filter blur(6px)
+
+  &__dialog
+    position relative
+    z-index 1
+    display flex
+    flex-direction column
+    width 92vw
+    max-width 420px
+    max-height 88vh
+    padding 20px 20px 16px
+    box-sizing border-box
+    border 1px solid rgba(255, 255, 255, .14)
+    border-radius 16px
+    background rgba(20, 21, 27, .94)
+    box-shadow 0 24px 64px rgba(0, 0, 0, .55)
+    color #f5f6f8
+    overflow hidden
+    outline none
+    animation profile-modal-rise .18s ease-out
+
+  &[data-kind='pdf'] &__dialog
+    width 94vw
+    max-width 900px
+
+  &__close
+    position absolute
+    top 10px
+    right 10px
+    display inline-flex
+    align-items center
+    justify-content center
+    width 32px
+    height 32px
+    padding 0
+    border 1px solid rgba(255, 255, 255, .14)
+    border-radius 999px
+    background rgba(255, 255, 255, .08)
+    color rgba(255, 255, 255, .82)
+    cursor pointer
+    transition background .15s ease, color .15s ease
+
+    &:hover
+    &:focus-visible
+      background rgba(255, 255, 255, .18)
+      color #fff
+
+  &__head
+    padding-right 36px
+
+  &__title
+    margin 0
+    font-size 16px
+    font-weight 600
+    line-height 1.4
+    color #f5f6f8
+
+  &__desc
+    margin 6px 0 0
+    font-size 12px
+    line-height 1.5
+    color rgba(255, 255, 255, .58)
+
+    &[hidden]
+      display none
+
+  &__body
+    display flex
+    justify-content center
+    margin-top 16px
+    overflow auto
+
+    img
+      display block
+      width 100%
+      max-width 300px
+      height auto
+      margin 0 auto
+      border-radius 12px
+      background #fff
+
+    iframe
+      display block
+      width 100%
+      height 62vh
+      max-height 640px
+      border 0
+      border-radius 10px
+      background #fff
+
+  &__foot
+    display flex
+    align-items center
+    justify-content flex-end
+    gap 12px
+    margin-top 14px
+
+    &[hidden]
+      display none
+
+  &__hint
+    margin-right auto
+    font-size 12px
+    line-height 1.4
+    color rgba(255, 255, 255, .45)
+
+  &__download
+    display inline-flex
+    align-items center
+    height 32px
+    padding 0 14px
+    border 1px solid rgba(255, 255, 255, .16)
+    border-radius 999px
+    background rgba(255, 255, 255, .92)
+    color #15161a
+    font-size 12px
+    font-weight 600
+    text-decoration none
+    transition transform .15s ease, background .15s ease
+
+    &:hover
+    &:focus-visible
+      background #fff
+      transform translateY(-1px)
+
+  // 移动端：卡片占满可用宽度，PDF 预览降高，提示文案换行。
+  +maxWidth768()
+    padding 12px
+
+    .profile-modal__dialog
+      width 94vw
+      max-height 90vh
+      padding 18px 16px 14px
+
+    &[data-kind='pdf'] .profile-modal__dialog
+      width 94vw
+
+    .profile-modal__foot
+      flex-direction column
+      align-items stretch
+
+    .profile-modal__hint
+      margin-right 0
+      margin-bottom 8px
+
+    .profile-modal__download
+      justify-content center
+
+// 亮色主题：弹窗跟随为浅色卡片（站点默认深色，切到亮色时不出现突兀黑块）。
+[data-theme='light']
+  .profile-modal
+    &__backdrop
+      background rgba(80, 84, 96, .5)
+
+    &__dialog
+      border-color rgba(0, 0, 0, .1)
+      background rgba(255, 255, 255, .97)
+      color #22252b
+      box-shadow 0 24px 64px rgba(0, 0, 0, .28)
+
+    &__title
+      color #22252b
+
+    &__desc,
+    &__hint
+      color rgba(0, 0, 0, .52)
+
+    &__close
+      border-color rgba(0, 0, 0, .12)
+      background rgba(0, 0, 0, .05)
+      color rgba(0, 0, 0, .7)
+
+    &__download
+      border-color rgba(0, 0, 0, .12)
+      background #22252b
+      color #fff
+
+@keyframes profile-modal-fade
+  from
+    opacity 0
+  to
+    opacity 1
+
+@keyframes profile-modal-rise
+  from
+    opacity 0
+    transform translateY(10px) scale(.985)
+  to
+    opacity 1
+    transform translateY(0) scale(1)
+
+@media (prefers-reduced-motion: reduce)
+  .profile-modal
+    &:not([hidden])
+      animation none
+
+    &__dialog
+      animation none

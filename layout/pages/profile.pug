@@ -13,10 +13,18 @@
     .info-bot
       div
         for i in theme.profile.buttons
-          a.author-btn(href=url_for(i.link))
-            img(data-lazy-src=url_for(i.img) alt='button')
-            .hidden-info
-              | !{i.name}
+          //- R-298（round-071）：带 modal 的按钮不再直接跳转，改为居中弹窗（微信二维码 / 简历预览）。
+          //- 仍保留 href 作为无 JS / JS 失败时的降级跳转；data-* 供 source/js/profile-modal.js 读取。
+          if i.modal
+            a.author-btn(href=url_for(i.link) data-profile-modal=i.modal data-profile-modal-src=url_for(i.link) data-profile-modal-title=(i.modal_title || i.name) data-profile-modal-desc=(i.modal_desc || '') data-profile-modal-download=(i.modal_download || '') aria-haspopup='dialog')
+              img(data-lazy-src=url_for(i.img) alt='button')
+              .hidden-info
+                | !{i.name}
+          else
+            a.author-btn(href=url_for(i.link))
+              img(data-lazy-src=url_for(i.img) alt='button')
+              .hidden-info
+                | !{i.name}
         .info-tips
     .info-social
       a.info-social-i(href=url_for(theme.profile.social.github))
@@ -140,3 +148,27 @@
 //- 访客地图（visitorMap.js）留空白。带 data-pjax 的脚本由 pjax.pug 在 pjax:complete 后重建执行。
 for i in theme.profile.scripts
   script(src=url_for(i) data-pjax='')
+
+//- R-298（round-071）：profile 页居中弹窗骨架（单例）。
+//- - 触发：theme.profile.buttons[] 里带 `modal`（image | pdf）的按钮，点击由 js/profile-modal.js 拦截
+//-   并填充本骨架；无 JS 时按钮退回 href 原行为（跳转图片 / PDF）。
+//- - 内容由 JS 按 data-* 生成（image ⇒ <img>；pdf ⇒ <iframe> + 下载按钮），避免每个按钮各写一份 DOM。
+//- - 弹窗位于页面片段内（#body-wrap），pjax 进出 profile 时随片段一起重建；脚本带 data-pjax 重建执行。
+- var __pmButtons = (theme.profile.buttons || []).filter(function (b) { return b && b.modal })
+if __pmButtons.length
+  #profile-modal.profile-modal(hidden)
+    .profile-modal__backdrop(data-profile-modal-close='')
+    .profile-modal__dialog(role='dialog' aria-modal='true' aria-labelledby='profile-modal-title' aria-describedby='profile-modal-desc' tabindex='-1')
+      button.profile-modal__close(type='button' aria-label='关闭弹窗' data-profile-modal-close='')
+        svg(viewBox='0 0 24 24' width='20' height='20' aria-hidden='true' focusable='false')
+          path(d='M6 6l12 12M18 6L6 18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round')
+      .profile-modal__head
+        h3#profile-modal-title.profile-modal__title
+        p#profile-modal-desc.profile-modal__desc
+      .profile-modal__body
+      .profile-modal__foot
+        a.profile-modal__download(href='#' download='') 下载
+        span.profile-modal__hint 若预览未显示，请点击下方按钮下载查看
+  //- R-298：脚本放在页面片段内并带 data-pjax —— pjax 只替换 #body-wrap 并重建片段内的 script[data-pjax]，
+  //- 放 inject.assets 的 bottom 槽（#body-wrap 之外）会导致站内跳进 profile 后弹窗不生效。
+  script(src=url_for(theme.CDN.profile_modal) data-pjax='')
