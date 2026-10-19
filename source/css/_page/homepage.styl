@@ -159,11 +159,18 @@
 
       .recent-post-info
         order: 2 !important
-        padding: 1rem 1rem 1.5rem
+        //- R-300（2026-10-19，延续用户 m14627「博客卡片的 padding 也要优化一下，最好都是平齐」）：
+        //- R-299 只统一了桌面（padding 0 1.2rem ⇒ 横向 24px）。移动端 ≤768 原为 1rem 1rem 1.5rem
+        //- （本站 html 根字号 20px ⇒ 20/20/30px），CDP 390×844 实测文章卡文字横向内缩 21px
+        //- （卡 x=5、标题 x=26），而侧栏 .card-recent-post 实测 25px（卡 padding 1rem 1.2rem
+        //- ⇒ 24px，加 1px 字形偏移；根字号 20px 已核实）⇒ 两列仍差 4px。按实测对齐：
+        //- 文章卡横向 padding 统一为 1.2rem（=24px，与侧栏相同）；.no-cover 横向同步 1.2rem。
+        //- （ROADMAP 拟改 1.5rem/30px 源于「侧栏横向 30px」前提，与实测 25px 不符，故按实测修正。）
+        padding: 1rem 1.2rem 1.5rem
         width: 100%
 
         &.no-cover
-          padding: 1.5rem 1rem
+          padding: 1.5rem 1.2rem
 
         .article-title
           font-size: 1.43em
