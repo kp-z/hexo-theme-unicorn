@@ -70,7 +70,11 @@
     & >.recent-post-info
       display: inline-block
       overflow: hidden
-      padding: 0 30px
+      //- R-299（2026-10-19，用户 m14627「博客卡片的 padding 也要优化一下，最好都是平齐」）：
+      //- 文章卡横向内边距原为 0 30px（文字距卡沿 31px），比侧边栏卡片 / 全站 .card-widget
+      //- 的 1rem 1.2rem（20px/24px，距卡沿 25px）宽 6px，同一篇文章在左右两列的内缩不一致 ⇒
+      //- 统一为 1.2rem（=24px，本站 html 根字号 20px），与 .card-widget 约定对齐。
+      padding: 0 1.2rem
       width: 65%
       height: 90%
 
