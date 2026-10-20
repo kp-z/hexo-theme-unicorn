@@ -1,20 +1,21 @@
+//- 2026-10-20：站点首页迁到根路径（/home/ 已改为 0 秒重定向页）⇒ logo / 站点名 / slogan 统一指回首页 `/`。
 nav#nav
   span#blog_name
-    a(href=url_for('/home/'))
+    a(href=url_for('/'))
       if theme.logo.img
         img#site-logo(src=url_for(theme.logo.img), alt=(theme.logo.title || config.title))
       else
          img#site-logo(src=url_for('/img/kp-logo.png'), alt=(theme.logo.title || config.title))
     #head-page-title
       if theme.logo.title 
-        a#page-name(href=url_for('/home/')) #[=theme.logo.title ]<br/>
+        a#page-name(href=url_for('/')) #[=theme.logo.title ]<br/>
       else
-        a#page-name(href=url_for('/home/')) #[=config.title]<br/>
+        a#page-name(href=url_for('/')) #[=config.title]<br/>
       - var pageTitle
       - if (is_home()) pageTitle = 'BLOG'
       - else if(!is_post()) pageTitle = page.title || config.title || ''
       - else pageTitle = 'HOME'
-      a#site-slogan(href=url_for('/home/')) #[=pageTitle]
+      a#site-slogan(href=url_for('/')) #[=pageTitle]
     
   #menus
     if (theme.algolia_search.enable || theme.local_search.enable)
