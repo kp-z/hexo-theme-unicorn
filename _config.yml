@@ -987,8 +987,6 @@ pages:
   weibo_head_img: /img/cdn/img/3dIcon/objects/speaker%20a.png
   weibo_css: /img/cdn/css/weibo.css
   weibo_title: ''
-  sketchfab: /js/vendor/sketchfab/sketchfab-viewer-1.12.0.js
-  sketchfab_cover_img: /img/cdn/img/carousel/home_page_mask.png
   carousel: /img/cdn/js/carousel.js
   sponsor_css: /img/cdn/css/sponsor.css
   # R-243（goal round 16 登记的残余）：travel.js 内嵌 Mapbox 访问令牌，GitHub push protection
@@ -1030,31 +1028,8 @@ page_views:
   tags: includes/page/tags.pug
   default_page: includes/page/default-page.pug
 
-# R-059 阶段 1：首页 3D 模型（model-viewer；dev2 首页改造只读本块）
-# enable 为总开关；viewer_js 为站内自托管路径（不依赖境外网）；poster 原为 sketchfab_cover_img 的
-# COS 地址，R-172 起本地化（根相对路径，模板经 url_for() 展开）。
-model_viewer:
-  enable: true
-  src: /models/home.glb
-  viewer_js: /js/vendor/model-viewer/model-viewer.min.js
-  # R-075 曾预留「国内镜像回退链」（viewer_js_fallbacks）。R-242（goal round 16）删除：原 COS 对象
-  # /js/vendor/model-viewer/model-viewer.min.js 实测 HTTP 404（从未上传），且该键会把 COS 绝对地址留在主题里。
-  # 若日后确需回退，请自托管文件并在站点层覆盖为 /img/cdn/js/... 根相对路径。
-  # 1 MiB viewer 的等待上限；超时只切到「点击加载」，不放弃下载，绝不整片空白
-  timeout_ms: 8000
-  # click（默认）：首屏只出封面，点击后才下载 3D（国内 1 MiB 走 GitHub Pages 源实测 ≈39 s，不自动加载）
-  # auto：直连（saveData=false 且非 2g/3g、无 reduced-motion）时自动加载 3D
-  mode: click
-  # R-075：封面由模板用 CSS background-image 渲染（不参与主题懒加载），加载期/弱网期都以它兜底
-  poster: /img/cdn/img/carousel/home_page_mask.png
-  # R-276（2026-10-16 用户指示）：保留 Sketchfab iframe 作为「3D 加载失败的备用视图」——
-  #   默认隐藏（无 src ⇒ 首屏零境外请求），由右下角隐蔽小按钮手动切换；model-viewer 真正加载失败时自动回退。
-  #   sketchfab_js 必须站内自托管（脚本按需注入），sketchfab_uid 为备用视图使用的 Sketchfab 模型 id。
-  #   关掉 sketchfab_fallback 即回到「只有 model-viewer + 重试入口」的旧行为。
-  sketchfab_fallback: true
-  sketchfab_js: /js/vendor/sketchfab/sketchfab-viewer-1.12.0.js
-  sketchfab_uid: 25e0e77ab56140be9fa6cb65cb4de96f
-
+# 首页 3D 配置：R-059~R-290 的 model_viewer 块已随首页改为 bruno-simon/folio-2025 iframe（source/bg/folio）
+# 一并移除；/gallery/sketching/ 使用自带脚本 source/js/models-gallery.js，不再依赖主题配置键。
 # CDN
 # Don't modify the following settings unless you know how they work
 # 非必要請不要修改
